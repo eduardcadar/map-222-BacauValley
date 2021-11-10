@@ -24,31 +24,31 @@ public class FriendshipRepoInMemory implements FriendshipRepository {
     }
 
     /**
-     * Adauga o prietenie la repo
-     * @param f - prietenia care va fi adaugata
-     * @throws RepoException - daca prietenia este deja in repo
+     * Adds a friendship to the repository
+     * @param f - the friendship to be added
+     * @throws RepoException - if the friendship is already saved
      */
     @Override
     public void addFriendship(Friendship f) throws RepoException {
         val.validate(f);
         if (!friendships.add(f))
-            throw new RepoException("Cei doi utilizatori sunt deja prieteni");
+            throw new RepoException("The two users are already friends");
     }
 
     /**
-     * Sterge o prietenie din repo
-     * @param f - prietenia care va fi stearsa
-     * @throws RepoException - daca prietenia nu este in repo
+     * Removes a friendship from the repository
+     * @param f - the friendship to be removed
+     * @throws RepoException - if the friendship is not saved
      */
     @Override
     public void removeFriendship(Friendship f) throws RepoException {
         val.validate(f);
         if (!friendships.remove(f))
-            throw new RepoException("Cei doi utilizatori nu sunt prieteni");
+            throw new RepoException("The two users are not friends");
     }
 
     /**
-     * @return numarul de prietenii din repo - int
+     * @return no of friendships - int
      */
     @Override
     public int size() {
@@ -56,7 +56,7 @@ public class FriendshipRepoInMemory implements FriendshipRepository {
     }
 
     /**
-     * Sterge toate prieteniile din repo
+     * Removes all friendships from the repository
      */
     @Override
     public void clear() {
@@ -66,8 +66,8 @@ public class FriendshipRepoInMemory implements FriendshipRepository {
     }
 
     /**
-     * Verifica daca nu sunt salvate prietenii
-     * @return true daca nu sunt salvate prietenii, altfel false
+     * Verifies if there are no friendships saved
+     * @return true if there are no friendships, false otherwise
      */
     @Override
     public boolean isEmpty() {
@@ -75,8 +75,8 @@ public class FriendshipRepoInMemory implements FriendshipRepository {
     }
 
     /**
-     * Sterge toate prieteniile unui utilizator
-     * @param email - email-ul utilizatorului
+     * Removes all the friendships of an user
+     * @param email - the user's email
      */
     public void removeUserFships(String email) {
         List<Friendship> fships = new ArrayList<>();
@@ -103,8 +103,7 @@ public class FriendshipRepoInMemory implements FriendshipRepository {
     }
 
     /**
-     * Returneaza o lista cu toate prieteniile
-     * @return lista cu prieteniile salvate - List[Friendship]
+     * @return a list with all the friendships - List[Friendship]
      */
     @Override
     public List<Friendship> getAll() {

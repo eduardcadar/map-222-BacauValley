@@ -16,8 +16,8 @@ public class FriendshipFileRepo extends FriendshipRepoInMemory implements Friend
 
     /**
      *
-     * @param filename - String numele fisierului cu prietenii
-     * @param val - validator de prietenii
+     * @param filename - String the name of the friendships file
+     * @param val - friendship validator
      */
     public FriendshipFileRepo(String filename, Validator<Friendship> val, UserRepository userRepo) {
         super(val, userRepo);
@@ -28,7 +28,7 @@ public class FriendshipFileRepo extends FriendshipRepoInMemory implements Friend
                 f.createNewFile();
             loadFromFile(filename);
         } catch (IOException e) {
-            throw new FileException("Eroare fisier");
+            throw new FileException("File error");
         }
     }
 
@@ -39,8 +39,8 @@ public class FriendshipFileRepo extends FriendshipRepoInMemory implements Friend
     }
 
     /**
-     * Incarca in memorie prieteniile dintr-un fisier
-     * @param filename - numele fisierului din care se citesc prieteniile
+     * Loads into the memory the friendships from a file
+     * @param filename - the name of the friendships file
      */
     private void loadFromFile(String filename) {
         try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
@@ -51,37 +51,37 @@ public class FriendshipFileRepo extends FriendshipRepoInMemory implements Friend
                 super.addFriendship(extractFriendship(attributes));
             }
         } catch (FileNotFoundException e) {
-            throw new FileException("Eroare fisier");
+            throw new FileException("File error");
         } catch (IOException e) {
-            throw new FileException("Eroare la citirea din fisier");
+            throw new FileException("Error on reading from file");
         }
     }
 
     /**
-     * Creeaza o prietenie dintr-o lista de String-uri
-     * Lista contine:
-     *  pe pozitia 0 email-ul primului utilizator
-     *  pe pozitia 1 email-ul celui de-al doilea utilizator
-     * @param attr - lista cu email-urile celor doi utilizatori
-     * @return prietenia creata - Friendship
+     * Creates a friendship from a list of strings
+     * The list contains:
+     *  list[0] - the email of the first user
+     *  list[1] - the email of the second user
+     * @param attr - the list with the emails of the two users
+     * @return the friendship
      */
     private Friendship extractFriendship(List<String> attr) {
-        if (attr.size() != 2) throw new FileException("Date eronate in fisierul de prietenii");
+        if (attr.size() != 2) throw new FileException("Wrong data as parameter");
         return new Friendship(attr.get(0), attr.get(1));
     }
 
     /**
-     * Creeaza un string cu email-urile utilizatorilor unei prietenii
-     * @param f - prietenia din care se creeaza String-ul
-     * @return linia creata - String
+     * Creates a string with the emails of a friendship's users
+     * @param f - the friendship from which the string is created
+     * @return the created line - String
      */
     private String createLine(Friendship f) {
         return f.getFirst() + "," + f.getSecond();
     }
 
     /**
-     * Scrie toate prieteniile in fisier
-     * @param filename - String numele fisierului
+     * Writes all the friendships in the file
+     * @param filename - String the name of the file
      */
     private void writeAllToFile(String filename) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(filename))) {
@@ -90,14 +90,14 @@ public class FriendshipFileRepo extends FriendshipRepoInMemory implements Friend
                 bw.newLine();
             }
         } catch (IOException e) {
-            throw new FileException("Eroare la scrierea in fisier");
+            throw new FileException("Error on writing to file");
         }
     }
 
     /**
-     * Salveaza o prietenie in memorie si in fisier
-     * @param f - prietenia care va fi adaugata
-     * @throws RepoException - daca prietenia este deja salvata
+     * Saves a friendship in memory and in the file
+     * @param f - the friendship that will be added
+     * @throws RepoException - if the friendship is already saved
      */
     @Override
     public void addFriendship(Friendship f) throws RepoException {
@@ -106,14 +106,14 @@ public class FriendshipFileRepo extends FriendshipRepoInMemory implements Friend
             bw.write(createLine(f));
             bw.newLine();
         } catch (IOException e) {
-            throw new FileException("Eroare la scrierea in fisier");
+            throw new FileException("Error on writing to file");
         }
     }
 
     /**
-     * Sterge o prietenie din memorie si din fisier
-     * @param f - prietenia care va fi stearsa
-     * @throws RepoException - daca prietenia nu este salvata
+     * Removes a friendship from memory and from the file
+     * @param f - the friendship that will be removed
+     * @throws RepoException - if the friendship is not saved
      */
     @Override
     public void removeFriendship(Friendship f) throws RepoException {
@@ -122,14 +122,14 @@ public class FriendshipFileRepo extends FriendshipRepoInMemory implements Friend
     }
 
     /**
-     * Sterge toate prieteniile din memorie si din fisier
+     * Removes all the friendships from memory and from file
      */
     @Override
     public void clear() {
         try {
             new FileWriter(filename).close();
         } catch (IOException e) {
-            throw new FileException("Eroare fisier");
+            throw new FileException("File error");
         }
         super.clear();
     }

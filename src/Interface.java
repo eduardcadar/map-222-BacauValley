@@ -28,9 +28,9 @@ public class Interface {
     private final Service srv;
 
     /**
-     * Constructor pentru repo in fisiere
-     * @param usersFile - String numele fisierului in care se salveaza utilizatorii
-     * @param friendshipsFile - String numele fisierului in care se salveaza prieteniile
+     * File repo
+     * @param usersFile - String the name of the users file
+     * @param friendshipsFile - String then name of the friendships file
      */
     public Interface(String usersFile, String friendshipsFile) {
         console = new Scanner(System.in);
@@ -46,14 +46,14 @@ public class Interface {
     }
 
     /**
-     * Constructor pentru repo in baza de date
-     * @param url - String url-ul bazei de date
+     * Database repo
+     * @param url - String the url of the database
      */
     public Interface(String url) {
         console = new Scanner(System.in);
-        System.out.print("Introduceti username-ul bazei de date: ");
+        System.out.print("Databse username: ");
         String username = console.nextLine();
-        System.out.print("Introduceti parola bazei de date: ");
+        System.out.print("Database password: ");
         String password = console.nextLine();
         Validator<User> uVal = new UserValidator();
         UserDbRepo uRepo;
@@ -67,29 +67,29 @@ public class Interface {
     }
 
     /**
-     * Afiseaza meniul principal
-     * @return comanda introdusa - String
+     * Shows the main menu
+     * @return the input of the user - String
      */
     private String meniu() {
-        System.out.println("---MENIU PRINCIPAL---");
-        System.out.println("1. Adauga utilizator");
-        System.out.println("2. Sterge utilizator");
-        System.out.println("3. Adauga prieten");
-        System.out.println("4. Sterge prieten");
-        System.out.println("5. Numar comunitati");
-        System.out.println("6. Cea mai sociabila comunitate");
-        System.out.println("7. Actualizeaza utilizator");
-        System.out.println("8. Afisati utilizatorul dupa email");
-        System.out.println("9. Afisati prietenia dupa email-uri");
-        System.out.println("10. Afiseaza utilizatorii salvati");
-        System.out.println("11. Afiseaza prieteniile salvate");
-        System.out.println("0. Inchide programul");
-        System.out.print("Introduceti optiunea dorita: ");
+        System.out.println("---MENU---");
+        System.out.println("1. Add user");
+        System.out.println("2. Remove user");
+        System.out.println("3. Add friendship");
+        System.out.println("4. Remove friendship");
+        System.out.println("5. Number of communities");
+        System.out.println("6. Most friendly network");
+        System.out.println("7. Update user");
+        System.out.println("8. Get user by email");
+        System.out.println("9. Get friendship by emails");
+        System.out.println("10. Show users");
+        System.out.println("11. Show friendships");
+        System.out.println("0. Exit");
+        System.out.print("Write command: ");
         return console.nextLine().strip();
     }
 
     /**
-     * Porneste executia programului
+     * Starts the program
      */
     public void run() {
         String com;
@@ -110,40 +110,40 @@ public class Interface {
                 case "10" -> showUsers();
                 case "11" -> showFriendships();
                 default -> {
-                    System.out.println("Optiune invalida");
+                    System.out.println("Invalid option");
                     System.out.println();
                 }
             }
         }
-        System.out.println("Ati iesit din program");
+        System.out.println("You quit");
     }
 
     /**
-     * Verifica daca doi utilizatori sunt prieteni
+     * Verifies if two users are friends
      */
     private void showFriendshipByEmails() {
-        System.out.print("Introduceti email-ul primului utilizator: ");
+        System.out.print("Write the email of the first user: ");
         String email1 = console.nextLine().strip();
-        System.out.print("Introduceti email-ul celui de-al doilea utilizator: ");
+        System.out.print("Write the email of the second user: ");
         String email2 = console.nextLine().strip();
         Friendship f = srv.getFriendship(email1, email2);
         if (f == null) {
-            System.out.println("Cei doi utilizatori nu sunt prieteni");
+            System.out.println("The two users are not friends");
             return;
         }
         System.out.println(f);
     }
 
     /**
-     * Afiseaza un utilizator; se va introduce email-ul acestuia
+     * Shows an user
      */
     private void showUserByEmail() {
-        System.out.print("Introduceti email-ul utilizatorului: ");
+        System.out.print("Write the user's email: ");
         String email = console.nextLine().strip();
         try {
             User u = srv.getUser(email);
             if (u == null)
-                System.out.println("Utilizatorul nu este salvat");
+                System.out.println("No user saved with this email");
             else System.out.println(u);
         } catch (RepoException e) {
             System.out.println(e.getMessage());
@@ -151,11 +151,11 @@ public class Interface {
     }
 
     /**
-     * Actualizeaza un utilizator
+     * Updates an user
      */
     private void updateUser() {
         if (srv.usersIsEmpty()) {
-            System.out.println("Nu sunt utilizatori salvati");
+            System.out.println("No users saved");
             return;
         }
         Map<Integer, User> users = new HashMap<>();
@@ -164,32 +164,32 @@ public class Interface {
             i++;
             users.put(i, u);
         }
-        System.out.println("----UTILIZATORI----");
+        System.out.println("----USERS----");
         for (Integer j = 1; j <= i; j++)
             System.out.println(j + ". " + users.get(j));
-        System.out.print("Introduceti numarul utilizatorului pe care doriti sa il actualizati: ");
+        System.out.print("Write the number of the user you wish to update: ");
         Integer a = console.nextInt();
         console.nextLine();
-        System.out.print("Introduceti noul nume de familie al utilizatorului: ");
+        System.out.print("Write the new last name of the user: ");
         String lastname = console.nextLine();
-        System.out.print("Introduceti noul prenume al utilizatorului: ");
+        System.out.print("Write the new first name of the user: ");
         String firstname = console.nextLine();
         try {
             srv.updateUser(new User(firstname, lastname, users.get(a).getEmail()));
-            System.out.println("Utilizatorul a fost actualizat");
+            System.out.println("The user was updated");
         } catch (RepoException | DbException e) {
             System.out.println(e.getMessage());
         } catch (NullPointerException e) {
-            System.out.println("Nu ati introdus un numar valid");
+            System.out.println("Wrong number");
         }
     }
 
     /**
-     * Afiseaza utilizatorii drumului cel mai lung din reteaua de prietenii
+     * Shows the users of the longest path in the friendship network
      */
     private void mostFrCommunity() {
         List<User> usrs = srv.getUsersMostFrCom();
-        System.out.println("Cel mai lung drum are lungimea " + usrs.size());
+        System.out.println("Longest path has a length of " + usrs.size());
         for (User u : usrs) {
             System.out.print("- " + u + " -");
         }
@@ -198,15 +198,15 @@ public class Interface {
     }
 
     /**
-     * Afiseaza comunitatile din retea
+     * Shows the communities of the network
      */
     private void communities() {
         Map<Integer, List<String>> comms = srv.getCommunities();
         int nr = srv.nrCommunities();
         if (nr > 1)
-            System.out.println("In retea sunt " + srv.nrCommunities() + " comunitati");
+            System.out.println("There are " + srv.nrCommunities() + " communities in the network");
         else
-            System.out.println("In retea este o singura comunitate");
+            System.out.println("There is only one community in the network");
         List<String> usrs;
         for (int j = 1; j <= nr; j++) {
             usrs = comms.get(j);
@@ -219,14 +219,14 @@ public class Interface {
     }
 
     /**
-     * Afiseaza utilizatorii salvati
+     * Shows all users
      */
     private void showUsers() {
         int i = 1;
         if (srv.usersIsEmpty())
-            System.out.println("Nu sunt utilizatori salvati");
+            System.out.println("No users saved");
         else {
-            System.out.println("----UTILIZATORI----");
+            System.out.println("----USERS----");
             for (User us : srv.getUsers()) {
                 System.out.println(i + ". " + us);
                 i++;
@@ -236,11 +236,11 @@ public class Interface {
     }
 
     /**
-     * Adauga o prietenie
+     * Adds a friendship
      */
     private void addFriendship() {
         if (srv.usersSize() < 2) {
-            System.out.println("Nu sunt destui utilizatori salvati");
+            System.out.println("Not enough users saved");
             return;
         }
         Map<Integer, String> usrs = new HashMap<>();
@@ -249,36 +249,36 @@ public class Interface {
             i++;
             usrs.put(i, u.getEmail());
         }
-        System.out.println("----UTILIZATORI----");
+        System.out.println("----USERS----");
         for (Integer j = 1; j <= i; j++)
             System.out.println(j + ". " + srv.getUser(usrs.get(j)));
-        System.out.print("Introduceti numerele a doi utilizatori pentru prietenie: ");
+        System.out.print("Write the numbers of two users for the friendship: ");
         int a = console.nextInt();
         if (a < 1 || a > i) {
-            System.out.println("Nu ati introdus un numar valid");
+            System.out.println("Invalid number");
             return;
         }
         int b = console.nextInt();
         if (b < 1 || b > i) {
-            System.out.println("Nu ati introdus un numar valid");
+            System.out.println("Invalid number");
             return;
         }
         console.nextLine();
         try {
             Friendship f = new Friendship(srv.getUser(usrs.get(a)), srv.getUser(usrs.get(b)));
             srv.addFriendship(f);
-            System.out.println("Prietenia a fost adaugata");
+            System.out.println("The friendship was added");
         } catch (RepoException e) {
             System.out.println(e.getMessage());
         }
     }
 
     /**
-     * Sterge o prietenie
+     * Removes a friendship
      */
     private void removeFriendship() {
         if (srv.friendshipsIsEmpty()) {
-            System.out.println("Nu sunt prietenii salvate");
+            System.out.println("No friendships saved");
             return;
         }
         Map<Integer, Friendship> fships = new HashMap<>();
@@ -287,27 +287,30 @@ public class Interface {
             i++;
             fships.put(i, f);
         }
-        System.out.println("----PRIETENII----");
+        System.out.println("----FRIENDSHIPS----");
         for (Integer j = 1; j <= i; j++)
             System.out.println(j + ". " + fships.get(j));
-        System.out.print("Introduceti numarul prieteniei pe care doriti sa o stergeti: ");
+        System.out.print("Write the number of the friendship you wish to remove: ");
         Integer a = console.nextInt();
         console.nextLine();
         try {
             srv.removeFriendship(fships.get(a));
-            System.out.println("Prietenia a fost stearsa");
+            System.out.println("The friendship was removed");
         } catch (RepoException e) {
             System.out.println(e.getMessage());
         } catch (NullPointerException e) {
-            System.out.println("Nu ati introdus un numar valid");
+            System.out.println("Invalid number");
         }
     }
 
+    /**
+     * Shows all friendships
+     */
     private void showFriendships() {
         if (srv.friendshipsIsEmpty())
-            System.out.println("Nu sunt prietenii salvate");
+            System.out.println("No friendships saved");
         else {
-            System.out.println("----PRIETENII----");
+            System.out.println("----FRIENDSHIPS----");
             for (Friendship f : srv.getFriendships())
                 System.out.println(f);
         }
@@ -315,11 +318,11 @@ public class Interface {
     }
 
     /**
-     * Sterge un utilizator salvat
+     * Removes an user
      */
     private void removeUser() {
         if (srv.usersIsEmpty()) {
-            System.out.println("Nu sunt utilizatori salvati");
+            System.out.println("No users saved");
             return;
         }
         Map<Integer, User> users = new HashMap<>();
@@ -328,36 +331,36 @@ public class Interface {
             i++;
             users.put(i, u);
         }
-        System.out.println("----UTILIZATORI----");
+        System.out.println("----USERS----");
         for (Integer j = 1; j <= i; j++)
             System.out.println(j + ". " + users.get(j));
-        System.out.print("Introduceti numarul utilizatorului pe care doriti sa il stergeti: ");
+        System.out.print("Write the number of the user you with to remove: ");
         Integer a = console.nextInt();
         console.nextLine();
         try {
             srv.removeUser(users.get(a).getEmail());
-            System.out.println("Utilizatorul a fost sters");
+            System.out.println("The user was removed");
         } catch (RepoException | DbException e) {
             System.out.println(e.getMessage());
         } catch (NullPointerException e) {
-            System.out.println("Nu ati introdus un numar valid");
+            System.out.println("Invalid number");
         }
     }
 
     /**
-     * Adauga un utilizator
+     * Adds an user
      */
     private void addUser() {
-        String nume, prenume, email;
-        System.out.print("Introduceti numele utilizatorului: ");
-        nume = console.nextLine();
-        System.out.print("Introduceti prenumele utilizatorului: ");
-        prenume = console.nextLine();
-        System.out.print("Introduceti email-ul utilizatorului: ");
+        String firstname, lastname, email;
+        System.out.print("Write the first name of the user: ");
+        firstname = console.nextLine();
+        System.out.print("Write the last name of the user: ");
+        lastname = console.nextLine();
+        System.out.print("Write the email of the user: ");
         email = console.nextLine();
         try {
-            srv.addUser(new User(prenume, nume, email));
-            System.out.println("Userul a fost adaugat!");
+            srv.addUser(new User(lastname, firstname, email));
+            System.out.println("The user was added");
         } catch (ValidatorException | DbException | RepoException e) {
             System.out.println(e.getMessage());
         }

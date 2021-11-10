@@ -12,7 +12,7 @@ public class Main {
 //        } catch (FileException e) {
 //            System.out.println(e.getMessage());
 //        } catch (ValidatorException e) {
-//            System.out.print("Date eronate in fisier: ");
+//            System.out.print("Wrong data in file: ");
 //            System.out.println(e.getMessage());
 //        }
 

@@ -13,8 +13,8 @@ public class UserFileRepo extends UserRepoInMemory implements UserRepository {
     private String filename;
 
     /**
-     * @param filename - String numele fisierului cu utilizatori
-     * @param val - validator de utilizatori
+     * @param filename - String the name of the users file
+     * @param val - users validator
      */
     public UserFileRepo(String filename, Validator<User> val) {
         super(val);
@@ -25,14 +25,14 @@ public class UserFileRepo extends UserRepoInMemory implements UserRepository {
                 f.createNewFile();
             loadFromFile(filename);
         } catch (IOException e) {
-            throw new FileException("Eroare fisier");
+            throw new FileException("File error");
         }
 
     }
 
     /**
-     * Incarca in memorie utilizatorii dintr-un fisier
-     * @param filename - numele fisierului din care se citesc utilizatorii
+     * Loads into the memory the users of a file
+     * @param filename - the name of the users file
      */
     private void loadFromFile(String filename) {
         try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
@@ -43,39 +43,38 @@ public class UserFileRepo extends UserRepoInMemory implements UserRepository {
                 super.save(extractUser(attributes));
             }
         } catch (FileNotFoundException e) {
-            throw new FileException("Eroare fisier");
+            throw new FileException("File error");
         } catch (IOException e) {
-            throw new FileException("Eroare la citirea din fisier");
+            throw new FileException("Error on reading from file");
         }
     }
 
     /**
-     * Creeaza un utilizatori dintr-o lista de String-uri
-     * Lista contine:
-     *  pe pozitia 0 prenume
-     *  pe pozitia 1 nume de familie
-     *  pe pozitia 2 email
-     * @param attr - lista cu atributele utilizatorului
-     * @return utilizatorul creat - User
+     * Creates a user from a list of strings
+     * The list contains:
+     *  list[0] - the first name
+     *  list[1] - the last name
+     *  list[2] - the email
+     * @param attr - the list with the user's attributes
+     * @return the user - User
      */
     private User extractUser(List<String> attr) {
-        if (attr.size() != 3) throw new FileException("Date eronate in fisierul de utilizatori");
+        if (attr.size() != 3) throw new FileException("Wrong data as parameter");
         return new User(attr.get(2), attr.get(1), attr.get(0));
     }
 
     /**
-     * Creeaza un string cu datele unui utilizator
-     * @param u - utilizatorul
-     * @return linia creata - String
+     * Creates a string with the attributes of an user
+     * @param u - the user
+     * @return the created line - String
      */
     private String createLine(User u) {
         return u.getEmail() + "," + u.getFirstName() + "," + u.getLastName();
     }
 
     /**
-     * Scrie in fisier toti userii salvati in memorie
-     * @param filename - numele fisierului in care se scrie
-     * @throws IOException - eroare la scrierea in fisier
+     * Writes to file all the users saved in memory
+     * @param filename - the name of the file
      */
     private void writeAllToFile(String filename) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(filename))) {
@@ -84,14 +83,14 @@ public class UserFileRepo extends UserRepoInMemory implements UserRepository {
                 bw.newLine();
             }
         } catch (IOException e) {
-            throw new FileException("Eroare la scrierea in fisier");
+            throw new FileException("Error on writing to file");
         }
     }
 
     /**
-     * Adauga un utilizator in memorie si in fisier
-     * @param u - User-ul care va fi adaugat
-     * @throws FileException - eroare la scrierea in fisier
+     * Adds an user in memory and in file
+     * @param u - the user that will be added
+     * @throws FileException - error on writing to file
      */
     @Override
     public void save(User u) throws FileException {
@@ -100,14 +99,13 @@ public class UserFileRepo extends UserRepoInMemory implements UserRepository {
             bw.write(createLine(u));
             bw.newLine();
         } catch (IOException e) {
-            throw new FileException("Eroare la scrierea in fisier");
+            throw new FileException("Error on writing to file");
         }
     }
 
     /**
-     * Sterge un utilizator din memorie si din fisier
-     * @param email - email-ul utilizatorului care se va sterge
-     * @throws FileException - eroare la deschiderea fisierului
+     * Removes an user from memory and from file
+     * @param email - the email of the user
      */
     @Override
     public void remove(String email) {
@@ -116,15 +114,14 @@ public class UserFileRepo extends UserRepoInMemory implements UserRepository {
     }
 
     /**
-     * Sterge toti utilizatorii din memorie si din fisier
-     * @throws FileException - eroare la deschiderea fisierului
+     * Removes all the users from memory and from file
      */
     @Override
     public void clear() {
         try {
             new FileWriter(filename).close();
         } catch (IOException e) {
-            throw new FileException("Eroare fisier");
+            throw new FileException("File error");
         }
         super.clear();
     }

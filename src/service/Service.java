@@ -10,9 +10,9 @@ import java.util.List;
 import java.util.Map;
 
 public class Service {
-    private UserService uSrv;
-    private FriendshipService fSrv;
-    private Network ntw;
+    private final UserService uSrv;
+    private final FriendshipService fSrv;
+    private final Network ntw;
 
     public Service(UserService uSrv, FriendshipService fSrv, Network ntw) {
         this.uSrv = uSrv;
@@ -21,24 +21,24 @@ public class Service {
     }
 
     /**
-     * @return numarul de comunitati din retea - int
+     * @return no of communities - int
      */
     public int nrCommunities() {
         return ntw.getNrCommunities();
     }
 
     /**
-     * @return utilizatorii path-ului cel mai lung din reteaua de prietenii - List[User]
+     * @return the users of the longest path in the friendships network - List[User]
      */
     public List<User> getUsersMostFrCom() {
         return ntw.getUsersMostFrCom();
     }
 
     /**
-     * Adauga un utilizator la repository
-     * @param u - Userul care va fi adaugat
-     * @throws ValidatorException - daca userul nu este valid
-     * @throws RepoException - daca email-ul este deja in repository
+     * Adds an user
+     * @param u - the user to be added
+     * @throws ValidatorException - if the user is not valid
+     * @throws RepoException - if the email is already saved
      */
     public void addUser(User u) throws ValidatorException, RepoException {
         uSrv.save(u);
@@ -46,29 +46,29 @@ public class Service {
     }
 
     /**
-     * Sterge un user din repository
-     * @param email - String cu email-ul userului care va fi sters
-     * @throws RepoException - daca nu exista user salvat cu email-ul introdus ca parametru
+     * Removes an user
+     * @param email - String the email of the user to be removed
+     * @throws RepoException - if there's no user with the given email
      */
-    public void removeUser(String email) throws RepoException {
+    public void removeUser(String email) {
         uSrv.remove(email);
         fSrv.removeUserFships(email);
         ntw.reload();
     }
 
     /**
-     * Returneaza un user
-     * @param email - String email-ul utilizatorului care va fi returnat
-     * @return utilizatorul care are email-ul introdus ca parametru
+     * Returns an user
+     * @param email - String the email of the user
+     * @return the user with the given email
      */
     public User getUser(String email) {
         return uSrv.getUser(email);
     }
 
     /**
-     * Adauga o prietenie
-     * @param f - prietenia care va fi adaugata
-     * @throws RepoException - daca prietenia este deja salvata (cei doi utilizatori sunt deja prieteni)
+     * Adds a friendship
+     * @param f - the friendship to be added
+     * @throws RepoException - if the friendship is already saved
      */
     public void addFriendship(Friendship f) {
         fSrv.addFriendship(f);
@@ -77,9 +77,9 @@ public class Service {
     }
 
     /**
-     * Sterge o prietenie
-     * @param f - prietenia care va fi stearsa
-     * @throws RepoException - daca prietenia nu este salvata (cei doi utilizatori nu sunt prieteni)
+     * Removes a friendship
+     * @param f - the friendship to be removed
+     * @throws RepoException - if the friendship is not saved
      */
     public void removeFriendship(Friendship f) {
         fSrv.removeFriendship(f);
@@ -88,67 +88,67 @@ public class Service {
     }
 
     /**
-     * Returneaza prietenia dintre doi utilizatori
-     * @param email1 - email-ul primului utilizator
-     * @param email2 - email-ul celui de-al doilea utilizator
-     * @return prietenia dintre cei doi utilizatori
+     * Returns the friendship of two users
+     * @param email1 - the email of the first user
+     * @param email2 - the email of the second user
+     * @return the friendship of the two users
      */
     public Friendship getFriendship(String email1, String email2) {
         return fSrv.getFriendship(email1, email2);
     }
 
+    /**
+     * Updates an user
+     * @param u - the new user with that email
+     */
     public void updateUser(User u) {
         uSrv.updateUser(u);
     }
 
     /**
-     * @return dictionar cu utilizatorii din comunitati - Map[Integer, List[String]]
+     * @return dictionary with the users of the communites - Map[Integer, List[String]]
      */
     public Map<Integer, List<String>> getCommunities() {
         return ntw.getCommunities();
     }
 
     /**
-     * Returneaza utilizatorii salvati
-     * @return utilizatorii salvati - List[User]
+     * @return saved users - List[User]
      */
     public List<User> getUsers() {
         return uSrv.getUsers();
     }
 
     /**
-     * Verifica daca repo-ul de utilizatori este gol
-     * @return true daca nu sunt utilizatori salvati, false altfel
+     * @return true if there are no users saved, false otherwise
      */
     public boolean usersIsEmpty() {
         return uSrv.isEmpty();
     }
 
     /**
-     * Returneaza o lista cu toate prieteniile
-     * @return lista cu prieteniile salvate - List[Friendship]
+     * @return saved friendships - List[Friendship]
      */
     public List<Friendship> getFriendships() {
         return fSrv.getFriendships();
     }
 
     /**
-     * @return numarul de useri salvati in repo - int
+     * @return no of users - int
      */
     public int usersSize() {
         return uSrv.size();
     }
 
     /**
-     * @return numarul de prietenii din repo - int
+     * @return no of friendships - int
      */
     public int friendshipsSize() {
         return fSrv.size();
     }
 
     /**
-     * Verifica daca nu sunt salvate prietenii
-     * @return true daca nu sunt salvate prietenii, altfel false
+     * @return true if there are no friendships saved, false otherwise
      */
     public boolean friendshipsIsEmpty() {
         return fSrv.isEmpty();
