@@ -3,7 +3,7 @@ package domain;
 import java.util.Objects;
 
 public class Friendship {
-    //o prietenie are ca atribute email-urile utilizatorilor
+    //a friendship contains as attributes the emails of the users
     private String email1, email2;
 
     public Friendship(String e1, String e2) {
@@ -36,7 +36,14 @@ public class Friendship {
         return (email1 + email2).hashCode();
     }
 
+    /**
+     * @return the email of the first user of the friendship
+     */
     public String getFirst() { return email1; }
+
+    /**
+     * @return the email of the second user of the friendship
+     */
     public String getSecond() { return email2; }
 
     @Override

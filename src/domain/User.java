@@ -9,7 +9,7 @@ public class User {
     private List<String> friends;
 
     /**
-     * Creeaza un obiect de tip User, cu atributele data ca parametrii
+     * Creates an User object, with the attributes given as parameters
      * @param firstName - String
      * @param lastName - String
      * @param email - String
@@ -22,7 +22,7 @@ public class User {
     }
 
     /**
-     * Returneaza prenumele unui user
+     * Returns the first name of an user
      * @return firstName - String
      */
     public String getFirstName() {
@@ -30,7 +30,7 @@ public class User {
     }
 
     /**
-     * Returneaza numele de familie al unui user
+     * Returns the last name of an user
      * @return lastName - String
      */
     public String getLastName() {
@@ -43,7 +43,7 @@ public class User {
     }
 
     /**
-     * Returneaza emailul unui user
+     * Returns the email of an user
      * @return email - String
      */
     public String getEmail() {
@@ -51,49 +51,55 @@ public class User {
     }
 
     /**
-     * Adauga un utilizator in lista de prieteni
-     * @param us - utilizatorul care va fi adaugat
-     * @throws RepoException - daca utilizatorul este deja in lista de prieteni
+     * Adds an user to the list of friends
+     * @param us - the user that will be added
+     * @throws RepoException - if the user is already in the list of friends
      */
     public void addFriend(User us) {
-        if (friends.contains(us.getEmail()))
-            throw new RepoException("Cei doi utilizatori sunt deja prieteni");
-        friends.add(us.getEmail());
+        addFriend(us.email);
     }
 
+    /**
+     * Adds an user to the list of friends
+     * @param email - the email of the user that will be added
+     * @throws RepoException - if the user is already in the list of friends
+     */
     public void addFriend(String email) {
         if (friends.contains(email))
-            throw new RepoException("Cei doi utilizatori sunt deja prieteni");
+            throw new RepoException("The two users are already friends");
         friends.add(email);
     }
 
     /**
-     * Sterge un utilizator din lista de prieteni
-     * @param us - utilizatorul care va fi sters
-     * @throws RepoException - daca utilizatorul nu este in lista de prieteni
+     * Removes a user from the list of friends
+     * @param us - the user that will be removed
+     * @throws RepoException - if the user is not in the list of friends
      */
     public void removeFriend(User us) {
-        if (!friends.contains(us.getEmail()))
-            throw new RepoException("Cei doi utilizatori nu sunt prieteni");
-        friends.remove(us.getEmail());
+        removeFriend(us.email);
     }
 
+    /**
+     * Removes a user from the list of friends
+     * @param email - the email of the user that will be removed
+     * @throws RepoException - if the user is not in the list of friends
+     */
     public void removeFriend(String email) {
         if (!friends.contains(email))
-            throw new RepoException("Cei doi utilizatori nu sunt prieteni");
+            throw new RepoException("The two users are not friends");
         friends.remove(email);
     }
 
     /**
-     * Returneaza o lista cu toti prietenii utilizatorului
-     * @return prietenii utilizatorului - List[String]
+     * Returns a list with all the friends of an user
+     * @return the friends of the user - List[String]
      */
     public List<String> getFriends() {
         return friends;
     }
 
     /**
-     * Sterge toti prietenii utilizatorului
+     * Removes the user's friends
      */
     public void removeAllFriends() {
         friends.clear();
@@ -105,9 +111,9 @@ public class User {
     }
 
     /**
-     * Verifica daca doua variabile refera acelasi User
+     * Verifies if two users have the same email
      * @param o - Object
-     * @return true daca refera acelasi user, false altfel
+     * @return true if they have the same email, false otherwise
      */
     @Override
     public boolean equals(Object o) {

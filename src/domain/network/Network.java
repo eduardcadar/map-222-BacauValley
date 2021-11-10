@@ -24,7 +24,7 @@ public class Network {
     }
 
     /**
-     * @return utilizatorii path-ului cel mai lung din reteaua de prietenii - List[User]
+     * @return the users of the longest path from the friends network - List[User]
      */
     public List<User> getUsersMostFrCom() {
         return mfCom.getUsersMostFrCom();
@@ -36,9 +36,9 @@ public class Network {
     }
 
     /**
-     * Returneaza un dictionar in care cheia este numarul comunitatii iar valoarea
-     * este o lista cu email-urile utilizatorilor din acea comunitate
-     * @return dictionar cu utilizatorii din comunitati - Map[Integer, List[String]]
+     * Returns a dictionary where the key is the number of the community and the value
+     * is the list of the users' emails from that community
+     * @return the dictionary with the users from the communities - Map[Integer, List[String]]
      */
     public Map<Integer, List<String>> getCommunities() {
         Map<Integer, List<String>> comms = new HashMap<>();
@@ -51,8 +51,8 @@ public class Network {
     }
 
     /**
-     * Marcheaza cu true in used toti prietenii unui utilizator (o comunitate)
-     * @param e - email-ul utilizatorului
+     * Marks'true' all the friends of an user in used (a community)
+     * @param e - the email of the user
      */
     private void dfs(String e, Integer c) {
         com.put(e, c);
@@ -67,8 +67,8 @@ public class Network {
     }
 
     /**
-     * Numara comunitatile din retea
-     * @return nr de comunitati - int
+     * Counts the communities in a network
+     * @return no of communities - int
      */
     private int countCommunities() {
         int nr = 0;
@@ -85,8 +85,8 @@ public class Network {
     }
 
     /**
-     * Returneaza numarul de comunitati din retea
-     * @return nr comunitati - int
+     * Returns the number of communities in a network
+     * @return no communities - int
      */
     public int getNrCommunities() {
         return communitiesNr;

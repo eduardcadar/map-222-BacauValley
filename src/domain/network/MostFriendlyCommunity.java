@@ -37,7 +37,7 @@ public class MostFriendlyCommunity {
     }
 
     /**
-     * @return utilizatorii path-ului cel mai lung din reteaua de prietenii - List[User]
+     * @return the users of the longest path from the friends network - List[User]
      */
     public List<User> getUsersMostFrCom() {
         return usersMostFrCom;
@@ -48,8 +48,8 @@ public class MostFriendlyCommunity {
     }
 
     /**
-     * Determina drumul de lungime maxima in comunitate
-     * @param e - email-ul utilizatorului de la nodul caruia se porneste in graful comunitatii
+     * Finds the longest path in the community
+     * @param e - the email of the user from whose node the dfs starts in the graph of the community
      */
     private void DFS(String e) {
         used.put(e, true);
