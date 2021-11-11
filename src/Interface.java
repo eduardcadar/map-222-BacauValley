@@ -41,8 +41,8 @@ public class Interface {
         FriendshipRepository fRepo = new FriendshipFileRepo(friendshipsFile, fVal, uRepo);
         FriendshipService fSrv = new FriendshipService(fRepo);
         FriendshipsInitializer FI = new FriendshipsInitializer(uRepo, fRepo);
-        Network ntw = new Network(uRepo, fRepo);
-        srv = new Service(uSrv, fSrv, ntw);
+        Network network = new Network(uRepo, fRepo);
+        srv = new Service(uSrv, fSrv, network);
     }
 
     /**
@@ -62,15 +62,15 @@ public class Interface {
         Validator<Friendship> fVal = new FriendshipValidator();
         FriendshipDbRepo fRepo = new FriendshipDbRepo(url, username, password, fVal, "friendships");
         FriendshipService fSrv = new FriendshipService(fRepo);
-        Network ntw = new Network(uRepo, fRepo);
-        srv = new Service(uSrv, fSrv, ntw);
+        Network network = new Network(uRepo, fRepo);
+        srv = new Service(uSrv, fSrv, network);
     }
 
     /**
      * Shows the main menu
      * @return the input of the user - String
      */
-    private String meniu() {
+    private String menu() {
         System.out.println("---MENU---");
         System.out.println("1. Add user");
         System.out.println("2. Remove user");
@@ -92,12 +92,13 @@ public class Interface {
      * Starts the program
      */
     public void run() {
-        String com;
+        String command;
         while (true) {
-            com = meniu();
+            command = menu();
             System.out.println();
-            if (com.compareTo("0") == 0) break;
-            switch (com) {
+            if (command.equals("0"))
+                break;
+            switch (command) {
                 case "1" -> addUser();
                 case "2" -> removeUser();
                 case "3" -> addFriendship();
@@ -135,7 +136,7 @@ public class Interface {
     }
 
     /**
-     * Shows an user
+     * Shows a user
      */
     private void showUserByEmail() {
         System.out.print("Write the user's email: ");
@@ -243,15 +244,15 @@ public class Interface {
             System.out.println("Not enough users saved");
             return;
         }
-        Map<Integer, String> usrs = new HashMap<>();
+        Map<Integer, String> users = new HashMap<>();
         Integer i = 0;
         for (User u : srv.getUsers()) {
             i++;
-            usrs.put(i, u.getEmail());
+            users.put(i, u.getEmail());
         }
         System.out.println("----USERS----");
         for (Integer j = 1; j <= i; j++)
-            System.out.println(j + ". " + srv.getUser(usrs.get(j)));
+            System.out.println(j + ". " + srv.getUser(users.get(j)));
         System.out.print("Write the numbers of two users for the friendship: ");
         int a = console.nextInt();
         if (a < 1 || a > i) {
@@ -265,7 +266,7 @@ public class Interface {
         }
         console.nextLine();
         try {
-            Friendship f = new Friendship(srv.getUser(usrs.get(a)), srv.getUser(usrs.get(b)));
+            Friendship f = new Friendship(srv.getUser(users.get(a)), srv.getUser(users.get(b)));
             srv.addFriendship(f);
             System.out.println("The friendship was added");
         } catch (RepoException e) {

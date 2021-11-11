@@ -3,17 +3,17 @@ package repository;
 import domain.Friendship;
 
 public class FriendshipsInitializer {
-    UserRepository uRepo;
-    FriendshipRepository fRepo;
+    UserRepository userRepository;
+    FriendshipRepository friendshipRepositoryRepo;
 
-    public FriendshipsInitializer(UserRepository uRepo, FriendshipRepository fRepo) {
-        this.uRepo = uRepo;
-        this.fRepo = fRepo;
+    public FriendshipsInitializer(UserRepository userRepository, FriendshipRepository fRepo) {
+        this.userRepository = userRepository;
+        this.friendshipRepositoryRepo = fRepo;
         initialize();
     }
 
     private void initialize() {
-        for (Friendship f : fRepo.getAll())
-            uRepo.addFriends(f.getFirst(), f.getSecond());
+        for (Friendship f : friendshipRepositoryRepo.getAll())
+            userRepository.addFriends(f.getFirst(), f.getSecond());
     }
 }
