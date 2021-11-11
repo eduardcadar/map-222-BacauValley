@@ -15,7 +15,7 @@ public class Main {
 //            System.out.print("Wrong data in file: ");
 //            System.out.println(e.getMessage());
 //        }
-
+        System.out.println("BIG BOSS BACK IN PROJECT");
         //DATABASE
         try {
             Interface ui = new Interface("jdbc:postgresql://localhost:5432/ToySocialNetwork");
