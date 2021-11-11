@@ -13,7 +13,7 @@ public interface UserRepository {
     public void clear();
     public List<User> getAll();
     public boolean isEmpty();
-    public void addFriends(String email1, String email2);
-    public void removeFriends(String email1, String email2);
+    public void addFriends(String email1, String email2); // ???? High coupling
+    public void removeFriends(String email1, String email2); // ???
     public void update(User u);
 }
