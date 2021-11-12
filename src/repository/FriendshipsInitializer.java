@@ -4,16 +4,16 @@ import domain.Friendship;
 
 public class FriendshipsInitializer {
     UserRepository userRepository;
-    FriendshipRepository friendshipRepositoryRepo;
+    FriendshipRepository friendshipRepository;
 
     public FriendshipsInitializer(UserRepository userRepository, FriendshipRepository fRepo) {
         this.userRepository = userRepository;
-        this.friendshipRepositoryRepo = fRepo;
+        this.friendshipRepository = fRepo;
         initialize();
     }
 
     private void initialize() {
-        for (Friendship f : friendshipRepositoryRepo.getAll())
+        for (Friendship f : friendshipRepository.getAll())
             userRepository.addFriends(f.getFirst(), f.getSecond());
     }
 }
