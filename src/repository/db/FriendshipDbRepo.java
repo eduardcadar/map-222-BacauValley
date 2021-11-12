@@ -13,7 +13,7 @@ import java.util.List;
 public class FriendshipDbRepo implements FriendshipRepository {
     private final String url;
     private final String username;
-    private final String password;
+    private  String password;
     private final String fshipsTable;
     private final Validator<Friendship> val;
 
@@ -23,7 +23,29 @@ public class FriendshipDbRepo implements FriendshipRepository {
         this.password = password;
         this.val = val;
         this.fshipsTable = fshipsTable;
+
+        String sql = "CREATE TABLE IF NOT EXISTS " + fshipsTable +
+                "(email1 varchar," +
+                " email2 varchar, " +
+                "PRIMARY KEY (email1,email2), " +
+                "FOREIGN KEY (email1) references users(email), " + //ON DELETE CASCADE
+                "FOREIGN KEY (email2) references users(email))";
+
+        try (Connection connection = DriverManager.getConnection(url, username, password)) {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.executeUpdate();
+         } catch (SQLException e) {
+            // daca facem o singura conexiune si in functie de cum se arunca exceptie pun la password - postgres
+            this.password = "postgres";
+            try (Connection connection = DriverManager.getConnection(this.url, this.username, this.password);
+                 PreparedStatement ps = connection.prepareStatement(sql)) {
+                ps.executeUpdate();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        }
     }
+
 
     @Override
     public void addFriendship(Friendship f) {

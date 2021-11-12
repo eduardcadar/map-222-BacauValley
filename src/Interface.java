@@ -264,6 +264,9 @@ public class Interface {
             System.out.println("Invalid number");
             return;
         }
+        // AM sa presupun ca aici faci validarea ca 2 cei 2 useri sa existe
+        // cred ca pute codul, mai degraba o faci in service, ca el
+        // are referinte la repo ul de useri si in cauti direct acolo 
         console.nextLine();
         try {
             Friendship f = new Friendship(srv.getUser(users.get(a)), srv.getUser(users.get(b)));
