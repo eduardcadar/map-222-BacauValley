@@ -27,6 +27,7 @@ public class Network {
      * @return the users of the longest path from the friends network - List[User]
      */
     public List<User> getUsersMostFrCom() {
+        reload();
         return mfCom.getUsersMostFrCom();
     }
 
@@ -41,6 +42,7 @@ public class Network {
      * @return the dictionary with the users from the communities - Map[Integer, List[String]]
      */
     public Map<Integer, List<String>> getCommunities() {
+        reload();
         Map<Integer, List<String>> comms = new HashMap<>();
         for (int i = 1; i <= communitiesNr; i++)
             comms.put(i, new ArrayList<String>());
@@ -71,11 +73,12 @@ public class Network {
      * @return no of communities - int
      */
     private int countCommunities() {
+        List<User> users = uRepo.getAll();
         int nr = 0;
         com.clear();
-        for (User u : uRepo.getAll())
+        for (User u : users)
             com.put(u.getEmail(), 0);
-        for (User u : uRepo.getAll()) {
+        for (User u : users) {
             if (com.get(u.getEmail()) == 0) {
                 nr++;
                 dfs(u.getEmail(), nr);

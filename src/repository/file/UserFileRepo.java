@@ -64,7 +64,7 @@ public class UserFileRepo extends UserRepoInMemory implements UserRepository {
     }
 
     /**
-     * Creates a string with the attributes of an user
+     * Creates a string with the attributes of a user
      * @param u - the user
      * @return the created line - String
      */
@@ -88,7 +88,7 @@ public class UserFileRepo extends UserRepoInMemory implements UserRepository {
     }
 
     /**
-     * Adds an user in memory and in file
+     * Adds a user in memory and in file
      * @param u - the user that will be added
      * @throws FileException - error on writing to file
      */
@@ -104,7 +104,7 @@ public class UserFileRepo extends UserRepoInMemory implements UserRepository {
     }
 
     /**
-     * Removes an user from memory and from file
+     * Removes a user from memory and from file
      * @param email - the email of the user
      */
     @Override

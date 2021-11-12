@@ -25,6 +25,10 @@ public class FriendshipDbRepo implements FriendshipRepository {
         this.fshipsTable = fshipsTable;
     }
 
+    /**
+     * Validates and adds a friendship to the database
+     * @param f - the friendship to be added
+     */
     @Override
     public void addFriendship(Friendship f) {
         val.validate(f);
@@ -41,6 +45,12 @@ public class FriendshipDbRepo implements FriendshipRepository {
         }
     }
 
+    /**
+     * @param email1 - String the email of the first user
+     * @param email2 - String the email of the second user
+     * @return the friendship of the two users if it is saved in the database,
+     * null otherwise
+     */
     public Friendship getFriendship(String email1, String email2) {
         Friendship f = new Friendship(email1, email2);
         String sql = "SELECT FROM " + fshipsTable + " WHERE email1 = ? AND email2 = ?";
@@ -57,11 +67,21 @@ public class FriendshipDbRepo implements FriendshipRepository {
         }
     }
 
+    /**
+     * @param us2 - the first user
+     * @param us1 - the second user
+     * @return the friendship of the two users if it is saved in the database,
+     * null otherwise
+     */
     @Override
     public Friendship getFriendship(User us1, User us2) {
         return getFriendship(us1.getEmail(), us2.getEmail());
     }
 
+    /**
+     * Removes a friendship from the database
+     * @param f - the friendship to be removed
+     */
     @Override
     public void removeFriendship(Friendship f) {
         if (getFriendship(f.getFirst(), f.getSecond()) == null)
@@ -77,6 +97,9 @@ public class FriendshipDbRepo implements FriendshipRepository {
         }
     }
 
+    /**
+     * @return the number of friendships saved in the database
+     */
     @Override
     public int size() {
         String sql = "SELECT COUNT(*) AS size FROM " + fshipsTable;
@@ -92,6 +115,9 @@ public class FriendshipDbRepo implements FriendshipRepository {
         return 0;
     }
 
+    /**
+     * Removes all friendships from the database
+     */
     @Override
     public void clear() {
         String sql = "DELETE FROM " + fshipsTable;
@@ -103,11 +129,17 @@ public class FriendshipDbRepo implements FriendshipRepository {
         }
     }
 
+    /**
+     * @return true if there are no friendships saved, false otherwise
+     */
     @Override
     public boolean isEmpty() {
         return size() == 0;
     }
 
+    /**
+     * @return all the friendships saved in the database
+     */
     @Override
     public List<Friendship> getAll() {
         List<Friendship> fships = new ArrayList<>();
@@ -126,6 +158,10 @@ public class FriendshipDbRepo implements FriendshipRepository {
         }
     }
 
+    /**
+     * @param email - String the email of the user
+     * @return a list with the emails of a user's friends
+     */
     @Override
     public List<String> getUserFriends(String email) {
         List<String> friends = new ArrayList<>();
@@ -138,11 +174,19 @@ public class FriendshipDbRepo implements FriendshipRepository {
         return friends;
     }
 
+    /**
+     * @param us - the user
+     * @return a list with the emails of a user's friends
+     */
     @Override
     public List<String> getUserFriends(User us) {
         return getUserFriends(us.getEmail());
     }
 
+    /**
+     * Removes the friendships of a user
+     * @param email - String the email of the user
+     */
     @Override
     public void removeUserFships(String email) {
         String sql = "DELETE FROM " + fshipsTable + " WHERE email1 = ? OR email2 = ?";
@@ -156,6 +200,10 @@ public class FriendshipDbRepo implements FriendshipRepository {
         }
     }
 
+    /**
+     * Removes the friendships of a user
+     * @param us - the user
+     */
     public void removeUserFships(User us) {
         removeUserFships(us.getEmail());
     }
