@@ -13,7 +13,7 @@ import java.util.List;
 public class FriendshipDbRepo implements FriendshipRepository {
     private final String url;
     private final String username;
-    private  String password;
+    private final String password;
     private final String fshipsTable;
     private final Validator<Friendship> val;
 
@@ -34,18 +34,10 @@ public class FriendshipDbRepo implements FriendshipRepository {
         try (Connection connection = DriverManager.getConnection(url, username, password)) {
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.executeUpdate();
-         } catch (SQLException e) {
-            // daca facem o singura conexiune si in functie de cum se arunca exceptie pun la password - postgres
-            this.password = "postgres";
-            try (Connection connection = DriverManager.getConnection(this.url, this.username, this.password);
-                 PreparedStatement ps = connection.prepareStatement(sql)) {
-                ps.executeUpdate();
-            } catch (SQLException throwables) {
+         } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }
         }
-    }
-
 
     @Override
     public void addFriendship(Friendship f) {

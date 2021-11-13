@@ -1,7 +1,9 @@
 package db;
 
 import domain.User;
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import repository.RepoException;
 import repository.db.UserDbRepo;
@@ -10,14 +12,27 @@ import validator.UserValidator;
 import java.util.List;
 
 public class testUserRepoDb {
-    private final String url = "jdbc:postgresql://localhost:5432/ToySocialNetwork";
+    private final String url = "jdbc:postgresql://localhost:5432/TestToySocialNetwork";
     private final String username = "postgres";
-    private final String password = "paroladb";
-    private final UserDbRepo repo = new UserDbRepo(url, username, password, new UserValidator(), "testusers");
+    private final String password = "postgres";
+    private final UserDbRepo repo = new UserDbRepo(url, username, password, new UserValidator(), "users");
     private final User us1 = new User("adi", "popa", "adi.popa@yahoo.com");
     private final User us2 = new User("alex", "popescu", "popescu.alex@gmail.com");
     private final User us3 = new User("maria", "lazar", "l.maria@gmail.com");
     private final User us4 = new User("gabriel", "andrei", "a.gabi@gmail.com");
+
+    @Before
+    public void setUp() throws Exception {
+        repo.save(us1);
+        repo.save(us2);
+        repo.save(us3);
+        repo.save(us4);
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        repo.clear();
+    }
 
     @Test
     public void testConstructorDb() {
