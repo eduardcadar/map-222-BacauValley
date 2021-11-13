@@ -6,6 +6,7 @@ import domain.network.Network;
 import repository.RepoException;
 import validator.ValidatorException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -146,5 +147,18 @@ public class Service {
      */
     public boolean friendshipsIsEmpty() {
         return friendshipService.isEmpty();
+    }
+
+    /**
+     * @param email - String the email of the user
+     * @return the friends of the user
+     */
+    public List<User> getUserFriends(String email) {
+        // TODO - return list with the user's friends
+        List<User> friends = new ArrayList<>();
+
+
+
+        return friends;
     }
 }
