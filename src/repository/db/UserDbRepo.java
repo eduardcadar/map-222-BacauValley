@@ -24,6 +24,10 @@ public class UserDbRepo implements UserRepository {
         this.usersTable = usersTable;
     }
 
+    /**
+     * Validates and adds a user to the database
+     * @param u - the user to be added
+     */
     @Override
     public void save(User u) {
         val.validate(u);
@@ -41,6 +45,11 @@ public class UserDbRepo implements UserRepository {
         }
     }
 
+    /**
+     * @param email - String with the email of the user to be returned
+     * @return the user with the email given as a parameter,
+     * null if no user in the database has the given email
+     */
     @Override
     public User getUser(String email) {
         String sql = "SELECT * FROM " + usersTable + " WHERE email = ?";
@@ -59,6 +68,10 @@ public class UserDbRepo implements UserRepository {
         }
     }
 
+    /**
+     * Removes a user from the database
+     * @param email - String the email of the user to be removed
+     */
     @Override
     public void remove(String email) {
         getUser(email);
@@ -72,6 +85,9 @@ public class UserDbRepo implements UserRepository {
         }
     }
 
+    /**
+     * @return the number of users saved in the database
+     */
     @Override
     public int size() {
         String sql = "SELECT COUNT(*) AS size FROM " + usersTable;
@@ -87,6 +103,9 @@ public class UserDbRepo implements UserRepository {
         return 0;
     }
 
+    /**
+     * Removes all users from the database
+     */
     @Override
     public void clear() {
         String sql = "DELETE FROM " + usersTable;
@@ -98,6 +117,9 @@ public class UserDbRepo implements UserRepository {
         }
     }
 
+    /**
+     * @return all the users saved in the database
+     */
     @Override
     public List<User> getAll() {
         List<User> users = new ArrayList<>();
@@ -118,6 +140,9 @@ public class UserDbRepo implements UserRepository {
         }
     }
 
+    /**
+     * @return true if the database has no users saved, false otherwise
+     */
     @Override
     public boolean isEmpty() {
         return size() == 0;
@@ -133,6 +158,11 @@ public class UserDbRepo implements UserRepository {
 
     }
 
+    /**
+     * Updates a user in the database
+     * @param u - the user with the same email as the user given as parameter
+     *          will have their firstname and lastname updated
+     */
     @Override
     public void update(User u) {
         if (getUser(u.getEmail()) == null)

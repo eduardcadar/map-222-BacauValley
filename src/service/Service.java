@@ -42,9 +42,6 @@ public class Service {
      */
     public void addUser(User u) throws ValidatorException, RepoException {
         userService.save(u);
-        network.reload();
-        // TODO - bad idea with reload network after very operation
-        //        Rather compute the graph at request
     }
 
     /**
@@ -55,7 +52,6 @@ public class Service {
     public void removeUser(String email) {
         userService.remove(email);
         friendshipService.removeUserFships(email);
-        network.reload();
     }
 
     /**
@@ -75,7 +71,6 @@ public class Service {
     public void addFriendship(Friendship f) {
         friendshipService.addFriendship(f);
         userService.addFriends(f.getFirst(), f.getSecond());
-        network.reload();
     }
 
     /**
@@ -86,7 +81,6 @@ public class Service {
     public void removeFriendship(Friendship f) {
         friendshipService.removeFriendship(f);
         userService.removeFriends(f.getFirst(), f.getSecond());
-        network.reload();
     }
 
     /**

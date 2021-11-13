@@ -51,7 +51,7 @@ public class Interface {
      */
     public Interface(String url) {
         console = new Scanner(System.in);
-        System.out.print("Databse username: ");
+        System.out.print("Database username: ");
         String username = console.nextLine();
         System.out.print("Database password: ");
         String password = console.nextLine();
@@ -152,7 +152,7 @@ public class Interface {
     }
 
     /**
-     * Updates an user
+     * Updates a user
      */
     private void updateUser() {
         if (srv.usersIsEmpty()) {
@@ -319,7 +319,7 @@ public class Interface {
     }
 
     /**
-     * Removes an user
+     * Removes a user
      */
     private void removeUser() {
         if (srv.usersIsEmpty()) {
@@ -335,7 +335,7 @@ public class Interface {
         System.out.println("----USERS----");
         for (Integer j = 1; j <= i; j++)
             System.out.println(j + ". " + users.get(j));
-        System.out.print("Write the number of the user you with to remove: ");
+        System.out.print("Write the number of the user you wish to remove: ");
         Integer a = console.nextInt();
         console.nextLine();
         try {
@@ -349,7 +349,7 @@ public class Interface {
     }
 
     /**
-     * Adds an user
+     * Adds a user
      */
     private void addUser() {
         String firstname, lastname, email;
@@ -366,5 +366,4 @@ public class Interface {
             System.out.println(e.getMessage());
         }
     }
-
 }
