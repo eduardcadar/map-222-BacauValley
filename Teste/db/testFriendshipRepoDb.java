@@ -2,9 +2,12 @@ package db;
 
 import domain.Friendship;
 import domain.User;
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import repository.RepoException;
+import repository.db.DbException;
 import repository.db.FriendshipDbRepo;
 import repository.db.UserDbRepo;
 import validator.FriendshipValidator;
@@ -13,10 +16,10 @@ import validator.UserValidator;
 import java.util.List;
 
 public class testFriendshipRepoDb {
-    private final String url = "jdbc:postgresql://localhost:5432/ToySocialNetwork";
+    private final String url = "jdbc:postgresql://localhost:5432/TestToySocialNetwork";
     private final String username = "postgres";
-    private final String password = "paroladb";
-    private final UserDbRepo uRepo = new UserDbRepo(url, username, password, new UserValidator(), "testusers");
+    private final String password = "postgres";
+    private final UserDbRepo uRepo = new UserDbRepo(url, username, password, new UserValidator(), "users");
     private final User us1 = new User("adi", "popa", "adi.popa@yahoo.com");
     private final User us2 = new User("alex", "popescu", "popescu.alex@gmail.com");
     private final User us3 = new User("maria", "lazar", "l.maria@gmail.com");
@@ -25,6 +28,23 @@ public class testFriendshipRepoDb {
     private final Friendship f1 = new Friendship(us1, us2);
     private final Friendship f2 = new Friendship(us1, us3);
     private final Friendship f3 = new Friendship(us2, us4);
+
+    @Before
+    public void setUp() throws Exception {
+        uRepo.save(us1);
+        uRepo.save(us2);
+        uRepo.save(us3);
+        uRepo.save(us4);
+        fRepo.addFriendship(f1);
+        fRepo.addFriendship(f2);
+        fRepo.addFriendship(f3);
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        fRepo.clear();
+        uRepo.clear();
+    }
 
     @Test
     public void TestConstructorDb() {

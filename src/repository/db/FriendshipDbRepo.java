@@ -23,7 +23,21 @@ public class FriendshipDbRepo implements FriendshipRepository {
         this.password = password;
         this.val = val;
         this.fshipsTable = fshipsTable;
-    }
+
+        String sql = "CREATE TABLE IF NOT EXISTS " + fshipsTable +
+                "(email1 varchar," +
+                " email2 varchar, " +
+                "PRIMARY KEY (email1,email2), " +
+                "FOREIGN KEY (email1) references users(email), " + //ON DELETE CASCADE
+                "FOREIGN KEY (email2) references users(email))";
+
+        try (Connection connection = DriverManager.getConnection(url, username, password)) {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.executeUpdate();
+         } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        }
 
     /**
      * Validates and adds a friendship to the database
