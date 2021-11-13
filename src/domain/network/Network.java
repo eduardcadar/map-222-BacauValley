@@ -58,7 +58,7 @@ public class Network {
      */
     private void dfs(String e, Integer c) {
         com.put(e, c);
-        for (String em : fRepo.getUserFriends(uRepo.getUser(e))) {
+        for (String em : fRepo.getUserFriends(uRepo.getUser(e).getEmail())) {
             if (com.get(em) == 0)
                 dfs(em, c);
         }

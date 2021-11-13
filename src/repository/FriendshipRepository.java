@@ -14,8 +14,6 @@ public interface FriendshipRepository {
     public boolean isEmpty();
     public List<Friendship> getAll();
     public List<String> getUserFriends(String email);
-    public List<String> getUserFriends(User us);
     public void removeUserFships(String email);
     public Friendship getFriendship(String email1, String email2);
-    public Friendship getFriendship(User us1, User us2);
 }

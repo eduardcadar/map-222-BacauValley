@@ -70,7 +70,6 @@ public class Service {
      */
     public void addFriendship(Friendship f) {
         friendshipService.addFriendship(f);
-        userService.addFriends(f.getFirst(), f.getSecond());
     }
 
     /**
@@ -80,7 +79,6 @@ public class Service {
      */
     public void removeFriendship(Friendship f) {
         friendshipService.removeFriendship(f);
-        userService.removeFriends(f.getFirst(), f.getSecond());
     }
 
     /**

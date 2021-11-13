@@ -4,7 +4,6 @@ import domain.network.Network;
 import org.junit.Assert;
 import org.junit.Test;
 import repository.FriendshipRepository;
-import repository.FriendshipsInitializer;
 import repository.file.FriendshipFileRepo;
 import repository.file.UserFileRepo;
 import service.FriendshipService;
@@ -23,7 +22,6 @@ public class TestService {
     private final Validator<Friendship> fVal = new FriendshipValidator();
     private final FriendshipRepository fRepo = new FriendshipFileRepo(frFile, fVal, uRepo);
     private final FriendshipService fSrv = new FriendshipService(fRepo);
-    private final FriendshipsInitializer FI = new FriendshipsInitializer(uRepo, fRepo);
     private final Network nw = new Network(uRepo, fRepo);
     private final Service sv = new Service(uSrv, fSrv, nw);
     private final User us1 = new User("adi","popa","adi.popa@yahoo.com");

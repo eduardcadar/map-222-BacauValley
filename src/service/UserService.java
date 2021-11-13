@@ -28,13 +28,13 @@ public class UserService {
         repo.remove(email);
     }
 
-    public void addFriends(String email1, String email2) {
-        repo.addFriends(email1, email2);
-    }
+//    public void addFriends(String email1, String email2) {
+//        repo.addFriends(email1, email2);
+//    }
 
-    public void removeFriends(String email1, String email2) {
-        repo.removeFriends(email1, email2);
-    }
+//    public void removeFriends(String email1, String email2) {
+//        repo.removeFriends(email1, email2);
+//    }
 
     /**
      * Updates a user in the repository
