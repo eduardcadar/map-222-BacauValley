@@ -27,6 +27,7 @@ public class Interface {
     private final Scanner console;
     private final Service srv;
 
+    private User loggedUser = null;
     /**
      * File repo
      * @param usersFile - String the name of the users file
@@ -64,7 +65,36 @@ public class Interface {
         FriendshipService fSrv = new FriendshipService(fRepo);
         Network network = new Network(uRepo, fRepo);
         srv = new Service(uSrv, fSrv, network);
+
+
+        // TODO -  de schimbat interfata
+        //      - de adaugat state si date la frienship
+
+        // public interface Interfata - cu metoda RUN
+        /*MainInterface(srv)
+                - LoggedInterface loggedInterface(srv)
+                - AdminInterface adminInterface(srv)
+        void run(){
+            case "1" - loggedInterface.run()
+            case "2" - adminInterface.run()
+
+        }
+        LoggedInterface(srv, userLogat)
+        void run(){
+            if (log-in == false)
+                     return -> il trimiti inpoi in pizda masii in mainInterface
+            while (true) {
+                case "1" add friendships   srv.addFriendship(loggedUser.getId(), input())
+                case "2" remove .. .
+                case "3" update
+
+        }
+
+        AdminInterface (srv)
+        */
+
     }
+
 
     /**
      * Shows the main menu

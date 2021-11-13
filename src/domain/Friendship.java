@@ -5,6 +5,7 @@ import java.util.Objects;
 public class Friendship {
     //a friendship contains as attributes the emails of the users
     private String email1, email2;
+    private FRIENDSHIPSTATE state;
 
     public Friendship(String e1, String e2) {
         if (e1.compareTo(e2) > 0) {
@@ -14,6 +15,7 @@ public class Friendship {
         }
         this.email1 = e1;
         this.email2 = e2;
+        state = FRIENDSHIPSTATE.PENDING;
     }
 
     public Friendship(User u1, User u2) {
@@ -24,6 +26,8 @@ public class Friendship {
         }
         this.email1 = u1.getEmail();
         this.email2 = u2.getEmail();
+        state = FRIENDSHIPSTATE.PENDING;
+
     }
 
     @Override
@@ -52,5 +56,22 @@ public class Friendship {
         if (o == null || getClass() != o.getClass()) return false;
         Friendship that = (Friendship) o;
         return (Objects.equals(email1, that.email1) && Objects.equals(email2, that.email2));
+    }
+
+    /**
+     * Gets the state of the friendship object
+     * @return - ENUM type FRIENDSHIPSTATE
+     */
+    public FRIENDSHIPSTATE getState() {
+        return state;
+    }
+
+    /**
+     * Sets the state of the friendship object
+     * @param state - enum type FRIENDSHIPSTATE
+     */
+    public void setState(FRIENDSHIPSTATE state){
+        this.state = state;
+
     }
 }

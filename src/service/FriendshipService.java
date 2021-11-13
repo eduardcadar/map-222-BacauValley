@@ -1,5 +1,6 @@
 package service;
 
+import domain.FRIENDSHIPSTATE;
 import domain.Friendship;
 import repository.FriendshipRepository;
 
@@ -65,5 +66,13 @@ public class FriendshipService {
      */
     public void removeUserFships(String email) {
         repo.removeUserFships(email);
+    }
+
+    /**
+     *
+     * @param f
+     */
+    public void acceptFriendship(Friendship f){
+        f.setState(FRIENDSHIPSTATE.APPROVED);
     }
 }

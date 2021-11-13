@@ -29,10 +29,15 @@ public class FriendshipDbRepo implements FriendshipRepository {
                 " email2 varchar, " +
                 "PRIMARY KEY (email1,email2), " +
                 "FOREIGN KEY (email1) references users(email), " + //ON DELETE CASCADE
-                "FOREIGN KEY (email2) references users(email))";
+                "FOREIGN KEY (email2) references users(email)" +
+                ")";
+        String updateTable = "ALTER TABLE " + fshipsTable +
+                " ADD COLUMN IF NOT EXISTS state varchar DEFAULT 'PENDING'; " ;
 
         try (Connection connection = DriverManager.getConnection(url, username, password)) {
             PreparedStatement ps = connection.prepareStatement(sql);
+            ps.executeUpdate();
+            ps = connection.prepareStatement(updateTable);
             ps.executeUpdate();
          } catch (SQLException throwables) {
                 throwables.printStackTrace();
