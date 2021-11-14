@@ -147,4 +147,13 @@ public class Service {
     public boolean friendshipsIsEmpty() {
         return friendshipService.isEmpty();
     }
+
+    /**
+     * Accepts the friendship setting its status to approved and setting the date
+     * @param f - friendship
+     */
+    public void acceptFriendship(Friendship f) throws Exception {
+        friendshipService.acceptFriendship(f);
+
+    }
 }

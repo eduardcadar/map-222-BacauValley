@@ -4,6 +4,7 @@ import domain.FRIENDSHIPSTATE;
 import domain.Friendship;
 import repository.FriendshipRepository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class FriendshipService {
@@ -69,10 +70,23 @@ public class FriendshipService {
     }
 
     /**
-     *
-     * @param f
+     * Accepts a friendship
+     * @param f - friendship
+     * @throws Exception - if there is no pending request in friendship
      */
-    public void acceptFriendship(Friendship f){
+    public void acceptFriendship(Friendship f) throws Exception {
+        if(f.getState() != FRIENDSHIPSTATE.PENDING){
+            throw new Exception("There is no pending request between these 2 users");
+
+        }
         f.setState(FRIENDSHIPSTATE.APPROVED);
+        f.setDate(LocalDate.now());
     }
+    // in userInterface()
+    // void acceptFriendship(string userEmail){
+    //  Friendship f = new Friendship(currentUser.getEmail(), userEmail)
+    //  if ( f se gaseste in repo)
+    //     srv.acceptFriendship(f)
+    // }
+
 }

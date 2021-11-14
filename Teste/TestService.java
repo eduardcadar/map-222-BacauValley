@@ -1,3 +1,4 @@
+import domain.FRIENDSHIPSTATE;
 import domain.Friendship;
 import domain.User;
 import domain.network.Network;
@@ -42,6 +43,18 @@ public class TestService {
         Assert.assertEquals("alexandru", sv.getUser(us1.getEmail()).getFirstName());
         Assert.assertEquals("cadar", sv.getUser(us1.getEmail()).getLastName());
         sv.updateUser(us1);
+    }
+
+    @Test
+    public void testFriendRequest() throws Exception {
+        sv.addFriendship(new Friendship(us1,us2));
+        Friendship f = sv.getFriendship(us1.getEmail(), us2.getEmail());
+        Assert.assertEquals(f.getState(), FRIENDSHIPSTATE.PENDING);
+        sv.acceptFriendship(f);
+        Assert.assertEquals(f.getState(), FRIENDSHIPSTATE.APPROVED);
+        Assert.assertNotNull(f.getDate());
+
+
     }
 
     @Test

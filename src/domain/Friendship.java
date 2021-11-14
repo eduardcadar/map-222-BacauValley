@@ -1,12 +1,13 @@
 package domain;
 
+import java.time.LocalDate;
 import java.util.Objects;
 
 public class Friendship {
     //a friendship contains as attributes the emails of the users
     private String email1, email2;
     private FRIENDSHIPSTATE state;
-
+    private LocalDate date;
     public Friendship(String e1, String e2) {
         if (e1.compareTo(e2) > 0) {
             String aux = e1;
@@ -16,6 +17,7 @@ public class Friendship {
         this.email1 = e1;
         this.email2 = e2;
         state = FRIENDSHIPSTATE.PENDING;
+        date = null;
     }
 
     public Friendship(User u1, User u2) {
@@ -27,7 +29,7 @@ public class Friendship {
         this.email1 = u1.getEmail();
         this.email2 = u2.getEmail();
         state = FRIENDSHIPSTATE.PENDING;
-
+        date = null;
     }
 
     @Override
@@ -73,5 +75,20 @@ public class Friendship {
     public void setState(FRIENDSHIPSTATE state){
         this.state = state;
 
+    }
+
+    /**
+     *
+     * @return - return the date when the friend request was accepted
+     */
+    public LocalDate getDate() {
+        return date;
+    }
+
+    /** Sets the date of the friendship object
+     * @param date - LocalDate
+     */
+    public void setDate(LocalDate date){
+        this.date = date;
     }
 }
