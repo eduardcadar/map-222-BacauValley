@@ -87,10 +87,10 @@ public class LoggedInterface implements UserInterface {
             System.out.println("Not enough users saved");
             return;
         }
+        List<User> notFriends = srv.getNotFriends(loggedUser.getEmail());
         Map<Integer, String> users = new HashMap<>();
         Integer i = 0;
-        for (User u : srv.getUsers()) {
-            if (u.getEmail().compareTo(loggedUser.getEmail()) == 0) continue;
+        for (User u : notFriends) {
             i++;
             users.put(i, u.getEmail());
         }

@@ -154,11 +154,22 @@ public class Service {
      * @return the friends of the user
      */
     public List<User> getUserFriends(String email) {
-        // TODO - return list with the user's friends
         List<User> friends = new ArrayList<>();
-
-
-
+        List<String> friendsEmails = friendshipService.getUserFriendships(email);
+        for (String friendEmail : friendsEmails) {
+            friends.add(userService.getUser(friendEmail));
+        }
         return friends;
+    }
+
+    /**
+     * @param email - String the email of the user
+     * @return the users that are not friends with the given user
+     */
+    public List<User> getNotFriends(String email) {
+        //TODO - return list with the users that are not friends with user given as parameter
+        List<User> notFriends = new ArrayList<>();
+
+        return notFriends;
     }
 }
