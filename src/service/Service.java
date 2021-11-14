@@ -183,4 +183,17 @@ public class Service {
 
         return notFriends;
     }
+
+    /**
+     * Returns a list of a pending friend requests for the user with email
+     * @param email - string
+     * @return - List
+     */
+    public List<User> getUserFriendRequests(String email) {
+        ArrayList<User> users = new ArrayList<>();
+        for(String friendEmail: friendshipService.getUserFriendRequests(email)){
+            users.add(userService.getUser(friendEmail));
+        }
+        return users;
+    }
 }

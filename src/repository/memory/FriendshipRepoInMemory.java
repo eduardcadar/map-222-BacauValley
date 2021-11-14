@@ -101,6 +101,16 @@ public class FriendshipRepoInMemory implements FriendshipRepository {
         return null;
     }
 
+    @Override
+    public List<String> getUserFriendRequests(String email) {
+        return null;
+    }
+
+    @Override
+    public void acceptFriendship(Friendship f) {
+
+    }
+
     /**
      * @return a list with all the friendships - List[Friendship]
      */

@@ -23,6 +23,7 @@ public class Main {
             MainInterface ui = new MainInterface("jdbc:postgresql://localhost:5432/ToySocialNetwork");
             ui.run();
         } catch (DbException e) {
+            e.printStackTrace();
             System.out.println(e.getMessage());
         }
     }

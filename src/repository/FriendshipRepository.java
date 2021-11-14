@@ -1,6 +1,7 @@
 package repository;
 
 import domain.Friendship;
+import domain.User;
 
 import java.util.List;
 
@@ -15,4 +16,8 @@ public interface FriendshipRepository {
     public List<String> getUserFriends(String email);
     public void removeUserFships(String email);
     public Friendship getFriendship(String email1, String email2);
+
+    List<String> getUserFriendRequests(String email);
+
+    void acceptFriendship(Friendship f);
 }

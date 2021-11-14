@@ -41,7 +41,7 @@ public class LoggedInterface implements UserInterface {
         System.out.println("2. Add friend");
         System.out.println("3. Remove friend");
         System.out.println("4. Show friends");
-        System.out.println("5. Show friend requests");
+        System.out.println("5. Accept friend request");
         System.out.println("0. Exit");
         System.out.print("Write command: ");
         return console.nextLine().strip();
@@ -62,11 +62,33 @@ public class LoggedInterface implements UserInterface {
                 case "2" -> addFriend();
                 case "3" -> removeFriend();
                 case "4" -> showFriends();
-                case "5" -> showFriendRequests();
+                case "5" -> acceptFriendRequest();
                 default -> System.out.println("Wrong command");
             }
         }
         System.out.println("Exiting logged interface...");
+    }
+
+    /**
+     * Accept friend request menu
+     * First there are printed all friend requests for the logged user
+     * Second users chooses a number = the friend request that he want to accept
+     */
+    private void acceptFriendRequest() {
+        Map<Integer, User> usersMap =  showFriendRequests();
+        Integer friendRequested = askNumberOfFriendRequests();
+        if(friendRequested != null && friendRequested == 0)
+            return;
+        try{
+            Friendship f = srv.getFriendship(loggedUser.getEmail(), usersMap.get(friendRequested).getEmail());
+            // f nu poate fi null ( se arunca exceptie daca nu se gaseste prietenia)
+            srv.acceptFriendship(f);
+            System.out.println("Accepted friend request");
+        }
+        catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+
     }
 
     private void updateUser() {
@@ -152,24 +174,34 @@ public class LoggedInterface implements UserInterface {
         }
     }
 
-    private void showFriendRequests() {
-//        List<User> friendRequests = srv.getUserFriendRequests(loggedUser.getEmail());
-//        Map<Integer, User> usersMap = new HashMap<>();
-//        Integer i = 0;
-//        for (User user : friendRequests) {
-//            i++;
-//            usersMap.put(i, user);
-//        }
-//        System.out.println("----FRIEND REQUESTS----");
-//        for (Integer j = 1; j <= i; j++)
-//            System.out.println(j + ". " + usersMap.get(j));
-//        System.out.println("Write the number of the request you wish to accept, or 0 to go back: ");
-//        Integer a = console.nextInt();
-//        console.nextLine();
-//        try {
-//
-//        } catch (NullPointerException e) {
-//            System.out.println("Invalid number");
-//        }
+    /**
+     * Facea prea multe functia asta. Arata prieteniile. apoi cerea si numarul unei prietenii
+     * si dupa aia mai si accepta prietenia ( nu prea face parte din show)
+     *
+     */
+    private Map<Integer, User>  showFriendRequests() {
+        List<User> friendRequests = srv.getUserFriendRequests(loggedUser.getEmail());
+        Map<Integer, User> usersMap = new HashMap<>();
+        Integer i = 0;
+        for (User user : friendRequests) {
+            i++;
+            usersMap.put(i, user);
+        }
+        System.out.println("----FRIEND REQUESTS----");
+        for (Integer j = 1; j <= i; j++)
+            System.out.println(j + ". " + usersMap.get(j));
+        return usersMap;
+    }
+
+    private Integer askNumberOfFriendRequests(){
+        System.out.println("Write the number of the request you wish to accept, or 0 to go back: ");
+        Integer friendRequested = 0;
+        try {
+            friendRequested = console.nextInt();
+            console.nextLine();
+        } catch (NullPointerException e) {
+            System.out.println("Invalid number");
+        }
+        return friendRequested;
     }
 }

@@ -38,6 +38,11 @@ public class FriendshipFileRepo extends FriendshipRepoInMemory implements Friend
         writeAllToFile(filename);
     }
 
+    @Override
+    public void acceptFriendship(Friendship f) {
+
+    }
+
     /**
      * Loads into the memory the friendships from a file
      * @param filename - the name of the friendships file
