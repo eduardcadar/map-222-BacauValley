@@ -68,21 +68,19 @@ public class MainInterface implements UserInterface {
 
     @Override
     public void run() {
-        System.out.println("1. Log in as user");
-        System.out.println("2. Admin");
-        System.out.println("0. Exit");
-
-        String com = console.nextLine().strip();
         while (true) {
+            System.out.println("1. Log in as user");
+            System.out.println("2. Admin");
+            System.out.println("0. Exit");
+            System.out.print("Choose option: ");
+
+            String com = console.nextLine().strip();
+            if (com.compareTo("0") == 0)
+                break;
             switch (com) {
-                case "1":
-                    loggedInterface.run();
-                case "2":
-                    adminInterface.run();
-                case "0":
-                    return;
-                default:
-                    System.out.println("Wrong command");
+                case "1" -> loggedInterface.run();
+                case "2" -> adminInterface.run();
+                default -> System.out.println("Wrong command");
             }
         }
     }

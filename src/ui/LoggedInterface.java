@@ -22,18 +22,20 @@ public class LoggedInterface implements UserInterface {
     }
 
     public boolean login() {
-        System.out.println("Email: ");
+        System.out.print("Email: ");
         String email = console.nextLine().strip();
-        System.out.println("Password: ");
+        System.out.print("Password: ");
         String password = console.nextLine().strip();
 
         // TODO - verify login
 
-        loggedUser = srv.getUser(email);
+        if ((loggedUser = srv.getUser(email)) == null)
+            return false;
         return true;
     }
 
     private String menu() {
+        System.out.println();
         System.out.println("LOGGED USER: " + loggedUser);
         System.out.println("1. Update user");
         System.out.println("2. Add friend");
@@ -47,26 +49,24 @@ public class LoggedInterface implements UserInterface {
 
     @Override
     public void run() {
-        if (!login()) return;
+        if (!login()){
+            System.out.println("Wrong email or password");
+            return;
+        }
 
         while (true) {
             String command = menu();
             if (command.compareTo("0") == 0) break;
             switch (command) {
-                case "1":
-                    updateUser();
-                case "2":
-                    addFriend();
-                case "3":
-                    removeFriend();
-                case "4":
-                    showFriends();
-                case "5":
-                    showFriendRequests();
-                default:
-                    System.out.println("Wrong command");
+                case "1" -> updateUser();
+                case "2" -> addFriend();
+                case "3" -> removeFriend();
+                case "4" -> showFriends();
+                case "5" -> showFriendRequests();
+                default -> System.out.println("Wrong command");
             }
         }
+        System.out.println("Exiting logged interface...");
     }
 
     private void updateUser() {
@@ -76,6 +76,7 @@ public class LoggedInterface implements UserInterface {
         String firstname = console.nextLine();
         try {
             srv.updateUser(new User(firstname, lastname, loggedUser.getEmail()));
+            loggedUser = new User(firstname, lastname, loggedUser.getEmail());
             System.out.println("Updated");
         } catch (DbException e) {
             System.out.println(e.getMessage());
@@ -152,6 +153,23 @@ public class LoggedInterface implements UserInterface {
     }
 
     private void showFriendRequests() {
-
+//        List<User> friendRequests = srv.getUserFriendRequests(loggedUser.getEmail());
+//        Map<Integer, User> usersMap = new HashMap<>();
+//        Integer i = 0;
+//        for (User user : friendRequests) {
+//            i++;
+//            usersMap.put(i, user);
+//        }
+//        System.out.println("----FRIEND REQUESTS----");
+//        for (Integer j = 1; j <= i; j++)
+//            System.out.println(j + ". " + usersMap.get(j));
+//        System.out.println("Write the number of the request you wish to accept, or 0 to go back: ");
+//        Integer a = console.nextInt();
+//        console.nextLine();
+//        try {
+//
+//        } catch (NullPointerException e) {
+//            System.out.println("Invalid number");
+//        }
     }
 }

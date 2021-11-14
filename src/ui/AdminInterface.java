@@ -29,10 +29,10 @@ public class AdminInterface implements UserInterface {
         System.out.println("---MENU---");
         System.out.println("1. Add user");
         System.out.println("2. Remove user");
-        System.out.println("5. Number of communities");
-        System.out.println("6. Most friendly network");
-        System.out.println("8. Get user by email");
-        System.out.println("9. Get friendship by emails");
+        System.out.println("3. Number of communities");
+        System.out.println("4. Most friendly network");
+        System.out.println("5. Get user by email");
+        System.out.println("6. Get friendship by emails");
         System.out.println("10. Show users");
         System.out.println("11. Show friendships");
         System.out.println("0. Exit");
@@ -53,10 +53,10 @@ public class AdminInterface implements UserInterface {
             switch (command) {
                 case "1" -> addUser();
                 case "2" -> removeUser();
-                case "5" -> communities();
-                case "6" -> mostFrCommunity();
-                case "8" -> showUserByEmail();
-                case "9" -> showFriendshipByEmails();
+                case "3" -> communities();
+                case "4" -> mostFrCommunity();
+                case "5" -> showUserByEmail();
+                case "6" -> showFriendshipByEmails();
                 case "10" -> showUsers();
                 case "11" -> showFriendships();
                 default -> {
@@ -65,7 +65,7 @@ public class AdminInterface implements UserInterface {
                 }
             }
         }
-        System.out.println("You quit");
+        System.out.println("Exiting admin interface...");
     }
 
     /**

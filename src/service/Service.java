@@ -155,7 +155,7 @@ public class Service {
      */
     public List<User> getUserFriends(String email) {
         List<User> friends = new ArrayList<>();
-        List<String> friendsEmails = friendshipService.getUserFriendships(email);
+        List<String> friendsEmails = friendshipService.getUserFriends(email);
         for (String friendEmail : friendsEmails) {
             friends.add(userService.getUser(friendEmail));
         }
@@ -167,8 +167,12 @@ public class Service {
      * @return the users that are not friends with the given user
      */
     public List<User> getNotFriends(String email) {
-        //TODO - return list with the users that are not friends with user given as parameter
+        List<String> friends = friendshipService.getUserFriends(email);
         List<User> notFriends = new ArrayList<>();
+
+        for (User u : userService.getUsers())
+            if (!friends.contains(u.getEmail()) && u.getEmail().compareTo(email) != 0)
+                notFriends.add(u);
 
         return notFriends;
     }

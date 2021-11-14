@@ -63,5 +63,12 @@ public class testServiceDb {
         friends = service.getUserFriends(us4.getEmail());
         Assert.assertEquals(1, friends.size());
         Assert.assertTrue(friends.contains(us2));
+        List<User> notFriends = service.getNotFriends(us1.getEmail());
+        Assert.assertEquals(1, notFriends.size());
+        Assert.assertTrue(notFriends.contains(us4));
+        notFriends = service.getNotFriends(us3.getEmail());
+        Assert.assertEquals(2, notFriends.size());
+        Assert.assertTrue(notFriends.contains(us2));
+        Assert.assertTrue(notFriends.contains(us4));
     }
 }

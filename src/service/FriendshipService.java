@@ -71,7 +71,7 @@ public class FriendshipService {
      * @param email - String the email of the user
      * @return list with the emails of a user's friends
      */
-    public List<String> getUserFriendships(String email) {
+    public List<String> getUserFriends(String email) {
         return repo.getUserFriends(email);
     }
 }

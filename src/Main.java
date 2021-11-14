@@ -8,15 +8,15 @@ public class Main {
 
     public static void main(String[] args) {
         //FILE
-        try {
-            MainInterface ui = new MainInterface("users.csv", "friendships.csv");
-            ui.run();
-        } catch (FileException e) {
-            System.out.println(e.getMessage());
-        } catch (ValidatorException e) {
-            System.out.print("Wrong data in file: ");
-            System.out.println(e.getMessage());
-        }
+//        try {
+//            MainInterface ui = new MainInterface("users.csv", "friendships.csv");
+//            ui.run();
+//        } catch (FileException e) {
+//            System.out.println(e.getMessage());
+//        } catch (ValidatorException e) {
+//            System.out.print("Wrong data in file: ");
+//            System.out.println(e.getMessage());
+//        }
 
         //DATABASE
         try {
