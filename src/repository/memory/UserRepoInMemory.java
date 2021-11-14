@@ -32,28 +32,6 @@ public class UserRepoInMemory implements UserRepository {
     }
 
     /**
-     * Adds friendship to two users (in their lists of friends)
-     * @param e1 - the email of the first user
-     * @param e2 - the email of the second user
-     */
-    @Override
-    public void addFriends(String e1, String e2) {
-        users.get(e1).addFriend(e2);
-        users.get(e2).addFriend(e1);
-    }
-
-    /**
-     * Removes friendship from two users (in their lists of friends)
-     * @param e1 - the email of the first user
-     * @param e2 - the email of the second user
-     */
-    @Override
-    public void removeFriends(String e1, String e2) {
-        users.get(e1).removeFriend(e2);
-        users.get(e2).removeFriend(e1);
-    }
-
-    /**
      * Updates an user in the memory
      * @param u - the user to be updated
      */
@@ -84,9 +62,6 @@ public class UserRepoInMemory implements UserRepository {
     public void remove(String email) throws RepoException {
         if (!users.containsKey(email))
             throw new RepoException("No user with this email");
-        for (String e : users.get(email).getFriends()) {
-            users.get(e).removeFriend(email);
-        }
         users.remove(email);
     }
 

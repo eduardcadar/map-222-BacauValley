@@ -25,6 +25,7 @@ public class FriendshipRepoInMemory implements FriendshipRepository {
 
     /**
      * Adds a friendship to the repository
+     *
      * @param f - the friendship to be added
      * @throws RepoException - if the friendship is already saved
      */
@@ -37,6 +38,7 @@ public class FriendshipRepoInMemory implements FriendshipRepository {
 
     /**
      * Removes a friendship from the repository
+     *
      * @param f - the friendship to be removed
      * @throws RepoException - if the friendship is not saved
      */
@@ -60,13 +62,12 @@ public class FriendshipRepoInMemory implements FriendshipRepository {
      */
     @Override
     public void clear() {
-        for (User e : userRepo.getAll())
-            e.removeAllFriends();
         friendships.clear();
     }
 
     /**
      * Verifies if there are no friendships saved
+     *
      * @return true if there are no friendships, false otherwise
      */
     @Override
@@ -76,6 +77,7 @@ public class FriendshipRepoInMemory implements FriendshipRepository {
 
     /**
      * Removes all the friendships of an user
+     *
      * @param email - the user's email
      */
     public void removeUserFships(String email) {
@@ -97,11 +99,6 @@ public class FriendshipRepoInMemory implements FriendshipRepository {
         return null;
     }
 
-    @Override
-    public Friendship getFriendship(User us1, User us2) {
-        return getFriendship(us1.getEmail(), us2.getEmail());
-    }
-
     /**
      * @return a list with all the friendships - List[Friendship]
      */
@@ -120,10 +117,5 @@ public class FriendshipRepoInMemory implements FriendshipRepository {
                 friends.add(f.getFirst());
         }
         return friends;
-    }
-
-    @Override
-    public List<String> getUserFriends(User us) {
-        return getUserFriends(us.getEmail());
     }
 }

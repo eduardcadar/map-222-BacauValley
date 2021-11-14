@@ -1,3 +1,5 @@
+package ui;
+
 import domain.Friendship;
 import domain.User;
 import domain.network.Network;
@@ -7,7 +9,6 @@ import repository.UserRepository;
 import repository.db.DbException;
 import repository.db.FriendshipDbRepo;
 import repository.db.UserDbRepo;
-import repository.FriendshipsInitializer;
 import repository.file.FriendshipFileRepo;
 import repository.file.UserFileRepo;
 import service.FriendshipService;
@@ -41,7 +42,6 @@ public class Interface {
         Validator<Friendship> fVal = new FriendshipValidator();
         FriendshipRepository fRepo = new FriendshipFileRepo(friendshipsFile, fVal, uRepo);
         FriendshipService fSrv = new FriendshipService(fRepo);
-        FriendshipsInitializer FI = new FriendshipsInitializer(uRepo, fRepo);
         Network network = new Network(uRepo, fRepo);
         srv = new Service(uSrv, fSrv, network);
     }

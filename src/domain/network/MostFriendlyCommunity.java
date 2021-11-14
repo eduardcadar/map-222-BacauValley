@@ -53,7 +53,7 @@ public class MostFriendlyCommunity {
      */
     private void DFS(String e) {
         used.put(e, true);
-        for (String em : fRepo.getUserFriends(uRepo.getUser(e))) {
+        for (String em : fRepo.getUserFriends(uRepo.getUser(e).getEmail())) {
             if (used.get(em) == false) {
                 nodes.put(em, new UserNode(uRepo.getUser(em), uRepo.getUser(e), nodes.get(e).steps + 1));
                 DFS(em);
