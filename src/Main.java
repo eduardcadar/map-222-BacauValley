@@ -1,5 +1,6 @@
 import repository.db.DbException;
 import repository.file.FileException;
+import ui.Interface;
 import validator.ValidatorException;
 
 public class Main {
@@ -7,7 +8,7 @@ public class Main {
     public static void main(String[] args) {
         //FILE
 //        try {
-//            Interface ui = new Interface("users.csv", "friendships.csv");
+//            ui.Interface ui = new ui.Interface("users.csv", "friendships.csv");
 //            ui.run();
 //        } catch (FileException e) {
 //            System.out.println(e.getMessage());
@@ -15,7 +16,7 @@ public class Main {
 //            System.out.print("Wrong data in file: ");
 //            System.out.println(e.getMessage());
 //        }
-        System.out.println("BIG BOSS BACK IN PROJECT");
+
         //DATABASE
         try {
             Interface ui = new Interface("jdbc:postgresql://localhost:5432/ToySocialNetwork");

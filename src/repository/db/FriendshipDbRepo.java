@@ -82,17 +82,6 @@ public class FriendshipDbRepo implements FriendshipRepository {
     }
 
     /**
-     * @param us2 - the first user
-     * @param us1 - the second user
-     * @return the friendship of the two users if it is saved in the database,
-     * null otherwise
-     */
-    @Override
-    public Friendship getFriendship(User us1, User us2) {
-        return getFriendship(us1.getEmail(), us2.getEmail());
-    }
-
-    /**
      * Removes a friendship from the database
      * @param f - the friendship to be removed
      */
@@ -186,15 +175,6 @@ public class FriendshipDbRepo implements FriendshipRepository {
                 friends.add(f.getFirst());
         }
         return friends;
-    }
-
-    /**
-     * @param us - the user
-     * @return a list with the emails of a user's friends
-     */
-    @Override
-    public List<String> getUserFriends(User us) {
-        return getUserFriends(us.getEmail());
     }
 
     /**

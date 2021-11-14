@@ -170,16 +170,6 @@ public class UserDbRepo implements UserRepository {
         return size() == 0;
     }
 
-    @Override
-    public void addFriends(String email1, String email2) {
-
-    }
-
-    @Override
-    public void removeFriends(String email1, String email2) {
-
-    }
-
     /**
      * Updates a user in the database
      * @param u - the user with the same email as the user given as parameter

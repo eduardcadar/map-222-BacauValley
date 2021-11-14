@@ -78,8 +78,8 @@ public class TestFriendshipRepoInMemory {
     @Test
     public void testGetFriendship() {
         repo.addFriendship(f3);
-        Assert.assertNull(repo.getFriendship(u1, u4));
-        Assert.assertNotNull(repo.getFriendship(u2, u4));
+        Assert.assertNull(repo.getFriendship(u1.getEmail(), u4.getEmail()));
+        Assert.assertNotNull(repo.getFriendship(u2.getEmail(), u4.getEmail()));
         repo.clear();
     }
 
@@ -88,7 +88,7 @@ public class TestFriendshipRepoInMemory {
         repo.addFriendship(f1);
         repo.addFriendship(f2);
         repo.addFriendship(f3);
-        List<String> friends = repo.getUserFriends(u1);
+        List<String> friends = repo.getUserFriends(u1.getEmail());
         Assert.assertEquals(2, friends.size());
         Assert.assertTrue(friends.contains(u2.getEmail()));
         Assert.assertTrue(friends.contains(u3.getEmail()));

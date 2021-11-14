@@ -1,7 +1,6 @@
 import domain.User;
 import org.junit.Assert;
 import org.junit.Test;
-import repository.RepoException;
 
 public class TestUser {
     private final User us1 = new User("Ion", "Pop", "pop.ion@yahoo.com");
@@ -17,34 +16,5 @@ public class TestUser {
     @Test
     public void testToString() {
         Assert.assertEquals(0, us1.toString().compareTo("Pop Ion"));
-    }
-
-    @Test
-    public void testAddRemoveFriend() {
-        try {
-            us1.addFriend(us2);
-        } catch (RepoException e) {
-            Assert.fail();
-        }
-
-        try {
-            us1.addFriend(us2);
-            Assert.fail();
-        } catch (RepoException e) {
-            Assert.assertTrue(true);
-        }
-
-        try {
-            us1.removeFriend(us2);
-        } catch (RepoException e) {
-            Assert.fail();
-        }
-
-        try {
-            us1.removeFriend(us2);
-            Assert.fail();
-        } catch (RepoException e) {
-            Assert.assertTrue(true);
-        }
     }
 }

@@ -67,7 +67,7 @@ public class testFriendshipRepoDb {
             Assert.assertTrue(true);
         }
         fRepo.removeFriendship(new Friendship(us1, us4));
-        Assert.assertNull(fRepo.getFriendship(us1, us4));
+        Assert.assertNull(fRepo.getFriendship(us1.getEmail(), us4.getEmail()));
         Assert.assertEquals(3, fRepo.size());
     }
 
@@ -82,7 +82,7 @@ public class testFriendshipRepoDb {
 
     @Test
     public void testGetUserFriendsDb() {
-        List<String> friends = fRepo.getUserFriends(us1);
+        List<String> friends = fRepo.getUserFriends(us1.getEmail());
         Assert.assertEquals(2,friends.size());
         Assert.assertTrue(friends.contains(us2.getEmail()));
         Assert.assertTrue(friends.contains(us3.getEmail()));

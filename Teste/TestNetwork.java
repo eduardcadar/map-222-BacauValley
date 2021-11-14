@@ -5,7 +5,6 @@ import domain.User;
 import org.junit.Assert;
 import org.junit.Test;
 import repository.FriendshipRepository;
-import repository.FriendshipsInitializer;
 import repository.file.FriendshipFileRepo;
 import repository.file.UserFileRepo;
 import validator.FriendshipValidator;
@@ -22,7 +21,6 @@ public class TestNetwork {
     private final String frFile = "testFriendshipsNw.csv";
     private final Validator<Friendship> fVal = new FriendshipValidator();
     private final FriendshipRepository fRepo = new FriendshipFileRepo(frFile, fVal, uRepo);
-    private final FriendshipsInitializer FI = new FriendshipsInitializer(uRepo, fRepo);
 
     @Test
     public void testConstructor() {
