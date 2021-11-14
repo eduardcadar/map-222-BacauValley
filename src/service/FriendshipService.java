@@ -70,6 +70,7 @@ public class FriendshipService {
     }
 
     /**
+<<<<<<< HEAD
      * Accepts a friendship
      * @param f - friendship
      * @throws Exception - if there is no pending request in friendship
@@ -77,7 +78,6 @@ public class FriendshipService {
     public void acceptFriendship(Friendship f) throws Exception {
         if(f.getState() != FRIENDSHIPSTATE.PENDING){
             throw new Exception("There is no pending request between these 2 users");
-
         }
         f.setState(FRIENDSHIPSTATE.APPROVED);
         f.setDate(LocalDate.now());
@@ -89,4 +89,11 @@ public class FriendshipService {
     //     srv.acceptFriendship(f)
     // }
 
+    /**
+     * @param email - String the email of the user
+     * @return list with the emails of a user's friends
+     */
+    public List<String> getUserFriends(String email) {
+        return repo.getUserFriends(email);
+    }
 }

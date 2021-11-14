@@ -6,6 +6,7 @@ import domain.network.Network;
 import repository.RepoException;
 import validator.ValidatorException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -154,6 +155,32 @@ public class Service {
      */
     public void acceptFriendship(Friendship f) throws Exception {
         friendshipService.acceptFriendship(f);
+    }
+    /**
+     * @param email - String the email of the user
+     * @return the friends of the user
+     */
+    public List<User> getUserFriends(String email) {
+        List<User> friends = new ArrayList<>();
+        List<String> friendsEmails = friendshipService.getUserFriends(email);
+        for (String friendEmail : friendsEmails) {
+            friends.add(userService.getUser(friendEmail));
+        }
+        return friends;
+    }
 
+    /**
+     * @param email - String the email of the user
+     * @return the users that are not friends with the given user
+     */
+    public List<User> getNotFriends(String email) {
+        List<String> friends = friendshipService.getUserFriends(email);
+        List<User> notFriends = new ArrayList<>();
+
+        for (User u : userService.getUsers())
+            if (!friends.contains(u.getEmail()) && u.getEmail().compareTo(email) != 0)
+                notFriends.add(u);
+
+        return notFriends;
     }
 }
