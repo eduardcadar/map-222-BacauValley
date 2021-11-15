@@ -66,4 +66,12 @@ public class FriendshipService {
     public void removeUserFships(String email) {
         repo.removeUserFships(email);
     }
+
+    /**
+     * @param email - String the email of the user
+     * @return list with the emails of a user's friends
+     */
+    public List<String> getUserFriends(String email) {
+        return repo.getUserFriends(email);
+    }
 }

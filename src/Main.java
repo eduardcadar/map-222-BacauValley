@@ -1,6 +1,7 @@
 import repository.db.DbException;
 import repository.file.FileException;
-import ui.Interface;
+import ui.AdminInterface;
+import ui.MainInterface;
 import validator.ValidatorException;
 
 public class Main {
@@ -8,7 +9,7 @@ public class Main {
     public static void main(String[] args) {
         //FILE
 //        try {
-//            ui.Interface ui = new ui.Interface("users.csv", "friendships.csv");
+//            MainInterface ui = new MainInterface("users.csv", "friendships.csv");
 //            ui.run();
 //        } catch (FileException e) {
 //            System.out.println(e.getMessage());
@@ -19,7 +20,7 @@ public class Main {
 
         //DATABASE
         try {
-            Interface ui = new Interface("jdbc:postgresql://localhost:5432/ToySocialNetwork");
+            MainInterface ui = new MainInterface("jdbc:postgresql://localhost:5432/ToySocialNetwork");
             ui.run();
         } catch (DbException e) {
             System.out.println(e.getMessage());

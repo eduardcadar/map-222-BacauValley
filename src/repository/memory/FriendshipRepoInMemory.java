@@ -25,7 +25,6 @@ public class FriendshipRepoInMemory implements FriendshipRepository {
 
     /**
      * Adds a friendship to the repository
-     *
      * @param f - the friendship to be added
      * @throws RepoException - if the friendship is already saved
      */
@@ -38,7 +37,6 @@ public class FriendshipRepoInMemory implements FriendshipRepository {
 
     /**
      * Removes a friendship from the repository
-     *
      * @param f - the friendship to be removed
      * @throws RepoException - if the friendship is not saved
      */
@@ -67,7 +65,6 @@ public class FriendshipRepoInMemory implements FriendshipRepository {
 
     /**
      * Verifies if there are no friendships saved
-     *
      * @return true if there are no friendships, false otherwise
      */
     @Override
@@ -76,8 +73,7 @@ public class FriendshipRepoInMemory implements FriendshipRepository {
     }
 
     /**
-     * Removes all the friendships of an user
-     *
+     * Removes all the friendships of a user
      * @param email - the user's email
      */
     public void removeUserFships(String email) {
@@ -91,6 +87,12 @@ public class FriendshipRepoInMemory implements FriendshipRepository {
         }
     }
 
+    /**
+     * @param email1 - String the email of the first user
+     * @param email2 - String the email of the second user
+     * @return the friendship of the two users if it is saved in the repository,
+     * null otherwise
+     */
     @Override
     public Friendship getFriendship(String email1, String email2) {
         Friendship f = new Friendship(email1, email2);
@@ -107,6 +109,10 @@ public class FriendshipRepoInMemory implements FriendshipRepository {
         return friendships.stream().toList();
     }
 
+    /**
+     * @param email - String the email of the user
+     * @return list with the user's friends
+     */
     @Override
     public List<String> getUserFriends(String email) {
         List<String> friends = new ArrayList<>();
