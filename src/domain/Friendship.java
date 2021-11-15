@@ -9,11 +9,6 @@ public class Friendship {
     private FRIENDSHIPSTATE state;
     private LocalDate date;
     public Friendship(String e1, String e2) {
-        if (e1.compareTo(e2) > 0) {
-            String aux = e1;
-            e1 = e2;
-            e2 = aux;
-        }
         this.email1 = e1;
         this.email2 = e2;
         state = FRIENDSHIPSTATE.PENDING;
@@ -21,11 +16,6 @@ public class Friendship {
     }
 
     public Friendship(User u1, User u2) {
-        if (u1.getEmail().compareTo(u2.getEmail()) > 0) {
-            User aux = u1;
-            u1 = u2;
-            u2 = aux;
-        }
         this.email1 = u1.getEmail();
         this.email2 = u2.getEmail();
         state = FRIENDSHIPSTATE.PENDING;

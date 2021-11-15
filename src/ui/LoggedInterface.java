@@ -6,10 +6,7 @@ import repository.RepoException;
 import repository.db.DbException;
 import service.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 public class LoggedInterface implements UserInterface {
     private final Scanner console;
@@ -76,14 +73,19 @@ public class LoggedInterface implements UserInterface {
      */
     private void acceptFriendRequest() {
         Map<Integer, User> usersMap =  showFriendRequests();
-        Integer friendRequested = askNumberOfFriendRequests();
-        if(friendRequested != null && friendRequested == 0)
+        if (usersMap.size() == 0)
             return;
-        try{
+        Integer friendRequested = askNumberOfFriendRequests();
+        if(friendRequested != null && friendRequested == 0) {
+            return;
+        }
+        try {
             Friendship f = srv.getFriendship(loggedUser.getEmail(), usersMap.get(friendRequested).getEmail());
             // f nu poate fi null ( se arunca exceptie daca nu se gaseste prietenia)
             srv.acceptFriendship(f);
             System.out.println("Accepted friend request");
+        } catch (NullPointerException e) {
+            System.out.println("Invalid number");
         }
         catch (Exception e){
             System.out.println(e.getMessage());
@@ -121,18 +123,27 @@ public class LoggedInterface implements UserInterface {
         for (Integer j = 1; j <= i; j++)
             System.out.println(j + ". " + srv.getUser(users.get(j)));
         System.out.print("Write the number of the user: ");
-        int a = console.nextInt();
+        int a;
+        try {
+            a = console.nextInt();
+        } catch (InputMismatchException e) {
+            System.out.println("Wrong input");
+            return;
+        } finally {
+            console.nextLine();
+        }
         if (a < 1 || a > i) {
             System.out.println("Invalid number");
             return;
         }
-        console.nextLine();
         try {
             Friendship f = new Friendship(loggedUser.getEmail(), users.get(a));
             srv.addFriendship(f);
             System.out.println("The friend request was sent");
         } catch (RepoException e) {
             System.out.println(e.getMessage());
+        } catch (DbException e) {
+            e.getMessage();
         }
     }
 
@@ -152,20 +163,33 @@ public class LoggedInterface implements UserInterface {
         for (Integer j = 1; j <= i; j++)
             System.out.println(j + ". " + friendsMap.get(j));
         System.out.print("Write the number of the friend you wish to remove: ");
-        Integer a = console.nextInt();
-        console.nextLine();
+        int a;
+        try {
+            a = console.nextInt();
+        } catch (InputMismatchException e) {
+            System.out.println("Wrong input");
+            return;
+        } finally {
+            console.nextLine();
+        }
+        if (a < 1 || a > i) {
+            System.out.println("Invalid number");
+            return;
+        }
         try {
             srv.removeFriendship(new Friendship(friendsMap.get(a).getEmail(), loggedUser.getEmail()));
             System.out.println("The friend was removed");
         } catch (RepoException e) {
             System.out.println(e.getMessage());
-        } catch (NullPointerException e) {
-            System.out.println("Invalid number");
         }
     }
 
     private void showFriends() {
         List<User> friends = srv.getUserFriends(loggedUser.getEmail());
+        if (friends.size() == 0) {
+            System.out.println("You don't have any friends :(");
+            return;
+        }
         System.out.println("----FRIENDS----");
         int i = 0;
         for (User friend : friends) {
@@ -182,6 +206,10 @@ public class LoggedInterface implements UserInterface {
     private Map<Integer, User>  showFriendRequests() {
         List<User> friendRequests = srv.getUserFriendRequests(loggedUser.getEmail());
         Map<Integer, User> usersMap = new HashMap<>();
+        if (friendRequests.size() == 0) {
+            System.out.println("No friend requests");
+            return usersMap;
+        }
         Integer i = 0;
         for (User user : friendRequests) {
             i++;
@@ -194,14 +222,14 @@ public class LoggedInterface implements UserInterface {
     }
 
     private Integer askNumberOfFriendRequests(){
-        System.out.println("Write the number of the request you wish to accept, or 0 to go back: ");
+        System.out.print("Write the number of the request you wish to accept, or 0 to go back: ");
         Integer friendRequested = 0;
         try {
             friendRequested = console.nextInt();
-            console.nextLine();
-        } catch (NullPointerException e) {
-            System.out.println("Invalid number");
+        } catch (InputMismatchException e) {
+            System.out.println("Wrong input");
         }
+        console.nextLine();
         return friendRequested;
     }
 }

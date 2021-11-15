@@ -2,10 +2,9 @@ package service;
 
 import domain.FRIENDSHIPSTATE;
 import domain.Friendship;
-import domain.User;
 import repository.FriendshipRepository;
+import repository.RepoException;
 
-import java.time.LocalDate;
 import java.util.List;
 
 public class FriendshipService {
@@ -45,7 +44,7 @@ public class FriendshipService {
      * @return all the friendships saved in the repository
      */
     public List<Friendship> getFriendships() {
-        return repo.getAll();
+        return repo.getAllApproved();
     }
 
     /**
@@ -75,9 +74,9 @@ public class FriendshipService {
      * @param f - friendship
      * @throws Exception - if there is no pending request in friendship
      */
-    public void acceptFriendship(Friendship f) throws Exception {
+    public void acceptFriendship(Friendship f) {
         if(f.getState() != FRIENDSHIPSTATE.PENDING){
-            throw new Exception("There is no pending request between these 2 users");
+            throw new RepoException("There is no pending request between these 2 users");
             // asta nu se mai poate intampla datorita validarilor de mai sus
         }
         repo.acceptFriendship(f);
@@ -95,6 +94,14 @@ public class FriendshipService {
      */
     public List<String> getUserFriends(String email) {
         return repo.getUserFriends(email);
+    }
+
+    /**
+     * @param email - String the email of the user
+     * @return list with the emails of a user's friends + friends requested
+     */
+    public List<String> getUserFriendsAll(String email) {
+        return repo.getUserFriendsAll(email);
     }
 
     /**

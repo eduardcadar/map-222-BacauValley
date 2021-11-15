@@ -30,30 +30,33 @@ public class TestFriendshipFileRepo {
     private Friendship f2 = new Friendship(u2, u3);
     private Friendship f3 = new Friendship(u2, u4);
     private Friendship f4 = new Friendship(u3, u1);
-    private Friendship f5 = new Friendship(u2, u1);
 
     @Test
     public void testConstructor() {
         // test loadall
-        Assert.assertTrue(frRepo.size() == 2);
-        Assert.assertTrue(frRepo.getAll().contains(f1));
-        Assert.assertTrue(frRepo.getAll().contains(f2));
+        Assert.assertEquals(2, frRepo.size());
+        Assert.assertTrue(frRepo.getAllApproved().contains(f1));
+        Assert.assertTrue(frRepo.getAllApproved().contains(f2));
     }
 
     @Test
     public void testAddRemove() {
         frRepo.clear();
         frRepo.addFriendship(f1);
+        frRepo.acceptFriendship(f1);
         frRepo.addFriendship(f2);
+        frRepo.acceptFriendship(f2);
         try {
             frRepo.addFriendship(f1);
+            frRepo.acceptFriendship(f1);
             Assert.assertTrue(false);
         } catch (RepoException e) {
             Assert.assertTrue(frRepo.size() == 2);
         }
         frRepo.addFriendship(f3);
+        frRepo.acceptFriendship(f3);
         Assert.assertTrue(frRepo.size() == 3);
-        frRepo.removeFriendship(f5);
+        frRepo.removeFriendship(f1);
         Assert.assertTrue(frRepo.size() == 2);
         try {
             frRepo.removeFriendship(f1);
@@ -64,6 +67,8 @@ public class TestFriendshipFileRepo {
         frRepo.clear();
         Assert.assertTrue(frRepo.isEmpty());
         frRepo.addFriendship(f1);
+        frRepo.acceptFriendship(f1);
         frRepo.addFriendship(f2);
+        frRepo.acceptFriendship(f2);
     }
 }

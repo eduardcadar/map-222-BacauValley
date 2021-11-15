@@ -2,6 +2,7 @@ import domain.FRIENDSHIPSTATE;
 import domain.Friendship;
 import domain.User;
 import domain.network.Network;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 import repository.FriendshipRepository;
@@ -46,33 +47,14 @@ public class TestService {
     }
 
     @Test
-    public void testFriendRequest() throws Exception {
-        sv.addFriendship(new Friendship(us1,us2));
-        Friendship f = sv.getFriendship(us1.getEmail(), us2.getEmail());
-        Assert.assertEquals(f.getState(), FRIENDSHIPSTATE.PENDING);
-        sv.acceptFriendship(f);
-        Assert.assertEquals(f.getState(), FRIENDSHIPSTATE.APPROVED);
-        Assert.assertNotNull(f.getDate());
-
-
-    }
-
-    @Test
     public void testFriendshipsSv() {
         int nr = sv.friendshipsSize();
         sv.addFriendship(new Friendship(us1, us2));
+        sv.acceptFriendship(new Friendship(us1, us2));
         Assert.assertNotNull(sv.getFriendship(us1.getEmail(), us2.getEmail()));
         Assert.assertEquals(sv.friendshipsSize(), nr + 1);
-        sv.removeFriendship(new Friendship(us2, us1));
+        sv.removeFriendship(new Friendship(us1, us2));
         Assert.assertEquals(sv.friendshipsSize(), nr);
         Assert.assertEquals(sv.getFriendships().size(), sv.friendshipsSize());
-        Assert.assertFalse(sv.friendshipsIsEmpty());
-    }
-
-    @Test
-    public void testNetworkSv() {
-        Assert.assertEquals(3, sv.getCommunities().size());
-        Assert.assertEquals(3, sv.nrCommunities());
-        Assert.assertEquals(10, sv.getUsersMostFrCom().size());
     }
 }

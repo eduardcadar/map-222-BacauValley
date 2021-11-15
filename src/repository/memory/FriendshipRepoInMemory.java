@@ -1,7 +1,6 @@
 package repository.memory;
 
 import domain.Friendship;
-import domain.User;
 import repository.FriendshipRepository;
 import repository.RepoException;
 import repository.UserRepository;
@@ -115,7 +114,7 @@ public class FriendshipRepoInMemory implements FriendshipRepository {
      * @return a list with all the friendships - List[Friendship]
      */
     @Override
-    public List<Friendship> getAll() {
+    public List<Friendship> getAllApproved() {
         return friendships.stream().toList();
     }
 
@@ -133,5 +132,10 @@ public class FriendshipRepoInMemory implements FriendshipRepository {
                 friends.add(f.getFirst());
         }
         return friends;
+    }
+
+    @Override
+    public List<String> getUserFriendsAll(String email) {
+        return null;
     }
 }

@@ -22,12 +22,6 @@ public class TestFriendship {
     }
 
     @Test
-    public void testEquals() {
-        Assert.assertEquals(f1, f2);
-        Assert.assertEquals(f2, f1);
-    }
-
-    @Test
     public void testState(){
         Assert.assertEquals(f1.getState(), FRIENDSHIPSTATE.PENDING);
 
