@@ -150,6 +150,13 @@ public class Service {
     }
 
     /**
+     * Accepts the friendship setting its status to approved and setting the date
+     * @param f - friendship
+     */
+    public void acceptFriendship(Friendship f) throws Exception {
+        friendshipService.acceptFriendship(f);
+    }
+    /**
      * @param email - String the email of the user
      * @return the friends of the user
      */
@@ -175,5 +182,18 @@ public class Service {
                 notFriends.add(u);
 
         return notFriends;
+    }
+
+    /**
+     * Returns a list of a pending friend requests for the user with email
+     * @param email - string
+     * @return - List
+     */
+    public List<User> getUserFriendRequests(String email) {
+        ArrayList<User> users = new ArrayList<>();
+        for(String friendEmail: friendshipService.getUserFriendRequests(email)){
+            users.add(userService.getUser(friendEmail));
+        }
+        return users;
     }
 }

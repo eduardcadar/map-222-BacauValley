@@ -1,8 +1,11 @@
 package service;
 
+import domain.FRIENDSHIPSTATE;
 import domain.Friendship;
+import domain.User;
 import repository.FriendshipRepository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class FriendshipService {
@@ -68,10 +71,38 @@ public class FriendshipService {
     }
 
     /**
+     * Accepts a friendship
+     * @param f - friendship
+     * @throws Exception - if there is no pending request in friendship
+     */
+    public void acceptFriendship(Friendship f) throws Exception {
+        if(f.getState() != FRIENDSHIPSTATE.PENDING){
+            throw new Exception("There is no pending request between these 2 users");
+            // asta nu se mai poate intampla datorita validarilor de mai sus
+        }
+        repo.acceptFriendship(f);
+    }
+    // in userInterface()
+    // void acceptFriendship(string userEmail){
+    //  Friendship f = new Friendship(currentUser.getEmail(), userEmail)
+    //  if ( f se gaseste in repo)
+    //     srv.acceptFriendship(f)
+    // }
+
+    /**
      * @param email - String the email of the user
      * @return list with the emails of a user's friends
      */
     public List<String> getUserFriends(String email) {
         return repo.getUserFriends(email);
+    }
+
+    /**
+     * Returns a list of emails for friendships in status pending for user with email
+     * @param email
+     * @return
+     */
+    public List<String> getUserFriendRequests(String email) {
+        return repo.getUserFriendRequests(email);
     }
 }
