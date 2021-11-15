@@ -17,5 +17,7 @@ public class UserValidator implements Validator<User> {
         if (!namePattern.matcher(user.getLastName()).matches()) throw new ValidatorException("The last name has to only contain letters");
         if (!namePattern.matcher(user.getFirstName()).matches()) throw new ValidatorException("The first name has to only contain letters");
         if (!emailPattern.matcher(user.getEmail()).matches()) throw new ValidatorException("Invalid email");
+        // TODO - Validate the strong password ( at least 6 chars for moment)
+        if(user.getPassword().length() <= 5) throw new ValidatorException("Password was to contain at least 6 characters");
     }
 }

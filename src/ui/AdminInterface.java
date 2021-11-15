@@ -200,15 +200,17 @@ public class AdminInterface implements UserInterface {
      * Adds a user
      */
     private void addUser() {
-        String firstname, lastname, email;
+        String firstname, lastname, email, password;
         System.out.print("Write the first name of the user: ");
         firstname = console.nextLine();
         System.out.print("Write the last name of the user: ");
         lastname = console.nextLine();
         System.out.print("Write the email of the user: ");
         email = console.nextLine();
+        System.out.print("Write the password of the user: ");
+        password = console.nextLine();
         try {
-            srv.addUser(new User(lastname, firstname, email));
+            srv.addUser(new User(lastname, firstname, email, password));
             System.out.println("The user was added");
         } catch (ValidatorException | DbException | RepoException e) {
             System.out.println(e.getMessage());
