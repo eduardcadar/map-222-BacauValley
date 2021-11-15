@@ -90,7 +90,7 @@ public class FriendshipFileRepo extends FriendshipRepoInMemory implements Friend
      */
     private void writeAllToFile(String filename) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(filename))) {
-            for (Friendship f : super.getAll()) {
+            for (Friendship f : super.getAllApproved()) {
                 bw.write(createLine(f));
                 bw.newLine();
             }

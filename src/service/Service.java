@@ -153,7 +153,7 @@ public class Service {
      * Accepts the friendship setting its status to approved and setting the date
      * @param f - friendship
      */
-    public void acceptFriendship(Friendship f) throws Exception {
+    public void acceptFriendship(Friendship f)  {
         friendshipService.acceptFriendship(f);
     }
     /**
@@ -174,7 +174,7 @@ public class Service {
      * @return the users that are not friends with the given user
      */
     public List<User> getNotFriends(String email) {
-        List<String> friends = friendshipService.getUserFriends(email);
+        List<String> friends = friendshipService.getUserFriendsAll(email);
         List<User> notFriends = new ArrayList<>();
 
         for (User u : userService.getUsers())

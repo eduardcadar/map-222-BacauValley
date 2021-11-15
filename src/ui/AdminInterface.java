@@ -155,11 +155,12 @@ public class AdminInterface implements UserInterface {
      * Shows all friendships
      */
     private void showFriendships() {
-        if (srv.friendshipsIsEmpty())
+        List<Friendship> friendships = srv.getFriendships();
+        if (friendships.size() == 0)
             System.out.println("No friendships saved");
         else {
             System.out.println("----FRIENDSHIPS----");
-            for (Friendship f : srv.getFriendships())
+            for (Friendship f : friendships)
                 System.out.println(f);
         }
         System.out.println();

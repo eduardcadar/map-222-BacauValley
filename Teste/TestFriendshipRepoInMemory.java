@@ -24,7 +24,6 @@ public class TestFriendshipRepoInMemory {
     private Friendship f1 = new Friendship(u1, u2);
     private Friendship f2 = new Friendship(u1, u3);
     private Friendship f3 = new Friendship(u2, u4);
-    private Friendship f4 = new Friendship(u3, u1);
 
     @Test
     public void testAdd() {
@@ -34,7 +33,7 @@ public class TestFriendshipRepoInMemory {
         repo.addFriendship(f2);
         Assert.assertTrue(repo.size() == 2);
         try {
-            repo.addFriendship(f4);
+            repo.addFriendship(f2);
             Assert.assertTrue(false);
         } catch (RepoException e) {
             Assert.assertTrue(repo.size() == 2);
@@ -56,7 +55,7 @@ public class TestFriendshipRepoInMemory {
         }
         repo.addFriendship(f2);
         Assert.assertTrue(repo.size() == 2);
-        repo.removeFriendship(f4);
+        repo.removeFriendship(f2);
         Assert.assertTrue(repo.size() == 1);
         repo.clear();
         Assert.assertTrue(repo.isEmpty());
@@ -67,12 +66,12 @@ public class TestFriendshipRepoInMemory {
         repo.addFriendship(f1);
         repo.addFriendship(f2);
         repo.addFriendship(f3);
-        List<Friendship> frs = repo.getAll();
+        List<Friendship> frs = repo.getAllApproved();
         Assert.assertTrue(frs.size() == 3);
         Assert.assertTrue(frs.contains(f1));
         Assert.assertTrue(frs.contains(f2));
         Assert.assertTrue(frs.contains(f3));
-        Assert.assertTrue(frs.contains(f4));
+        Assert.assertTrue(frs.contains(f2));
     }
 
     @Test
