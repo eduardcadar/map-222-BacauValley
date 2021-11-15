@@ -1,5 +1,6 @@
 package ui;
 
+import Utils.PasswordEncryptor;
 import domain.Friendship;
 import domain.User;
 import repository.RepoException;
@@ -24,9 +25,12 @@ public class LoggedInterface implements UserInterface {
         System.out.print("Password: ");
         String password = console.nextLine().strip();
 
-        // TODO - verify login
-
-        return (loggedUser = srv.getUser(email)) != null;
+        loggedUser = srv.getUser(email);
+        if (loggedUser == null)
+            return false;
+        if(!loggedUser.getPassword().equals(PasswordEncryptor.toHexString(PasswordEncryptor.getSHA(password))))
+            return false;
+        return true;
     }
 
     private String menu() {

@@ -28,9 +28,15 @@ public class UserDbRepo implements UserRepository {
                 " email varchar NOT NULL, " +
                 " PRIMARY KEY (email) " +
                 ")";
+
+        String updateTable = "ALTER TABLE " + usersTable +
+                " ADD COLUMN IF NOT EXISTS password varchar DEFAULT '000000'";
+
         try (Connection connection = DriverManager.getConnection(this.url, this.username, this.password);
              PreparedStatement ps = connection.prepareStatement(sql)) {
              ps.executeUpdate();
+             PreparedStatement updateStatement = connection.prepareStatement(updateTable);
+             updateStatement.executeUpdate();
         }
 
         catch (SQLException e) {
@@ -55,12 +61,13 @@ public class UserDbRepo implements UserRepository {
         val.validate(u);
         if (getUser(u.getEmail()) != null)
             throw new RepoException("Exista deja un utilizator cu acest email");
-        String sql = "INSERT INTO " + usersTable + " (firstname, lastname, email) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO " + usersTable + " (firstname, lastname, email, password) VALUES (?, ?, ?, ?)";
         try (Connection connection = DriverManager.getConnection(url, username, password);
              PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, u.getFirstName());
             ps.setString(2, u.getLastName());
             ps.setString(3, u.getEmail());
+            ps.setString(4, u.getPassword());
             ps.executeUpdate();
         } catch (SQLException e) {
             throw new DbException(e.getMessage());
@@ -82,7 +89,7 @@ public class UserDbRepo implements UserRepository {
             ResultSet res = ps.executeQuery();
             if (!res.next())
                 return null;
-            us = new User(res.getString("firstname"), res.getString("lastname"), res.getString("email"));
+            us = new User(res.getString("firstname"), res.getString("lastname"), res.getString("email"), res.getString("password"));
             return us;
         }
         catch (SQLException e) {
