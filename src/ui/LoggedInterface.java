@@ -67,10 +67,10 @@ public class LoggedInterface implements UserInterface {
     /**
      * Accept friend request menu
      * First there are printed all friend requests for the logged user
-     * Second users chooses a number = the friend request that he want to accept
+     * Second user chooses a number = the friend request that he wants to accept
      */
     private void acceptFriendRequest() {
-        Map<Integer, User> usersMap =  showFriendRequests();
+        Map<Integer, User> usersMap = showFriendRequests();
         if (usersMap.size() == 0)
             return;
         Integer friendRequested = askNumberOfFriendRequests();
@@ -79,13 +79,12 @@ public class LoggedInterface implements UserInterface {
         }
         try {
             Friendship f = srv.getFriendship(loggedUser.getEmail(), usersMap.get(friendRequested).getEmail());
-            // f nu poate fi null ( se arunca exceptie daca nu se gaseste prietenia)
+            // f nu poate fi null (se arunca exceptie daca nu se gaseste prietenia)
             srv.acceptFriendship(f);
             System.out.println("Accepted friend request");
         } catch (NullPointerException e) {
             System.out.println("Invalid number");
-        }
-        catch (Exception e){
+        } catch (Exception e){
             System.out.println(e.getMessage());
         }
 
@@ -106,7 +105,7 @@ public class LoggedInterface implements UserInterface {
     }
 
     /**
-     * Prints the all users that are not friend with user with id =  email
+     * Prints all the users that are not friend with user with id = email
      * @param email - String - email of user
      * @return Map<Integer, String> - key = number of user, value = his email
      */
@@ -207,8 +206,9 @@ public class LoggedInterface implements UserInterface {
     }
 
     /**
-     * Prints all friendRequests received to loggedUser
-     *
+     * Prints all friend requests received by loggedUser
+     * Returns a map where key is number of user, value is the user
+     * @return Map<Integer, User>
      */
     private Map<Integer, User>  showFriendRequests() {
         List<User> friendRequests = srv.getUserFriendRequests(loggedUser.getEmail());

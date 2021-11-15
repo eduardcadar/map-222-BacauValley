@@ -7,10 +7,7 @@ import repository.db.DbException;
 import service.Service;
 import validator.ValidatorException;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 public class AdminInterface implements UserInterface {
     private final Scanner console;
@@ -180,8 +177,15 @@ public class AdminInterface implements UserInterface {
         }
         Map<Integer, User> users = showUsers();
         System.out.print("Write the number of the user you wish to remove: ");
-        Integer nrOfUser = console.nextInt();
-        console.nextLine();
+        Integer nrOfUser;
+        try {
+            nrOfUser = console.nextInt();
+        } catch (InputMismatchException e) {
+            System.out.println("Wrong input");
+            return;
+        } finally {
+            console.nextLine();
+        }
         try {
             srv.removeUser(users.get(nrOfUser).getEmail());
             System.out.println("The user was removed");
