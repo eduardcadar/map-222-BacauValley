@@ -82,7 +82,7 @@ public class Interface {
         LoggedInterface(srv, userLogat)
         void run(){
             if (log-in == false)
-                     return -> il trimiti inpoi in pizda masii in mainInterface
+                     return -> il trimiti inpoi in mainInterface
             while (true) {
                 case "1" add friendships   srv.addFriendship(loggedUser.getId(), input())
                 case "2" remove .. .
