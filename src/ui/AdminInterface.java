@@ -197,6 +197,15 @@ public class AdminInterface implements UserInterface {
     }
 
     /**
+     * Verifies the password
+     * @param password - String - the password to be verified
+     * @return true if the password is good, false otherwise
+     */
+    private boolean verifyPassword(String password) {
+        return password.length() > 5 && password.length() < 64;
+    }
+
+    /**
      * Adds a user
      */
     private void addUser() {
@@ -209,8 +218,12 @@ public class AdminInterface implements UserInterface {
         email = console.nextLine();
         System.out.print("Write the password of the user: ");
         password = console.nextLine();
+        if (!verifyPassword(password)) {
+            System.out.println("Password has to contain at least 6 characters");
+            return;
+        }
         try {
-            srv.addUser(new User(lastname, firstname, email, password));
+            srv.addUser(new User(firstname, lastname, email, password));
             System.out.println("The user was added");
         } catch (ValidatorException | DbException | RepoException e) {
             System.out.println(e.getMessage());

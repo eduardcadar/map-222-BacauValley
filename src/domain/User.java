@@ -19,7 +19,8 @@ public class User {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        this.password = PasswordEncryptor.toHexString(PasswordEncryptor.getSHA(password));
+        if (password.length() == 64) this.password = password;
+        else this.password = PasswordEncryptor.toHexString(PasswordEncryptor.getSHA(password));
     }
 
     /**

@@ -89,7 +89,7 @@ public class UserDbRepo implements UserRepository {
             ResultSet res = ps.executeQuery();
             if (!res.next())
                 return null;
-            us = new User(res.getString("firstname"), res.getString("lastname"), res.getString("email"));
+            us = new User(res.getString("firstname"), res.getString("lastname"), res.getString("email"), res.getString("password"));
             return us;
         }
         catch (SQLException e) {
