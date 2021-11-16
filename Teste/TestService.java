@@ -1,8 +1,6 @@
-import domain.FRIENDSHIPSTATE;
 import domain.Friendship;
 import domain.User;
 import domain.network.Network;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 import repository.FriendshipRepository;
