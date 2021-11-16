@@ -1,9 +1,5 @@
-import org.postgresql.util.PSQLException;
 import repository.db.DbException;
-import repository.file.FileException;
-import ui.AdminInterface;
 import ui.MainInterface;
-import validator.ValidatorException;
 
 public class Main {
 
