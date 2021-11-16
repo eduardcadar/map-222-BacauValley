@@ -235,7 +235,7 @@ public class LoggedInterface implements UserInterface {
      * @param email
      */
     private void showFriendsByMonth(String email){
-        System.out.println("Input the month");
+        System.out.print("Input the month: ");
         int month;
         try {
             month = console.nextInt();

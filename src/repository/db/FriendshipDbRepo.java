@@ -84,7 +84,11 @@ public class FriendshipDbRepo implements FriendshipRepository {
             if (!res.next())
                 return null;
             Friendship friendship =  new Friendship(res.getString("email1"), res.getString("email2"));
-            friendship.setDate(LocalDate.parse(res.getString("date")));
+            String date = res.getString("date");
+            if (date != null)
+                friendship.setDate(LocalDate.parse(date));
+            else
+                friendship.setDate(null);
             friendship.setState(FRIENDSHIPSTATE.valueOf(res.getString("state")));
             return friendship;
 
