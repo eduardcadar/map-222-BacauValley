@@ -13,5 +13,5 @@ public interface UserRepository {
     public void clear();
     public List<User> getAll();
     public boolean isEmpty();
-    public void update(String firstname, String lastname, String email);
+    public void update(User user);
 }

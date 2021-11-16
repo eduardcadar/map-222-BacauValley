@@ -32,17 +32,15 @@ public class UserRepoInMemory implements UserRepository {
     }
 
     /**
-     * Updates an user in the memory
-     * @param firstname - the new first name
-     * @param lastname - the new last name
-     * @param email - the email of the user to be updated
+     * Updates a user
+     * @param us - the user with the new attributes
      */
     @Override
-    public void update(String firstname, String lastname, String email) {
-        User user = users.get(email);
+    public void update(User us) {
+        User user = users.get(us.getEmail());
         if (user == null)
             throw new RepoException("The user is not saved");
-        users.put(email, user.update(firstname, lastname));
+        users.put(user.getEmail(), user.update(us.getFirstName(), us.getLastName(), us.getPassword()));
     }
 
     /**

@@ -126,9 +126,13 @@ public class UserFileRepo extends UserRepoInMemory implements UserRepository {
         super.clear();
     }
 
+    /**
+     * Updates a user
+     * @param user - the user with the new attributes
+     */
     @Override
-    public void update(String firstname, String lastname, String email) {
-        super.update(firstname, lastname, email);
+    public void update(User user) {
+        super.update(user);
         writeAllToFile(filename);
     }
 }

@@ -99,8 +99,10 @@ public class LoggedInterface implements UserInterface {
         String lastname = console.nextLine();
         System.out.print("Write the new first name: ");
         String firstname = console.nextLine();
+        System.out.print("Write the new password: ");
+        String password = console.nextLine();
         try {
-            srv.updateUser(firstname, lastname, loggedUser.getEmail());
+            srv.updateUser(firstname, lastname, loggedUser.getEmail(), password);
             loggedUser.update(firstname, lastname);
             System.out.println("Updated");
         } catch (DbException e) {

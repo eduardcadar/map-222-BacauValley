@@ -83,12 +83,12 @@ public class TestUserRepoInMemory {
         User u5 = new User("Ion","Popa","pop.ion@yahoo.com");
         repo.save(u5);
         User u6 = new User("Ion","Popa","popa.ion@yahoo.com");
-        repo.update(u5.getFirstName(), u5.getLastName(), u5.getEmail());
+        repo.update(u5);
         Assert.assertEquals(0, repo.getUser(u5.getEmail()).getLastName().compareTo("Popa"));
-        repo.update(u1.getFirstName(), u1.getLastName(), u1.getEmail());
+        repo.update(u1);
         Assert.assertEquals(0, repo.getUser(u5.getEmail()).getLastName().compareTo("Pop"));
         try {
-            repo.update(u6.getFirstName(), u6.getLastName(), u6.getEmail());
+            repo.update(u6);
             Assert.fail();
         } catch (RepoException e) {
             Assert.assertTrue(true);

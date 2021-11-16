@@ -56,6 +56,20 @@ public class User {
      * Updates the user's first name and last name and returns the user
      * @param firstname - the new first name
      * @param lastname - the new last name
+     * @param password - the new password
+     * @return User
+     */
+    public User update(String firstname, String lastname, String password) {
+        this.firstName = firstname;
+        this.lastName = lastname;
+        setPassword(password);
+        return this;
+    }
+
+    /**
+     * Updates the user's first name and last name and returns the user
+     * @param firstname - the new first name
+     * @param lastname - the new last name
      * @return User
      */
     public User update(String firstname, String lastname) {

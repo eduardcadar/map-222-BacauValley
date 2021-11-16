@@ -38,7 +38,7 @@ public class UserDbRepo implements UserRepository {
             PreparedStatement updateStatement = connection.prepareStatement(updateTable);
             updateStatement.executeUpdate();
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            throw new DbException(e.getMessage());
         }
 
     }
@@ -169,24 +169,23 @@ public class UserDbRepo implements UserRepository {
     }
 
     /**
-     * Updates a user's first name and last name in the database
-     * @param firstname - the new first name of the user
-     * @param lastname - the new last name of the user
-     * @param email - the email of the user to be updated
+     * Updates a user's first name, last name and password in the database
+     * @param user - the user with the new attributes
      */
     @Override
-    public void update(String firstname, String lastname, String email) {
-        if (getUser(email) == null)
+    public void update(User user) {
+        if (getUser(user.getEmail()) == null)
             throw new RepoException("Utilizatorul nu este salvat");
-        String sql = "UPDATE " + usersTable + " SET firstname = ?, lastname = ? WHERE email = ?";
+        String sql = "UPDATE " + usersTable + " SET firstname = ?, lastname = ?, password = ? WHERE email = ?";
         try (Connection connection = DriverManager.getConnection(url, username, password);
         PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setString(1, firstname);
-            ps.setString(2, lastname);
-            ps.setString(3, email);
+            ps.setString(1, user.getFirstName());
+            ps.setString(2, user.getLastName());
+            ps.setString(3, user.getPassword());
+            ps.setString(4, user.getEmail());
             ps.executeUpdate();
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            throw new DbException(throwables.getMessage());
         }
     }
 }

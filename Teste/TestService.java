@@ -40,10 +40,10 @@ public class TestService {
         Assert.assertEquals(sv.getUsers().size(), sv.usersSize());
         Assert.assertFalse(sv.usersIsEmpty());
         User u = new User("alexandru","cadar","adi.popa@yahoo.com");
-        sv.updateUser(u.getFirstName(), u.getLastName(), u.getEmail());
+        sv.updateUser(u.getFirstName(), u.getLastName(), u.getEmail(), u.getPassword());
         Assert.assertEquals("alexandru", sv.getUser(us1.getEmail()).getFirstName());
         Assert.assertEquals("cadar", sv.getUser(us1.getEmail()).getLastName());
-        sv.updateUser(us1.getFirstName(), us1.getLastName(), us1.getEmail());
+        sv.updateUser(us1.getFirstName(), us1.getLastName(), us1.getEmail(), u.getPassword());
     }
 
     @Test

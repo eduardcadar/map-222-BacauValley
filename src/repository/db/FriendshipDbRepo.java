@@ -42,7 +42,7 @@ public class FriendshipDbRepo implements FriendshipRepository {
             ps = connection.prepareStatement(updateTable);
             ps.executeUpdate();
         } catch (SQLException throwables) {
-            System.out.println(throwables.getMessage());
+            throw new DbException(throwables.getMessage());
         }
     }
 
