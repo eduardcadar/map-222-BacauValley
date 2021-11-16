@@ -78,16 +78,10 @@ public class FriendshipService {
     public void acceptFriendship(Friendship f) {
         if(f.getState() != FRIENDSHIPSTATE.PENDING){
             throw new RepoException("There is no pending request between these 2 users");
-            // asta nu se mai poate intampla datorita validarilor de mai sus
         }
         repo.acceptFriendship(f);
     }
-    // in userInterface()
-    // void acceptFriendship(string userEmail){
-    //  Friendship f = new Friendship(currentUser.getEmail(), userEmail)
-    //  if ( f se gaseste in repo)
-    //     srv.acceptFriendship(f)
-    // }
+
 
     /**
      * @param email - String the email of the user

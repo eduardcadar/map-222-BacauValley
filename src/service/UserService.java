@@ -14,7 +14,10 @@ public class UserService {
 
     /**
      * Adds a user to the repository
-     * @param u - the user to be added
+     * @param firstname - the new first name of the user
+     * @param lastname - the new last name of the user
+     * @param email - the email of the user to be updated
+     * @param password - the new password of the user
      */
     public void save(String firstname, String lastname, String email, String password) {
         repo.save(new User(firstname, lastname, email, password));

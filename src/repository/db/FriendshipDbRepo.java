@@ -83,7 +83,15 @@ public class FriendshipDbRepo implements FriendshipRepository {
             ResultSet res = ps.executeQuery();
             if (!res.next())
                 return null;
-            return new Friendship(res.getString("email1"), res.getString("email2"));
+            Friendship friendship =  new Friendship(res.getString("email1"), res.getString("email2"));
+            String date = res.getString("date");
+            if (date != null)
+                friendship.setDate(LocalDate.parse(date));
+            else
+                friendship.setDate(null);
+            friendship.setState(FRIENDSHIPSTATE.valueOf(res.getString("state")));
+            return friendship;
+
         } catch (SQLException throwables) {
             throw new DbException(throwables.getMessage());
         }
