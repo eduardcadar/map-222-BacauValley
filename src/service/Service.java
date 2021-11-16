@@ -1,5 +1,6 @@
 package service;
 
+import Utils.UserFriendDTO;
 import domain.Friendship;
 import domain.User;
 import domain.network.Network;
@@ -174,6 +175,26 @@ public class Service {
             friends.add(userService.getUser(friendEmail));
         }
         return friends;
+    }
+    // instead of public List<User>  getUserFriends
+    // TODO
+    // - return a list of DOTS where you have User and FriendsShipObject
+    public List<UserFriendDTO> getFriendshipsDTO(String email){
+        List<UserFriendDTO> userFriendDTOS  = new ArrayList<>();
+        List<String> friendsEmail = friendshipService.getUserFriends(email);
+        for(String friendEmail : friendsEmail){
+            Friendship friendship = friendshipService.getFriendship(email, friendEmail);
+            User friend;
+            if(email.equals(friendship.getFirst())) {
+                 friend = userService.getUser(friendship.getSecond());
+            }
+            else{
+                 friend = userService.getUser(friendship.getFirst());
+            }
+            UserFriendDTO userFriendDTO = new UserFriendDTO(friend.getFirstName(), friend.getLastName(), friendship.getDate());
+            userFriendDTOS.add(userFriendDTO);
+        }
+        return userFriendDTOS;
     }
 
     /**

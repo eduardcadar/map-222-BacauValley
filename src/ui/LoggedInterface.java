@@ -1,6 +1,7 @@
 package ui;
 
 import Utils.PasswordEncryptor;
+import Utils.UserFriendDTO;
 import domain.Friendship;
 import domain.User;
 import repository.RepoException;
@@ -41,6 +42,7 @@ public class LoggedInterface implements UserInterface {
         System.out.println("3. Remove friend");
         System.out.println("4. Show friends");
         System.out.println("5. Accept friend request");
+        System.out.println("6. Show friends by month");
         System.out.println("0. Exit");
         System.out.print("Write command: ");
         return console.nextLine().strip();
@@ -60,8 +62,9 @@ public class LoggedInterface implements UserInterface {
                 case "1" -> updateUser();
                 case "2" -> addFriend();
                 case "3" -> removeFriend();
-                case "4" -> showFriends(loggedUser.getEmail());
+                case "4" -> showFriendsFormatted(loggedUser.getEmail());
                 case "5" -> acceptFriendRequest();
+                case "6" -> showFriendsByMonth(loggedUser.getEmail());
                 default -> System.out.println("Wrong command");
             }
         }
@@ -191,9 +194,9 @@ public class LoggedInterface implements UserInterface {
     }
 
     /**
-     * Prints a list with all approved friendships for the user
-     * @param email - String
-     * @return List<User> - list of friends with user with email = email
+     * Return and prints a list of users that are friends with user with email
+     * @param email String
+     * @return
      */
     private List<User> showFriends(String email) {
         List<User> friends = srv.getUserFriends(email);
@@ -209,6 +212,61 @@ public class LoggedInterface implements UserInterface {
         }
         return friends;
     }
+
+
+    /**
+     * Prints a list with all approved friendships for the user
+     * @param email - String
+     */
+    private void showFriendsFormatted(String email) {
+        List<UserFriendDTO> dtos = srv.getFriendshipsDTO(email);
+        if (dtos.size() == 0) {
+            System.out.println("You don't have any friends :(");
+            return ;
+        }
+        System.out.println("----FRIENDS----");
+
+        dtos.forEach( System.out::println);
+
+    }
+
+    /**
+     * Asks user to input a month to print the friendships from that month
+     * @param email
+     */
+    private void showFriendsByMonth(String email){
+        System.out.println("Input the month");
+        int month;
+        try {
+            month = console.nextInt();
+        } catch (InputMismatchException e) {
+            System.out.println("Wrong input");
+            return;
+        } finally {
+            console.nextLine();
+        }
+        printFriendsByMonth(email, month);
+    }
+
+    /**
+     * Prints the friendships for user with email that started in the specified month
+     * @param email
+     * @param month
+     */
+    private void printFriendsByMonth(String email, int month) {
+        List<UserFriendDTO> dtos = srv.getFriendshipsDTO(email);
+        if (dtos.size() == 0) {
+            System.out.println("You don't have any friends :(");
+            return ;
+        }
+        System.out.println("----FRIENDS----");
+        // if the stream is empty should print ("You dont have any friends from that month")
+        // to be consistent with the :( prints
+        dtos.stream()
+                .filter(x -> x.getDate().getMonth().getValue() == month)
+                .forEach( System.out::println);
+    }
+
 
     /**
      * Prints all friend requests received by loggedUser
