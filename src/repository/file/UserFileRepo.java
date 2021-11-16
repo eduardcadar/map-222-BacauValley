@@ -127,8 +127,8 @@ public class UserFileRepo extends UserRepoInMemory implements UserRepository {
     }
 
     @Override
-    public void update(User u) {
-        super.update(u);
+    public void update(String firstname, String lastname, String email) {
+        super.update(firstname, lastname, email);
         writeAllToFile(filename);
     }
 }

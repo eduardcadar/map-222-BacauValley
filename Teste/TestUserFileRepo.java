@@ -54,12 +54,12 @@ public class TestUserFileRepo {
     public void testUpdate() {
         User u5 = new User("Ion","Pop","adi.popa@yahoo.com");
         User u6 = new User("Ion","Popa","popa.ion@yahoo.com");
-        repo.update(u5);
+        repo.update(u5.getFirstName(), u5.getLastName(), u5.getEmail());
         Assert.assertEquals(0, repo.getUser(u5.getEmail()).getLastName().compareTo("Pop"));
-        repo.update(u1);
+        repo.update(u1.getFirstName(), u1.getLastName(), u1.getEmail());
         Assert.assertEquals(0, repo.getUser(u5.getEmail()).getLastName().compareTo("popa"));
         try {
-            repo.update(u6);
+            repo.update(u6.getFirstName(), u6.getLastName(), u6.getEmail());
             Assert.fail();
         } catch (RepoException e) {
             Assert.assertTrue(true);

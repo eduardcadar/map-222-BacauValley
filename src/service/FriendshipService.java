@@ -26,10 +26,11 @@ public class FriendshipService {
 
     /**
      * Adds a friendship to the repository
-     * @param f - the friendship to be added
+     * @param email1 - the email of the first user
+     * @param email2 - the email of the second user
      */
-    public void addFriendship(Friendship f) {
-        repo.addFriendship(f);
+    public void addFriendship(String email1, String email2) {
+        repo.addFriendship(new Friendship(email1, email2));
     }
 
     /**

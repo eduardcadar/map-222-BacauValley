@@ -62,11 +62,11 @@ public class testUserRepoDb {
 
     @Test
     public void testUpdateUserDb() {
-        repo.update(new User("toma","furdui","adi.popa@yahoo.com"));
+        repo.update("toma","furdui","adi.popa@yahoo.com");
         User u = repo.getUser("adi.popa@yahoo.com");
         Assert.assertEquals("toma", u.getFirstName());
         Assert.assertEquals("furdui", u.getLastName());
-        repo.update(us1);
+        repo.update(us1.getFirstName(), us1.getLastName(), us1.getEmail());
     }
 
     @Test

@@ -33,13 +33,16 @@ public class UserRepoInMemory implements UserRepository {
 
     /**
      * Updates an user in the memory
-     * @param u - the user to be updated
+     * @param firstname - the new first name
+     * @param lastname - the new last name
+     * @param email - the email of the user to be updated
      */
     @Override
-    public void update(User u) {
-        if (!users.containsKey(u.getEmail()))
+    public void update(String firstname, String lastname, String email) {
+        User user = users.get(email);
+        if (user == null)
             throw new RepoException("The user is not saved");
-        users.put(u.getEmail(), u);
+        users.put(email, user.update(firstname, lastname));
     }
 
     /**

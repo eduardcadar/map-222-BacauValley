@@ -16,8 +16,8 @@ public class UserService {
      * Adds a user to the repository
      * @param u - the user to be added
      */
-    public void save(User u) {
-        repo.save(u);
+    public void save(String firstname, String lastname, String email, String password) {
+        repo.save(new User(firstname, lastname, email, password));
     }
 
     /**
@@ -33,8 +33,8 @@ public class UserService {
      * @param u - the user with the same email as the user given as parameter
      *          will have their firstname and lastname updated
      */
-    public void updateUser(User u) {
-        repo.update(u);
+    public void updateUser(String firstname, String lastname, String email) {
+        repo.update(firstname, lastname, email);
     }
 
     /**

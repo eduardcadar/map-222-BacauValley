@@ -32,7 +32,7 @@ public class TestService {
     @Test
     public void testUsersSv() {
         int nr = sv.usersSize();
-        sv.addUser(new User("firstname","lastname","email@email.email"));
+        sv.addUser("firstname","lastname","email@email.email", "pass");
         Assert.assertEquals(sv.usersSize(), nr + 1);
         Assert.assertEquals(0, sv.getUser("email@email.email").getEmail().compareTo("email@email.email"));
         sv.removeUser("email@email.email");
@@ -40,16 +40,16 @@ public class TestService {
         Assert.assertEquals(sv.getUsers().size(), sv.usersSize());
         Assert.assertFalse(sv.usersIsEmpty());
         User u = new User("alexandru","cadar","adi.popa@yahoo.com");
-        sv.updateUser(u);
+        sv.updateUser(u.getFirstName(), u.getLastName(), u.getEmail());
         Assert.assertEquals("alexandru", sv.getUser(us1.getEmail()).getFirstName());
         Assert.assertEquals("cadar", sv.getUser(us1.getEmail()).getLastName());
-        sv.updateUser(us1);
+        sv.updateUser(us1.getFirstName(), us1.getLastName(), us1.getEmail());
     }
 
     @Test
     public void testFriendshipsSv() {
         int nr = sv.friendshipsSize();
-        sv.addFriendship(new Friendship(us1, us2));
+        sv.addFriendship(us1.getEmail(), us2.getEmail());
         sv.acceptFriendship(new Friendship(us1, us2));
         Assert.assertNotNull(sv.getFriendship(us1.getEmail(), us2.getEmail()));
         Assert.assertEquals(sv.friendshipsSize(), nr + 1);

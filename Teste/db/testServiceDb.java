@@ -38,10 +38,10 @@ public class testServiceDb {
 
     @Before
     public void setUp() throws Exception {
-        service.addUser(us1);
-        service.addUser(us2);
-        service.addUser(us3);
-        service.addUser(us4);
+        service.addUser(us1.getFirstName(), us1.getLastName(), us1.getEmail(), us1.getPassword());
+        service.addUser(us2.getFirstName(), us2.getLastName(), us2.getEmail(), us2.getPassword());
+        service.addUser(us3.getFirstName(), us3.getLastName(), us3.getEmail(), us3.getPassword());
+        service.addUser(us4.getFirstName(), us4.getLastName(), us4.getEmail(), us4.getPassword());
     }
 
     @After
@@ -53,9 +53,9 @@ public class testServiceDb {
     @Test
     public void testGetUserFriends() {
         Assert.assertTrue(service.friendshipsIsEmpty());
-        service.addFriendship(f1);
-        service.addFriendship(f2);
-        service.addFriendship(f3);
+        service.addFriendship(f1.getFirst(), f1.getSecond());
+        service.addFriendship(f2.getFirst(), f2.getSecond());
+        service.addFriendship(f3.getFirst(), f3.getSecond());
         service.acceptFriendship(f1);
         service.acceptFriendship(f2);
         service.acceptFriendship(f3);
@@ -84,7 +84,7 @@ public class testServiceDb {
 
     @Test
     public void testFriendRequest() throws Exception {
-        service.addFriendship(new Friendship(us1,us2));
+        service.addFriendship(us1.getEmail(),us2.getEmail());
         Friendship f = service.getFriendship(us1.getEmail(), us2.getEmail());
         Assert.assertEquals(f.getState(), FRIENDSHIPSTATE.PENDING);
         Assert.assertEquals(1, service.getUserFriendRequests(us2.getEmail()).size());
@@ -95,11 +95,11 @@ public class testServiceDb {
 
     @Test
     public void testNetwork() {
-        service.addFriendship(f1);
+        service.addFriendship(f1.getFirst(), f1.getSecond());
         service.acceptFriendship(f1);
-        service.addFriendship(f2);
+        service.addFriendship(f2.getFirst(), f2.getSecond());
         service.acceptFriendship(f2);
-        service.addFriendship(f3);
+        service.addFriendship(f3.getFirst(), f3.getSecond());
         service.acceptFriendship(f3);
         Assert.assertEquals(1, service.getCommunities().size());
         Assert.assertEquals(1, service.nrCommunities());

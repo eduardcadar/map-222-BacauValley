@@ -34,20 +34,11 @@ public class UserDbRepo implements UserRepository {
 
         try (Connection connection = DriverManager.getConnection(this.url, this.username, this.password);
              PreparedStatement ps = connection.prepareStatement(sql)) {
-             ps.executeUpdate();
-             PreparedStatement updateStatement = connection.prepareStatement(updateTable);
-             updateStatement.executeUpdate();
-        }
-
-        catch (SQLException e) {
-            // daca facem o singura conexiune si in functie de cum se arunca exceptie pun la password - postgres
-            this.password = "postgres";
-            try (Connection connection = DriverManager.getConnection(this.url, this.username, this.password);
-                 PreparedStatement ps = connection.prepareStatement(sql)) {
-                ps.executeUpdate();
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
+            ps.executeUpdate();
+            PreparedStatement updateStatement = connection.prepareStatement(updateTable);
+            updateStatement.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
         }
 
     }
@@ -178,20 +169,21 @@ public class UserDbRepo implements UserRepository {
     }
 
     /**
-     * Updates a user in the database
-     * @param u - the user with the same email as the user given as parameter
-     *          will have their firstname and lastname updated
+     * Updates a user's first name and last name in the database
+     * @param firstname - the new first name of the user
+     * @param lastname - the new last name of the user
+     * @param email - the email of the user to be updated
      */
     @Override
-    public void update(User u) {
-        if (getUser(u.getEmail()) == null)
+    public void update(String firstname, String lastname, String email) {
+        if (getUser(email) == null)
             throw new RepoException("Utilizatorul nu este salvat");
         String sql = "UPDATE " + usersTable + " SET firstname = ?, lastname = ? WHERE email = ?";
         try (Connection connection = DriverManager.getConnection(url, username, password);
         PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setString(1, u.getFirstName());
-            ps.setString(2, u.getLastName());
-            ps.setString(3, u.getEmail());
+            ps.setString(1, firstname);
+            ps.setString(2, lastname);
+            ps.setString(3, email);
             ps.executeUpdate();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
