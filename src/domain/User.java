@@ -35,6 +35,7 @@ public class User {
         this.email = email;
         this.password = PasswordEncryptor.toHexString(PasswordEncryptor.getSHA("000000"));
     }
+
     /**
      * Returns the first name of an user
      * @return firstName - String
@@ -49,6 +50,32 @@ public class User {
      */
     public String getLastName() {
         return lastName;
+    }
+
+    /**
+     * Updates the user's first name and last name and returns the user
+     * @param firstname - the new first name
+     * @param lastname - the new last name
+     * @param password - the new password
+     * @return User
+     */
+    public User update(String firstname, String lastname, String password) {
+        this.firstName = firstname;
+        this.lastName = lastname;
+        setPassword(password);
+        return this;
+    }
+
+    /**
+     * Updates the user's first name and last name and returns the user
+     * @param firstname - the new first name
+     * @param lastname - the new last name
+     * @return User
+     */
+    public User update(String firstname, String lastname) {
+        this.firstName = firstname;
+        this.lastName = lastname;
+        return this;
     }
 
     @Override

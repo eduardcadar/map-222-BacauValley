@@ -36,17 +36,20 @@ public class Service {
     }
 
     /**
-     * Adds an user
-     * @param u - the user to be added
+     * Adds a user
+     * @param firstname - the first name of the user
+     * @param lastname - the last name of the user
+     * @param email - the email of the user
+     * @param password - the password of the user
      * @throws ValidatorException - if the user is not valid
      * @throws RepoException - if the email is already saved
      */
-    public void addUser(User u) throws ValidatorException, RepoException {
-        userService.save(u);
+    public void addUser(String firstname, String lastname, String email, String password) throws ValidatorException, RepoException {
+        userService.save(firstname, lastname, email, password);
     }
 
     /**
-     * Removes an user
+     * Removes a user
      * @param email - String the email of the user to be removed
      * @throws RepoException - if there's no user with the given email
      */
@@ -66,11 +69,12 @@ public class Service {
 
     /**
      * Adds a friendship
-     * @param f - the friendship to be added
+     * @param email1 - the email of the first user
+     * @param email2 - the email of the second user
      * @throws RepoException - if the friendship is already saved
      */
-    public void addFriendship(Friendship f) {
-        friendshipService.addFriendship(f);
+    public void addFriendship(String email1, String email2) {
+        friendshipService.addFriendship(email1, email2);
     }
 
     /**
@@ -93,11 +97,14 @@ public class Service {
     }
 
     /**
-     * Updates an user
-     * @param u - the new user with that email
+     * Updates a user
+     * @param firstname - the new first name of the user
+     * @param lastname - the new last name of the user
+     * @param email - the email of the user to be updated
+     * @param password - the new password of the user
      */
-    public void updateUser(User u) {
-        userService.updateUser(u);
+    public void updateUser(String firstname, String lastname, String email, String password) {
+        userService.updateUser(firstname, lastname, email, password);
     }
 
     /**

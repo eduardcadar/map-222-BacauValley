@@ -41,10 +41,10 @@ public class FriendshipDbRepo implements FriendshipRepository {
             ps.executeUpdate();
             ps = connection.prepareStatement(updateTable);
             ps.executeUpdate();
-         } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
+        } catch (SQLException throwables) {
+            throw new DbException(throwables.getMessage());
         }
+    }
 
     /**
      * Validates and adds a friendship to the database

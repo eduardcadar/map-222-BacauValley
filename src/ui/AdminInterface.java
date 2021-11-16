@@ -223,7 +223,7 @@ public class AdminInterface implements UserInterface {
             return;
         }
         try {
-            srv.addUser(new User(firstname, lastname, email, password));
+            srv.addUser(firstname, lastname, email, password);
             System.out.println("The user was added");
         } catch (ValidatorException | DbException | RepoException e) {
             System.out.println(e.getMessage());

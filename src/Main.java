@@ -1,8 +1,5 @@
 import repository.db.DbException;
-import repository.file.FileException;
-import ui.AdminInterface;
 import ui.MainInterface;
-import validator.ValidatorException;
 
 public class Main {
 
@@ -23,7 +20,6 @@ public class Main {
             MainInterface ui = new MainInterface("jdbc:postgresql://localhost:5432/ToySocialNetwork");
             ui.run();
         } catch (DbException e) {
-            e.printStackTrace();
             System.out.println(e.getMessage());
         }
     }

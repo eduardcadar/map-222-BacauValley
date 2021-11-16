@@ -60,7 +60,7 @@ public class UserFileRepo extends UserRepoInMemory implements UserRepository {
      */
     private User extractUser(List<String> attr) {
         if (attr.size() != 3) throw new FileException("Wrong data as parameter");
-        return new User(attr.get(2), attr.get(1), attr.get(0));
+        return new User(attr.get(1), attr.get(2), attr.get(0));
     }
 
     /**
@@ -126,9 +126,13 @@ public class UserFileRepo extends UserRepoInMemory implements UserRepository {
         super.clear();
     }
 
+    /**
+     * Updates a user
+     * @param user - the user with the new attributes
+     */
     @Override
-    public void update(User u) {
-        super.update(u);
+    public void update(User user) {
+        super.update(user);
         writeAllToFile(filename);
     }
 }

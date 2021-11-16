@@ -99,9 +99,11 @@ public class LoggedInterface implements UserInterface {
         String lastname = console.nextLine();
         System.out.print("Write the new first name: ");
         String firstname = console.nextLine();
+        System.out.print("Write the new password: ");
+        String password = console.nextLine();
         try {
-            srv.updateUser(new User(firstname, lastname, loggedUser.getEmail()));
-            loggedUser = new User(firstname, lastname, loggedUser.getEmail());
+            srv.updateUser(firstname, lastname, loggedUser.getEmail(), password);
+            loggedUser.update(firstname, lastname);
             System.out.println("Updated");
         } catch (DbException e) {
             System.out.println(e.getMessage());
@@ -129,18 +131,17 @@ public class LoggedInterface implements UserInterface {
 
 
     private void addFriend() {
-        if (srv.usersSize() < 1) {
-            System.out.println("Not enough users saved");
+        Map<Integer, String> users = printNotFriends(loggedUser.getEmail());
+        if (users.size() < 1) {
+            System.out.println("No user available for friend request");
             return;
         }
-        Map<Integer, String> users = printNotFriends(loggedUser.getEmail());
         System.out.print("Write the number of the user: ");
         int userNumber = askForUserNumberInput(users);
         if(userNumber == 0)
             return;
         try {
-            Friendship f = new Friendship(loggedUser.getEmail(), users.get(userNumber));
-            srv.addFriendship(f);
+            srv.addFriendship(loggedUser.getEmail(), users.get(userNumber));
             System.out.println("The friend request was sent");
         } catch (RepoException | DbException e) {
             System.out.println(e.getMessage());
