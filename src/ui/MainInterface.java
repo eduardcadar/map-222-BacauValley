@@ -3,16 +3,12 @@ package ui;
 import domain.Friendship;
 import domain.User;
 import domain.network.Network;
-import repository.FriendshipRepository;
-import repository.UserRepository;
 import repository.db.FriendshipDbRepo;
+import repository.db.MessageDbRepo;
+import repository.db.MessageReceiverDbRepo;
 import repository.db.UserDbRepo;
-import service.FriendshipService;
-import service.Service;
-import service.UserService;
-import validator.FriendshipValidator;
-import validator.UserValidator;
-import validator.Validator;
+import service.*;
+import validator.*;
 
 import java.util.Scanner;
 
@@ -39,8 +35,12 @@ public class MainInterface implements UserInterface {
         Validator<Friendship> fVal = new FriendshipValidator();
         FriendshipDbRepo fRepo = new FriendshipDbRepo(url, username, password, fVal, "friendships");
         FriendshipService fSrv = new FriendshipService(fRepo);
+        MessageDbRepo mRepo = new MessageDbRepo(url, username, password, new MessageValidator(), "messages");
+        MessageService mSrv = new MessageService(mRepo);
+        MessageReceiverDbRepo mrRepo = new MessageReceiverDbRepo(url, username, password, new MessageReceiverValidator(), "receivers");
+        MessageReceiverService mrSrv = new MessageReceiverService(mrRepo);
         Network network = new Network(uRepo, fRepo);
-        srv = new Service(uSrv, fSrv, network);
+        srv = new Service(uSrv, fSrv, mSrv, mrSrv, network);
         this.loggedInterface = new LoggedInterface(console, srv);
         this.adminInterface = new AdminInterface(console, srv);
     }

@@ -10,11 +10,13 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import repository.db.FriendshipDbRepo;
+import repository.db.MessageDbRepo;
+import repository.db.MessageReceiverDbRepo;
 import repository.db.UserDbRepo;
-import service.FriendshipService;
-import service.Service;
-import service.UserService;
+import service.*;
 import validator.FriendshipValidator;
+import validator.MessageReceiverValidator;
+import validator.MessageValidator;
 import validator.UserValidator;
 
 import java.util.List;
@@ -31,11 +33,15 @@ public class testServiceDb {
     private final User us4 = new User("gabriel", "andrei", "a.gabi@gmail.com");
     private final FriendshipDbRepo fRepo = new FriendshipDbRepo(url, username, password, new FriendshipValidator(), "friendships");
     private final FriendshipService fSrv = new FriendshipService(fRepo);
+    private final MessageDbRepo mRepo = new MessageDbRepo(url, username, password, new MessageValidator(), "messages");
+    private final MessageService mSrv = new MessageService(mRepo);
+    private final MessageReceiverDbRepo mrRepo = new MessageReceiverDbRepo(url, username, password, new MessageReceiverValidator(), "receivers");
+    private final MessageReceiverService mrSrv = new MessageReceiverService(mrRepo);
     private final Friendship f1 = new Friendship(us2, us1);
     private final Friendship f2 = new Friendship(us3, us1);
     private final Friendship f3 = new Friendship(us2, us4);
     private final Network ntw = new Network(uRepo, fRepo);
-    private final Service service = new Service(uSrv, fSrv, ntw);
+    private final Service service = new Service(uSrv, fSrv, mSrv, mrSrv, ntw);
 
     @Before
     public void setUp() throws Exception {

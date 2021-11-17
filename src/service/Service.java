@@ -2,6 +2,7 @@ package service;
 
 import Utils.UserFriendDTO;
 import domain.Friendship;
+import domain.Message;
 import domain.User;
 import domain.network.Network;
 import repository.RepoException;
@@ -14,11 +15,15 @@ import java.util.Map;
 public class Service {
     private final UserService userService;
     private final FriendshipService friendshipService;
+    private final MessageService messageService;
+    private final MessageReceiverService messageReceiverService;
     private final Network network;
 
-    public Service(UserService userService, FriendshipService friendshipService, Network network) {
+    public Service(UserService userService, FriendshipService friendshipService, MessageService messageService, MessageReceiverService messageReceiverService, Network network) {
         this.userService = userService;
         this.friendshipService = friendshipService;
+        this.messageService = messageService;
+        this.messageReceiverService = messageReceiverService;
         this.network = network;
     }
 
@@ -232,5 +237,20 @@ public class Service {
             users.add(userService.getUser(friendEmail));
         }
         return users;
+    }
+
+    //TODO - N-AM TESTAT NU STIU DACA MERGE
+    /**
+     * Returns a list with the messages received by a user from a specific user
+     * @param receiver the email of the receiver
+     * @param sender the email of the sender
+     * @return list with messages
+     */
+    public List<Message> getMessagesReceivedBy(String receiver, String sender) {
+        List<Message> messages = new ArrayList<>();
+        List<Integer> messageIds = messageReceiverService.getMessageIdsReceivedBy(receiver);
+        messageIds.forEach(x -> messages.add(messageService.getMessage(x)));
+        messages.stream().filter(x -> x.getSender().compareTo(sender) == 0);
+        return messages;
     }
 }
