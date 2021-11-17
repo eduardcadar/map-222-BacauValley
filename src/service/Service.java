@@ -80,11 +80,11 @@ public class Service {
 
     /**
      * Removes a friendship
-     * @param f - the friendship to be removed
-     * @throws RepoException - if the friendship is not saved
+     * @param email1 - String - the email of a user
+     * @param email2 - String - the email of the other user
      */
-    public void removeFriendship(Friendship f) {
-        friendshipService.removeFriendship(f);
+    public void removeFriendship(String email1, String email2) {
+        friendshipService.removeFriendship(email1, email2);
     }
 
     /**
@@ -176,9 +176,18 @@ public class Service {
         }
         return friends;
     }
+
     // instead of public List<User>  getUserFriends
     // TODO
     // - return a list of DOTS where you have User and FriendsShipObject
+
+    /**
+     * Returns a list of DTOs with a user's friends
+     * A dto contains the first name and last name of a friend and the date
+     * when the two users became friends
+     * @param email - String - the email of the user
+     * @return List<UserFriendDTO>
+     */
     public List<UserFriendDTO> getFriendshipsDTO(String email){
         List<UserFriendDTO> userFriendDTOS  = new ArrayList<>();
         List<String> friendsEmail = friendshipService.getUserFriends(email);

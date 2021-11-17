@@ -35,10 +35,11 @@ public class FriendshipService {
 
     /**
      * Removes a friendship from the repository
-     * @param f - the friendship to be removed
+     * @param email1 - String - the email of a user
+     * @param email2 - String - the email of the other user
      */
-    public void removeFriendship(Friendship f) {
-        repo.removeFriendship(f);
+    public void removeFriendship(String email1, String email2) {
+        repo.removeFriendship(new Friendship(email1, email2));
     }
 
     /**
