@@ -64,18 +64,17 @@ public class Friendship {
      */
     public void setState(FRIENDSHIPSTATE state){
         this.state = state;
-
     }
 
     /**
-     *
      * @return - return the date when the friend request was accepted
      */
     public LocalDate getDate() {
         return date;
     }
 
-    /** Sets the date of the friendship object
+    /**
+     * Sets the date of the friendship object
      * @param date - LocalDate
      */
     public void setDate(LocalDate date){
