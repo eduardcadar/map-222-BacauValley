@@ -10,17 +10,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserDbRepo implements UserRepository {
-    private final String url;
-    private final String username;
-    private  String password;
-    private final String usersTable;
-    private final Validator<User> val;
+    private final String url, username, password, usersTable;
+    private final Validator<User> validator;
 
-    public UserDbRepo(String url, String username, String password, Validator<User> val, String usersTable) {
+    public UserDbRepo(String url, String username, String password, Validator<User> validator, String usersTable) {
         this.url = url;
         this.username = username;
         this.password = password;
-        this.val = val;
+        this.validator = validator;
         this.usersTable = usersTable;
         String sql = "CREATE TABLE IF NOT EXISTS " + usersTable +
                 "(firstname varchar NOT NULL," +
@@ -49,7 +46,7 @@ public class UserDbRepo implements UserRepository {
      */
     @Override
     public void save(User u) {
-        val.validate(u);
+        validator.validate(u);
         if (getUser(u.getEmail()) != null)
             throw new RepoException("Exista deja un utilizator cu acest email");
         String sql = "INSERT INTO " + usersTable + " (firstname, lastname, email, password) VALUES (?, ?, ?, ?)";
