@@ -185,7 +185,7 @@ public class LoggedInterface implements UserInterface {
             if (numberOfUser == 0)
                 return;
             try {
-                srv.removeFriendship(new Friendship(friendsMap.get(numberOfUser), loggedUser.getEmail()));
+                srv.removeFriendship(friendsMap.get(numberOfUser), loggedUser.getEmail());
                 System.out.println("The friend was removed");
             } catch (RepoException e) {
                 System.out.println(e.getMessage());

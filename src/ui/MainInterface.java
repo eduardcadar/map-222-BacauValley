@@ -7,8 +7,6 @@ import repository.FriendshipRepository;
 import repository.UserRepository;
 import repository.db.FriendshipDbRepo;
 import repository.db.UserDbRepo;
-import repository.file.FriendshipFileRepo;
-import repository.file.UserFileRepo;
 import service.FriendshipService;
 import service.Service;
 import service.UserService;
@@ -23,25 +21,6 @@ public class MainInterface implements UserInterface {
     private final LoggedInterface loggedInterface;
     private final AdminInterface adminInterface;
     private final Service srv;
-
-    /**
-     * File repo
-     * @param usersFile - String the name of the users file
-     * @param friendshipsFile - String the name of the friendships file
-     */
-    public MainInterface(String usersFile, String friendshipsFile) {
-        console = new Scanner(System.in);
-        Validator<User> uVal = new UserValidator();
-        UserRepository uRepo = new UserFileRepo(usersFile, uVal);
-        UserService uSrv = new UserService(uRepo);
-        Validator<Friendship> fVal = new FriendshipValidator();
-        FriendshipRepository fRepo = new FriendshipFileRepo(friendshipsFile, fVal, uRepo);
-        FriendshipService fSrv = new FriendshipService(fRepo);
-        Network network = new Network(uRepo, fRepo);
-        srv = new Service(uSrv, fSrv, network);
-        this.loggedInterface = new LoggedInterface(console, srv);
-        this.adminInterface = new AdminInterface(console, srv);
-    }
 
     /**
      * Database repo

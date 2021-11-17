@@ -1,5 +1,6 @@
 package db;
 
+import Utils.UserFriendDTO;
 import domain.FRIENDSHIPSTATE;
 import domain.Friendship;
 import domain.User;
@@ -51,6 +52,22 @@ public class testServiceDb {
     }
 
     @Test
+    public void testUsersSv() {
+        Assert.assertEquals(4, service.usersSize());
+        service.removeUser(us1.getEmail());
+        Assert.assertEquals(3, service.usersSize());
+        List<User> users = service.getUsers();
+        Assert.assertTrue(users.contains(us2));
+        Assert.assertTrue(users.contains(us3));
+        Assert.assertTrue(users.contains(us4));
+        Assert.assertFalse(service.usersIsEmpty());
+        service.updateUser("andrei", "popescu", "popescu.alex@gmail.com", "parolaa");
+        User us = service.getUser("popescu.alex@gmail.com");
+        Assert.assertEquals(us.getFirstName(), "andrei");
+        Assert.assertEquals(us.getLastName(), "popescu");
+    }
+
+    @Test
     public void testGetUserFriends() {
         Assert.assertTrue(service.friendshipsIsEmpty());
         service.addFriendship(f1.getFirst(), f1.getSecond());
@@ -59,6 +76,10 @@ public class testServiceDb {
         service.acceptFriendship(f1);
         service.acceptFriendship(f2);
         service.acceptFriendship(f3);
+
+        List<UserFriendDTO> friendsDTOs = service.getFriendshipsDTO(us1.getEmail());
+        Assert.assertEquals(2, friendsDTOs.size());
+
         List<User> friends = service.getUserFriends(us1.getEmail());
         Assert.assertEquals(2, friends.size());
         Assert.assertTrue(friends.contains(us2));
@@ -83,14 +104,35 @@ public class testServiceDb {
     }
 
     @Test
+    public void testFriendshipsSv() {
+        Assert.assertEquals(0, service.friendshipsSize());
+        service.addFriendship(f1.getFirst(), f1.getSecond());
+        service.acceptFriendship(f1);
+        service.addFriendship(f2.getFirst(), f2.getSecond());
+        service.acceptFriendship(f2);
+        Assert.assertEquals(2, service.friendshipsSize());
+        Friendship f = service.getFriendship(us1.getEmail(), us2.getEmail());
+        Assert.assertNotNull(f);
+        f = service.getFriendship(us1.getEmail(), us4.getEmail());
+        Assert.assertNull(f);
+        List<Friendship> friendships = service.getFriendships();
+        Assert.assertTrue(friendships.contains(f1));
+        Assert.assertTrue(friendships.contains(f2));
+        Assert.assertFalse(friendships.contains(f3));
+        service.removeFriendship(us1.getEmail(), us3.getEmail());
+        Assert.assertEquals(1, service.friendshipsSize());
+    }
+
+    @Test
     public void testFriendRequest() throws Exception {
-        service.addFriendship(us1.getEmail(),us2.getEmail());
+        service.addFriendship(us1.getEmail(), us2.getEmail());
         Friendship f = service.getFriendship(us1.getEmail(), us2.getEmail());
         Assert.assertEquals(f.getState(), FRIENDSHIPSTATE.PENDING);
         Assert.assertEquals(1, service.getUserFriendRequests(us2.getEmail()).size());
         service.acceptFriendship(f);
         Assert.assertEquals(f.getState(), FRIENDSHIPSTATE.APPROVED);
         Assert.assertNotNull(f.getDate());
+        service.removeFriendship(f.getFirst(), f.getSecond());
     }
 
     @Test

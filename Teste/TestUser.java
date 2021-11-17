@@ -14,6 +14,14 @@ public class TestUser {
     }
 
     @Test
+    public void testUpdate() {
+        us1.update("gigel","g","parola");
+        Assert.assertEquals(us1.getLastName(),"g");
+        Assert.assertEquals(us1.getFirstName(),"gigel");
+        us1.update("Ion","Pop","000000");
+    }
+
+    @Test
     public void testToString() {
         Assert.assertEquals(0, us1.toString().compareTo("Pop Ion"));
     }
