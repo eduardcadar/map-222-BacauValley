@@ -21,6 +21,10 @@ public class LoggedInterface implements UserInterface {
         this.srv = srv;
     }
 
+    /**
+     * Login the user
+     * @return true if the login was successful, false otherwise
+     */
     public boolean login() {
         System.out.print("Email: ");
         String email = console.nextLine().strip();
@@ -30,9 +34,7 @@ public class LoggedInterface implements UserInterface {
         loggedUser = srv.getUser(email);
         if (loggedUser == null)
             return false;
-        if(!loggedUser.getPassword().equals(PasswordEncryptor.toHexString(PasswordEncryptor.getSHA(password))))
-            return false;
-        return true;
+        return loggedUser.getPassword().equals(PasswordEncryptor.toHexString(PasswordEncryptor.getSHA(password)));
     }
 
     private String menu() {
@@ -76,26 +78,25 @@ public class LoggedInterface implements UserInterface {
         System.out.println("Exiting logged interface...");
     }
 
+    /**
+     * Sends a message to other users
+     */
     public void sendMessage() {
-        Map<Integer, String> friendsMap = new HashMap<>();
-        List<User> friendsList =  showFriends(loggedUser.getEmail());
-        if (friendsList == null) return;
-        int i = 0;
-        for (User friend : friendsList) {
-            i++;
-            friendsMap.put(i, friend.getEmail());
-        }
+        printFriends(loggedUser.getEmail());
+        Map<Integer, User> friendsMap = getFriendsMap(loggedUser.getEmail());
+        if (friendsMap.size() == 0) return;
+
         List<String> receivers = new ArrayList<>();
         System.out.print("Write number of friend to add to receivers: ");
-        Integer nr = getInteger();
-        while (!nr.equals(0)) {
-            String friend = friendsMap.get(nr);
-            if (!receivers.contains(friend))
-                receivers.add(friend);
+        int nr = askForUserNumberInput(friendsMap.size());
+        while (nr != 0) {
+            User friend = friendsMap.get(nr);
+            if (!receivers.contains(friend.getEmail()))
+                receivers.add(friend.getEmail());
             else
                 System.out.println("Friend already added");
             System.out.print("Write number of friend to add to receivers (or 0 if you added all of them): ");
-            nr = getInteger();
+            nr = askForUserNumberInput(friendsMap.size());
         }
         if (receivers.isEmpty()) {
             System.out.println("At least 1 receiver please :(");
@@ -106,22 +107,20 @@ public class LoggedInterface implements UserInterface {
         srv.save(loggedUser.getEmail(), receivers, messageText);
     }
 
+    /**
+     * Shows conversation between logged user and another user
+     */
     public void showConversationWithUser() {
-        Map<Integer, String> friendsMap = new HashMap<>();
-        List<User> friendsList =  showFriends(loggedUser.getEmail());
+        printFriends(loggedUser.getEmail());
+        Map<Integer, User> friendsMap = getFriendsMap(loggedUser.getEmail());
+        if (friendsMap.size() == 0)
+            return;
         System.out.print("Write the number of the friend: ");
-        int i = 0;
-        if (friendsList != null) {
-            for (User friend : friendsList) {
-                i++;
-                friendsMap.put(i, friend.getEmail());
-            }
-            Integer numberOfUser = askForUserNumberInput(friendsMap);
-            if (numberOfUser == 0)
-                return;
-            List<Message> messages = srv.getConversation(loggedUser.getEmail(), friendsMap.get(numberOfUser));
-            messages.forEach(x -> System.out.println(x));
-        }
+        int numberOfUser = askForUserNumberInput(friendsMap.size());
+        if (numberOfUser == 0)
+            return;
+        List<Message> messages = srv.getConversation(loggedUser.getEmail(), friendsMap.get(numberOfUser).getEmail());
+        messages.forEach(System.out::println);
     }
 
     /**
@@ -149,6 +148,9 @@ public class LoggedInterface implements UserInterface {
         }
     }
 
+    /**
+     * Updates the logged user
+     */
     private void updateUser() {
         System.out.print("Write the new last name: ");
         String lastname = console.nextLine();
@@ -166,53 +168,75 @@ public class LoggedInterface implements UserInterface {
     }
 
     /**
-     * Prints all the users that are not friend with user with id = email
-     * @param email - String - email of user
-     * @return Map<Integer, String> - key = number of user, value = his email
+     * Returns a map with the users that are not friends with a user
+     * @param email email of user
+     * @return Map<Integer, User> - key = number of user, value = the user
      */
-    private Map<Integer, String> printNotFriends(String email){
+    private Map<Integer, User> getNotFriendsMap(String email){
         List<User> notFriends = srv.getNotFriends(email);
-        Map<Integer, String> users = new HashMap<>();
-        Integer i = 0;
-        for (User u : notFriends) {
+        Map<Integer, User> notFriendsMap = new HashMap<>();
+        int i = 0;
+        for (User user : notFriends) {
             i++;
-            users.put(i, u.getEmail());
+            notFriendsMap.put(i, user);
         }
-        System.out.println("----USERS----");
-        for (Integer j = 1; j <= i; j++)
-            System.out.println(j + ". " + srv.getUser(users.get(j)));
-        return users;
+        return notFriendsMap;
     }
 
+    /**
+     * Prints the users that are not friends with a user
+     * @param email email of user
+     */
+    private void printNotFriends(String email) {
+        List<User> notFriends = srv.getNotFriends(email);
+        int i = 0;
+        for (User user : notFriends) {
+            i++;
+            System.out.println(i + ". " + user);
+        }
+    }
 
+    /**
+     * Adds a friend to the logged user
+     */
     private void addFriend() {
-        Map<Integer, String> users = printNotFriends(loggedUser.getEmail());
-        if (users.size() < 1) {
-            System.out.println("No user available for friend request");
+        printNotFriends(loggedUser.getEmail());
+        Map<Integer, User> notFriendsMap = getNotFriendsMap(loggedUser.getEmail());
+        if (notFriendsMap.size() == 0) {
+            System.out.println("No user available to friend request");
             return;
         }
         System.out.print("Write the number of the user: ");
-        int userNumber = askForUserNumberInput(users);
+        int userNumber = askForUserNumberInput(notFriendsMap.size());
         if(userNumber == 0)
             return;
         try {
-            srv.addFriendship(loggedUser.getEmail(), users.get(userNumber));
+            srv.addFriendship(loggedUser.getEmail(), notFriendsMap.get(userNumber).getEmail());
             System.out.println("The friend request was sent");
         } catch (RepoException | DbException e) {
             System.out.println(e.getMessage());
         }
     }
 
-    private Integer askForUserNumberInput(Map<Integer, String> users) {
+    /**
+     * Returns a number read from keyboard
+     * @param nrUsers max nr to be read from keyboard
+     * @return int number of user read from keyboard
+     */
+    private Integer askForUserNumberInput(int nrUsers) {
         Integer userNumber = getInteger();
         if (userNumber == null) return 0;
-        if (userNumber < 1 || userNumber > users.size() + 1) {
+        if (userNumber < 0 || userNumber > nrUsers) {
             System.out.println("Invalid number");
             return 0;
         }
         return userNumber;
     }
 
+    /**
+     * Reads an int from console
+     * @return integer input
+     */
     private Integer getInteger() {
         int userNumber;
         try {
@@ -230,37 +254,32 @@ public class LoggedInterface implements UserInterface {
      * Removes a friend from the list of friends for the loggedUser
      */
     private void removeFriend() {
-        Map<Integer, String> friendsMap = new HashMap<>();
-        List<User> friendsList =  showFriends(loggedUser.getEmail());
+        printFriends(loggedUser.getEmail());
+        Map<Integer, User> friendsMap = getFriendsMap(loggedUser.getEmail());
+        if (friendsMap.size() == 0)
+            return;
         System.out.print("Write the number of the friend you wish to remove: ");
         int i = 0;
-        if(friendsList != null) {
-            for (User friend : friendsList) {
-                i++;
-                friendsMap.put(i, friend.getEmail());
-            }
-            Integer numberOfUser = askForUserNumberInput(friendsMap);
-            if (numberOfUser == 0)
-                return;
-            try {
-                srv.removeFriendship(friendsMap.get(numberOfUser), loggedUser.getEmail());
-                System.out.println("The friend was removed");
-            } catch (RepoException e) {
-                System.out.println(e.getMessage());
-            }
+        int numberOfUser = askForUserNumberInput(friendsMap.size());
+        if (numberOfUser == 0)
+            return;
+        try {
+            srv.removeFriendship(friendsMap.get(numberOfUser).getEmail(), loggedUser.getEmail());
+            System.out.println("The friend was removed");
+        } catch (RepoException e) {
+            System.out.println(e.getMessage());
         }
     }
 
     /**
-     * Return and prints a list of users that are friends with user with email
-     * @param email String
-     * @return
+     * Prints a list of users that are friends with user with email
+     * @param email user email
      */
-    private List<User> showFriends(String email) {
+    private void printFriends(String email) {
         List<User> friends = srv.getUserFriends(email);
         if (friends.size() == 0) {
             System.out.println("You don't have any friends :(");
-            return null;
+            return;
         }
         System.out.println("----FRIENDS----");
         int i = 0;
@@ -268,13 +287,28 @@ public class LoggedInterface implements UserInterface {
             i++;
             System.out.println(i + ". " + friend);
         }
-        return friends;
+    }
+
+    /**
+     * Returns a map with a user's friends
+     * @param email user email
+     * @return map with key number of user, value the user
+     */
+    private Map<Integer, User> getFriendsMap(String email) {
+        List<User> friends = srv.getUserFriends(email);
+        Map<Integer, User> friendsMap = new HashMap<>();
+        int i = 0;
+        for (User user : friends) {
+            i++;
+            friendsMap.put(i, user);
+        }
+        return friendsMap;
     }
 
 
     /**
      * Prints a list with all approved friendships for the user
-     * @param email - String
+     * @param email user email
      */
     private void showFriendsFormatted(String email) {
         List<UserFriendDTO> dtos = srv.getFriendshipsDTO(email);
@@ -290,7 +324,7 @@ public class LoggedInterface implements UserInterface {
 
     /**
      * Asks user to input a month to print the friendships from that month
-     * @param email
+     * @param email user email
      */
     private void showFriendsByMonth(String email){
         System.out.print("Input the month: ");

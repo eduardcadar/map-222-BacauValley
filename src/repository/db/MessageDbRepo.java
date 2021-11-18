@@ -25,8 +25,8 @@ public class MessageDbRepo {
                 " sentdate varchar NOT NULL," +
                 " idmsgrepliedto int DEFAULT NULL," +
                 " PRIMARY KEY (id)," +
-                " FOREIGN KEY (sender) REFERENCES users (email)," +
-                " FOREIGN KEY (idmsgrepliedto) REFERENCES messages (id)" +
+                " FOREIGN KEY (sender) REFERENCES users (email) ON DELETE CASCADE," +
+                " FOREIGN KEY (idmsgrepliedto) REFERENCES messages (id) ON DELETE CASCADE" +
                 ");" +
                 " CREATE UNIQUE index IF NOT EXISTS " + messagesTable + "_id_uindex ON " +
                 messagesTable + " (id);";

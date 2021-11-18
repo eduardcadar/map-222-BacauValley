@@ -21,8 +21,8 @@ public class MessageReceiverDbRepo {
                 "(idMessage int NOT NULL," +
                 " receiver varchar NOT NULL," +
                 " PRIMARY KEY (idMessage, receiver)," +
-                " FOREIGN KEY (idMessage) REFERENCES messages (id)," +
-                " FOREIGN KEY (receiver) REFERENCES users (email)" +
+                " FOREIGN KEY (idMessage) REFERENCES messages (id) ON DELETE CASCADE," +
+                " FOREIGN KEY (receiver) REFERENCES users (email) ON DELETE CASCADE" +
                 ");";
 
         try (Connection connection = DriverManager.getConnection(url, username, password);

@@ -170,5 +170,8 @@ public class testServiceDb {
         Assert.assertEquals(conv.get(1).getSender(), r1.getSender());
         conv = service.getConversation(us2.getEmail(), us3.getEmail());
         Assert.assertEquals(0, conv.size());
+        service.removeUser(us1.getEmail());
+        conv = service.getConversation(us1.getEmail(), us2.getEmail());
+        Assert.assertEquals(0, conv.size());
     }
 }
