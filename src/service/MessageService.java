@@ -1,9 +1,8 @@
 package service;
 
 import domain.Message;
+import domain.ReplyMessage;
 import repository.db.MessageDbRepo;
-
-import java.util.List;
 
 public class MessageService {
     MessageDbRepo repo;
@@ -14,15 +13,26 @@ public class MessageService {
 
     /**
      * Adds a message to the repository
-     * @param sender - the email of the message sender
-     * @param message - the text of the message
+     * @param sender the email of the message sender
+     * @param message the text of the message
      */
-    public void save(String sender, String message) {
-        repo.save(new Message(sender, message));
+    public Message save(String sender, String message) {
+        return repo.save(new Message(sender, message));
     }
 
     /**
-     * @param id - int id of the message
+     * Adds a reply message to the repository
+     * @param sender email of the message sender
+     * @param message text of the message
+     * @param idMsgRepliedTo id of the message replied to
+     * @return
+     */
+    public ReplyMessage save(String sender, String message, int idMsgRepliedTo) {
+        return repo.save(new ReplyMessage(sender, message, idMsgRepliedTo));
+    }
+
+    /**
+     * @param id int id of the message
      * @return the message with the id given, null if no message has id
      */
     public Message getMessage(int id) {

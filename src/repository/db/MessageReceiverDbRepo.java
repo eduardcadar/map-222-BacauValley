@@ -88,7 +88,7 @@ public class MessageReceiverDbRepo {
     public List<Integer> getMessageIdsReceivedBy(String email) {
         List<Integer> messages = new ArrayList<>();
         String sql = "SELECT idMessage FROM " + receiversTable +
-                "WHERE receiver = ?";
+                " WHERE receiver = ?";
         try (Connection connection = DriverManager.getConnection(url, username, password);
         PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, email);

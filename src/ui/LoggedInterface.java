@@ -3,6 +3,7 @@ package ui;
 import Utils.PasswordEncryptor;
 import Utils.UserFriendDTO;
 import domain.Friendship;
+import domain.Message;
 import domain.User;
 import repository.RepoException;
 import repository.db.DbException;
@@ -43,6 +44,8 @@ public class LoggedInterface implements UserInterface {
         System.out.println("4. Show friends");
         System.out.println("5. Accept friend request");
         System.out.println("6. Show friends by month");
+        System.out.println("7. Send message");
+        System.out.println("10. Show conversation with friend");
         System.out.println("0. Exit");
         System.out.print("Write command: ");
         return console.nextLine().strip();
@@ -65,10 +68,60 @@ public class LoggedInterface implements UserInterface {
                 case "4" -> showFriendsFormatted(loggedUser.getEmail());
                 case "5" -> acceptFriendRequest();
                 case "6" -> showFriendsByMonth(loggedUser.getEmail());
+                case "7" -> sendMessage();
+                case "10" -> showConversationWithUser();
                 default -> System.out.println("Wrong command");
             }
         }
         System.out.println("Exiting logged interface...");
+    }
+
+    public void sendMessage() {
+        Map<Integer, String> friendsMap = new HashMap<>();
+        List<User> friendsList =  showFriends(loggedUser.getEmail());
+        if (friendsList == null) return;
+        int i = 0;
+        for (User friend : friendsList) {
+            i++;
+            friendsMap.put(i, friend.getEmail());
+        }
+        List<String> receivers = new ArrayList<>();
+        System.out.print("Write number of friend to add to receivers: ");
+        Integer nr = getInteger();
+        while (!nr.equals(0)) {
+            String friend = friendsMap.get(nr);
+            if (!receivers.contains(friend))
+                receivers.add(friend);
+            else
+                System.out.println("Friend already added");
+            System.out.print("Write number of friend to add to receivers (or 0 if you added all of them): ");
+            nr = getInteger();
+        }
+        if (receivers.isEmpty()) {
+            System.out.println("At least 1 receiver please :(");
+            return;
+        }
+        System.out.print("Write message: ");
+        String messageText = console.nextLine();
+        srv.save(loggedUser.getEmail(), receivers, messageText);
+    }
+
+    public void showConversationWithUser() {
+        Map<Integer, String> friendsMap = new HashMap<>();
+        List<User> friendsList =  showFriends(loggedUser.getEmail());
+        System.out.print("Write the number of the friend: ");
+        int i = 0;
+        if (friendsList != null) {
+            for (User friend : friendsList) {
+                i++;
+                friendsMap.put(i, friend.getEmail());
+            }
+            Integer numberOfUser = askForUserNumberInput(friendsMap);
+            if (numberOfUser == 0)
+                return;
+            List<Message> messages = srv.getConversation(loggedUser.getEmail(), friendsMap.get(numberOfUser));
+            messages.forEach(x -> System.out.println(x));
+        }
     }
 
     /**
@@ -94,7 +147,6 @@ public class LoggedInterface implements UserInterface {
         } catch (Exception e){
             System.out.println(e.getMessage());
         }
-
     }
 
     private void updateUser() {
@@ -152,18 +204,24 @@ public class LoggedInterface implements UserInterface {
     }
 
     private Integer askForUserNumberInput(Map<Integer, String> users) {
+        Integer userNumber = getInteger();
+        if (userNumber == null) return 0;
+        if (userNumber < 1 || userNumber > users.size() + 1) {
+            System.out.println("Invalid number");
+            return 0;
+        }
+        return userNumber;
+    }
+
+    private Integer getInteger() {
         int userNumber;
         try {
             userNumber = console.nextInt();
         } catch (InputMismatchException e) {
             System.out.println("Wrong input");
-            return 0;
+            return null;
         } finally {
             console.nextLine();
-        }
-        if (userNumber < 1 || userNumber > users.size() + 1) {
-            System.out.println("Invalid number");
-            return 0;
         }
         return userNumber;
     }

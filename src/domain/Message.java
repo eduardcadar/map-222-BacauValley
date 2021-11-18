@@ -4,9 +4,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class Message {
-//    private int ID;
+    private int ID;
     private final String sender, message;
     private List<String> receivers;
+
     private LocalDateTime date;
 
     public Message(String sender, String message) {
@@ -45,6 +46,15 @@ public class Message {
         return sender;
     }
 
+    @Override
+    public String toString() {
+        return "Message{" +
+                "sender='" + sender + '\'' +
+                ", message='" + message + '\'' +
+                ", date=" + date +
+                '}';
+    }
+
     /**
      * @return returns the text of the message
      */
@@ -57,5 +67,27 @@ public class Message {
      */
     public LocalDateTime getDate() {
         return date;
+    }
+
+    /**
+     * @return list with the message receivers
+     */
+    public List<String> getReceivers() {
+        return receivers;
+    }
+
+    /**
+     * @return id of the message
+     */
+    public int getID() {
+        return ID;
+    }
+
+    /**
+     * Sets the message id
+     * @param ID
+     */
+    public void setID(int ID) {
+        this.ID = ID;
     }
 }
