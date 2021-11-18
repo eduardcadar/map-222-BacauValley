@@ -1,22 +1,23 @@
 package db;
 
 import Utils.UserFriendDTO;
-import domain.FRIENDSHIPSTATE;
-import domain.Friendship;
-import domain.User;
+import domain.*;
 import domain.network.Network;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import repository.db.FriendshipDbRepo;
+import repository.db.MessageDbRepo;
+import repository.db.MessageReceiverDbRepo;
 import repository.db.UserDbRepo;
-import service.FriendshipService;
-import service.Service;
-import service.UserService;
+import service.*;
 import validator.FriendshipValidator;
+import validator.MessageReceiverValidator;
+import validator.MessageValidator;
 import validator.UserValidator;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class testServiceDb {
@@ -31,11 +32,15 @@ public class testServiceDb {
     private final User us4 = new User("gabriel", "andrei", "a.gabi@gmail.com");
     private final FriendshipDbRepo fRepo = new FriendshipDbRepo(url, username, password, new FriendshipValidator(), "friendships");
     private final FriendshipService fSrv = new FriendshipService(fRepo);
+    private final MessageDbRepo mRepo = new MessageDbRepo(url, username, password, new MessageValidator(), "messages");
+    private final MessageService mSrv = new MessageService(mRepo);
+    private final MessageReceiverDbRepo mrRepo = new MessageReceiverDbRepo(url, username, password, new MessageReceiverValidator(), "receivers");
+    private final MessageReceiverService mrSrv = new MessageReceiverService(mrRepo);
     private final Friendship f1 = new Friendship(us2, us1);
     private final Friendship f2 = new Friendship(us3, us1);
     private final Friendship f3 = new Friendship(us2, us4);
     private final Network ntw = new Network(uRepo, fRepo);
-    private final Service service = new Service(uSrv, fSrv, ntw);
+    private final Service service = new Service(uSrv, fSrv, mSrv, mrSrv, ntw);
 
     @Before
     public void setUp() throws Exception {
@@ -47,6 +52,8 @@ public class testServiceDb {
 
     @After
     public void tearDown() throws Exception {
+        mrRepo.clear();
+        mRepo.clear();
         fRepo.clear();
         uRepo.clear();
     }
@@ -146,5 +153,22 @@ public class testServiceDb {
         Assert.assertEquals(1, service.getCommunities().size());
         Assert.assertEquals(1, service.nrCommunities());
         Assert.assertEquals(4, service.getUsersMostFrCom().size());
+    }
+
+    @Test
+    public void testMessages() {
+        service.addFriendship(us1.getEmail(), us2.getEmail());
+        Message m1 = new Message(us1.getEmail(),"mesaj1");
+        Message m2 = new Message(us2.getEmail(),"mesaj2");
+        m1 = service.save(m1.getSender(), List.of(us2.getEmail(), us3.getEmail()), m1.getMessage());
+        m2 = service.save(m2.getSender(), List.of(us3.getEmail()), m2.getMessage());
+        ReplyMessage r1 = new ReplyMessage(us2.getEmail(), "reply", m1.getID());
+        r1 = service.save(r1.getSender(), List.of(us1.getEmail()), r1.getMessage(), r1.getIdMsgRepliedTo());
+        List<Message> conv = service.getConversation(us1.getEmail(), us2.getEmail());
+        Assert.assertEquals(2, conv.size());
+        Assert.assertEquals(conv.get(0).getSender(), m1.getSender());
+        Assert.assertEquals(conv.get(1).getSender(), r1.getSender());
+        conv = service.getConversation(us2.getEmail(), us3.getEmail());
+        Assert.assertEquals(0, conv.size());
     }
 }

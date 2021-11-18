@@ -2,9 +2,12 @@ package service;
 
 import Utils.UserFriendDTO;
 import domain.Friendship;
+import domain.Message;
+import domain.ReplyMessage;
 import domain.User;
 import domain.network.Network;
 import repository.RepoException;
+import validator.MessageReceiverValidator;
 import validator.ValidatorException;
 
 import java.util.ArrayList;
@@ -14,11 +17,15 @@ import java.util.Map;
 public class Service {
     private final UserService userService;
     private final FriendshipService friendshipService;
+    private final MessageService messageService;
+    private final MessageReceiverService messageReceiverService;
     private final Network network;
 
-    public Service(UserService userService, FriendshipService friendshipService, Network network) {
+    public Service(UserService userService, FriendshipService friendshipService, MessageService messageService, MessageReceiverService messageReceiverService, Network network) {
         this.userService = userService;
         this.friendshipService = friendshipService;
+        this.messageService = messageService;
+        this.messageReceiverService = messageReceiverService;
         this.network = network;
     }
 
@@ -232,5 +239,71 @@ public class Service {
             users.add(userService.getUser(friendEmail));
         }
         return users;
+    }
+
+    /**
+     * Returns a list with the messages received by a user from a specific user
+     * @param receiver the email of the receiver
+     * @param sender the email of the sender
+     * @return list with messages
+     */
+    public List<Message> getMessagesReceivedBy(String receiver, String sender) {
+        List<Message> messages = new ArrayList<>();
+        List<Integer> messageIds = messageReceiverService.getMessageIdsReceivedBy(receiver);
+        messageIds.forEach(x -> messages.add(messageService.getMessage(x)));
+        return messages.stream()
+                .filter(x -> x.getSender().compareTo(sender) == 0)
+                .sorted((x,y) -> x.getDate().compareTo(y.getDate()))
+                .toList();
+    }
+
+    /**
+     * Returns a list with all the messages between two users
+     * @param email1 email of the first user
+     * @param email2 email of the second user
+     * @return List of Message
+     */
+    public List<Message> getConversation(String email1, String email2) {
+        List<Message> messagesReceived1 = getMessagesReceivedBy(email1, email2);
+        List<Message> messagesReceived2 = getMessagesReceivedBy(email2, email1);
+        List<Message> conversation = new ArrayList<>();
+        conversation.addAll(messagesReceived1);
+        conversation.addAll(messagesReceived2);
+        return conversation.stream()
+                .sorted((x,y) -> x.getDate().compareTo(y.getDate()))
+                .toList();
+    }
+
+    /**
+     * Saves a reply message
+     * @param sender email of the sender
+     * @param receivers list with emails of the receivers
+     * @param message text of the message
+     * @param idMsgRepliedTo id of the message replied to
+     */
+    public ReplyMessage save(String sender, List<String> receivers, String message, int idMsgRepliedTo) {
+        ReplyMessage msg = messageService.save(sender, message, idMsgRepliedTo);
+        receivers.forEach(x -> {
+            // verific daca cei doi sunt prieteni
+            if (friendshipService.getFriendship(sender, x) != null)
+                messageReceiverService.save(msg.getID(), x);
+        });
+        return msg;
+    }
+
+    /**
+     * Saves a message
+     * @param sender email of the sender
+     * @param receivers list with emails of the receivers
+     * @param message text of the message
+     */
+    public Message save(String sender, List<String> receivers, String message) {
+        Message msg = messageService.save(sender, message);
+        receivers.forEach(x -> {
+            // verific daca cei doi sunt prieteni
+            if (friendshipService.getFriendship(sender, x) != null)
+                messageReceiverService.save(msg.getID(), x);
+        });
+        return msg;
     }
 }
