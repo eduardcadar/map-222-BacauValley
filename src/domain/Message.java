@@ -7,7 +7,6 @@ public class Message {
     private int ID;
     private final String sender, message;
     private List<String> receivers;
-
     private LocalDateTime date;
 
     public Message(String sender, String message) {
