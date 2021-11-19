@@ -4,22 +4,23 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class Message {
-    private int ID;
+    private Integer ID;
     private final String sender, message;
     private List<String> receivers;
     private LocalDateTime date;
+    private Integer idMsgRepliedTo;
 
     public Message(String sender, String message) {
         this.sender = sender;
         this.message = message;
         this.date = null;
+        this.idMsgRepliedTo = null;
     }
 
-    public Message(String sender, String message, List<String> receivers) {
+    public Message(String sender, String message, int idMsgRepliedTo) {
         this.sender = sender;
         this.message = message;
-        this.receivers = receivers;
-        this.date = null;
+        this.idMsgRepliedTo = idMsgRepliedTo;
     }
 
     /**
@@ -47,11 +48,10 @@ public class Message {
 
     @Override
     public String toString() {
-        return "Message{" +
-                "sender='" + sender + '\'' +
-                ", message='" + message + '\'' +
-                ", date=" + date +
-                '}';
+        return "From: " + sender +
+                "\nTo: " + receivers +
+                "\nMessage: " + message +
+                "\nSent on: " + date;
     }
 
     /**
@@ -78,7 +78,7 @@ public class Message {
     /**
      * @return id of the message
      */
-    public int getID() {
+    public Integer getID() {
         return ID;
     }
 
@@ -86,7 +86,29 @@ public class Message {
      * Sets the message id
      * @param ID
      */
-    public void setID(int ID) {
+    public void setID(Integer ID) {
         this.ID = ID;
+    }
+
+    /**
+     * @return id of the message replied to
+     */
+    public Integer getIdMsgRepliedTo() {
+        return idMsgRepliedTo;
+    }
+
+    /**
+     * Sets the id of the message replied to
+     * @param idMsgRepliedTo
+     */
+    public void setIdMsgRepliedTo(Integer idMsgRepliedTo) {
+        this.idMsgRepliedTo = idMsgRepliedTo;
+    }
+
+    /**
+     * @return true if the message is a reply, false otherwise
+     */
+    public boolean isReply() {
+        return idMsgRepliedTo != null;
     }
 }

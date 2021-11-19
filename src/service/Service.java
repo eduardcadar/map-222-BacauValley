@@ -3,14 +3,13 @@ package service;
 import Utils.UserFriendDTO;
 import domain.Friendship;
 import domain.Message;
-import domain.ReplyMessage;
 import domain.User;
 import domain.network.Network;
 import repository.RepoException;
-import validator.MessageReceiverValidator;
 import validator.ValidatorException;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -251,9 +250,13 @@ public class Service {
         List<Message> messages = new ArrayList<>();
         List<Integer> messageIds = messageReceiverService.getMessageIdsReceivedBy(receiver);
         messageIds.forEach(x -> messages.add(messageService.getMessage(x)));
+        messages.forEach(x -> {
+            List<String> receivers = new ArrayList<>(messageReceiverService.getMessageReceivers(x.getID()));
+            x.setReceivers(receivers);
+        });
         return messages.stream()
                 .filter(x -> x.getSender().compareTo(sender) == 0)
-                .sorted((x,y) -> x.getDate().compareTo(y.getDate()))
+                .sorted(Comparator.comparing(Message::getDate))
                 .toList();
     }
 
@@ -270,7 +273,7 @@ public class Service {
         conversation.addAll(messagesReceived1);
         conversation.addAll(messagesReceived2);
         return conversation.stream()
-                .sorted((x,y) -> x.getDate().compareTo(y.getDate()))
+                .sorted(Comparator.comparing(Message::getDate))
                 .toList();
     }
 
@@ -281,8 +284,8 @@ public class Service {
      * @param message text of the message
      * @param idMsgRepliedTo id of the message replied to
      */
-    public ReplyMessage save(String sender, List<String> receivers, String message, int idMsgRepliedTo) {
-        ReplyMessage msg = messageService.save(sender, message, idMsgRepliedTo);
+    public Message save(String sender, List<String> receivers, String message, int idMsgRepliedTo) {
+        Message msg = messageService.save(sender, message, idMsgRepliedTo);
         receivers.forEach(x -> {
             // verific daca cei doi sunt prieteni
             if (friendshipService.getFriendship(sender, x) != null)
@@ -305,5 +308,14 @@ public class Service {
                 messageReceiverService.save(msg.getID(), x);
         });
         return msg;
+    }
+
+    /**
+     * Returns a message
+     * @param id the id of the message
+     * @return Message
+     */
+    public Message getMessage(int id) {
+        return messageService.getMessage(id);
     }
 }

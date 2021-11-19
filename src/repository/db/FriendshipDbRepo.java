@@ -126,7 +126,6 @@ public class FriendshipDbRepo implements FriendshipRepository {
         String sql = "UPDATE " + fshipsTable +
                 " SET state = ?, " +
                 " date = ?"
-
                 + " WHERE (email1 = ? AND email2 = ?) AND state = ?";
         try (Connection connection = DriverManager.getConnection(url, username, password);
              PreparedStatement ps = connection.prepareStatement(sql)) {

@@ -1,7 +1,6 @@
 package repository.db;
 
 import domain.Message;
-import domain.ReplyMessage;
 import validator.MessageValidator;
 import validator.Validator;
 
@@ -45,35 +44,16 @@ public class MessageDbRepo {
      */
     public Message save(Message message) {
         validator.validate(message);
-        String sql = "INSERT INTO " + messagesTable + " (sender, messagetext, sentdate) VALUES (?, ?, ?)";
-        try (Connection connection = DriverManager.getConnection(url, username, password);
-        PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            ps.setString(1, message.getSender());
-            ps.setString(2, message.getMessage());
-            ps.setString(3, String.valueOf(LocalDateTime.now()));
-            ps.executeUpdate();
-            ResultSet res = ps.getGeneratedKeys();
-            if (res.next())
-                message.setID(res.getInt(1));
-        } catch (SQLException throwables) {
-            throw new DbException(throwables.getMessage());
-        }
-        return message;
-    }
-
-    /**
-     * Validates and saves a reply message in the database
-     * @param message - the message to be saved
-     */
-    public ReplyMessage save(ReplyMessage message) {
-        validator.validate(message);
         String sql = "INSERT INTO " + messagesTable + " (sender, messagetext, sentdate, idmsgrepliedto) VALUES (?, ?, ?, ?)";
         try (Connection connection = DriverManager.getConnection(url, username, password);
         PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, message.getSender());
             ps.setString(2, message.getMessage());
             ps.setString(3, String.valueOf(LocalDateTime.now()));
-            ps.setInt(4, message.getIdMsgRepliedTo());
+            if (message.isReply())
+                ps.setInt(4, message.getIdMsgRepliedTo());
+            else
+                ps.setNull(4, Types.INTEGER);
             ps.executeUpdate();
             ResultSet res = ps.getGeneratedKeys();
             if (res.next())
@@ -101,7 +81,7 @@ public class MessageDbRepo {
             if (res.getString("idmsgrepliedto") == null)
                 message = new Message(res.getString("sender"), res.getString("messagetext"));
             else {
-                message = new ReplyMessage(res.getString("sender"), res.getString("messagetext"), res.getInt("idmsgrepliedto"));
+                message = new Message(res.getString("sender"), res.getString("messagetext"), res.getInt("idmsgrepliedto"));
             }
             message.setDate(LocalDateTime.parse(res.getString("sentdate")));
             message.setID(id);

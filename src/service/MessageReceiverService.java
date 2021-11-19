@@ -29,4 +29,13 @@ public class MessageReceiverService {
     public List<Integer> getMessageIdsReceivedBy(String email) {
         return repo.getMessageIdsReceivedBy(email);
     }
+
+    /**
+     * Returns a list with the emails of the users that received a message
+     * @param id id of the message
+     * @return list of strings
+     */
+    public List<String> getMessageReceivers(int id) {
+        return repo.getMessageReceivers(id);
+    }
 }
