@@ -7,10 +7,8 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import repository.db.FriendshipDbRepo;
-import repository.db.MessageDbRepo;
-import repository.db.MessageReceiverDbRepo;
-import repository.db.UserDbRepo;
+import repository.RepoException;
+import repository.db.*;
 import service.*;
 import validator.FriendshipValidator;
 import validator.MessageReceiverValidator;
@@ -30,7 +28,9 @@ public class testServiceDb {
     private final User us3 = new User("maria", "lazar", "l.maria@gmail.com");
     private final User us4 = new User("gabriel", "andrei", "a.gabi@gmail.com");
     private final FriendshipDbRepo fRepo = new FriendshipDbRepo(url, username, password, new FriendshipValidator(), "friendships");
-    private final FriendshipService fSrv = new FriendshipService(fRepo);
+    private final FriendshipRequestDbRepo requestsRepo = new FriendshipRequestDbRepo(url, username, password, "requests");
+
+    private final FriendshipService fSrv = new FriendshipService(fRepo,requestsRepo);
     private final MessageDbRepo mRepo = new MessageDbRepo(url, username, password, new MessageValidator(), "messages");
     private final MessageService mSrv = new MessageService(mRepo);
     private final MessageReceiverDbRepo mrRepo = new MessageReceiverDbRepo(url, username, password, new MessageReceiverValidator(), "receivers");
@@ -79,9 +79,9 @@ public class testServiceDb {
         service.addFriendship(f1.getFirst(), f1.getSecond());
         service.addFriendship(f2.getFirst(), f2.getSecond());
         service.addFriendship(f3.getFirst(), f3.getSecond());
-        service.acceptFriendship(f1);
-        service.acceptFriendship(f2);
-        service.acceptFriendship(f3);
+        service.acceptFriendship(f1.getFirst(), f1.getSecond());
+        service.acceptFriendship(f2.getFirst(), f2.getSecond());
+        service.acceptFriendship(f3.getFirst(), f3.getSecond());
 
         List<UserFriendDTO> friendsDTOs = service.getFriendshipsDTO(us1.getEmail());
         Assert.assertEquals(2, friendsDTOs.size());
@@ -112,10 +112,13 @@ public class testServiceDb {
     @Test
     public void testFriendshipsSv() {
         Assert.assertEquals(0, service.friendshipsSize());
+
         service.addFriendship(f1.getFirst(), f1.getSecond());
-        service.acceptFriendship(f1);
+        service.acceptFriendship(f1.getFirst(), f1.getSecond());
+
         service.addFriendship(f2.getFirst(), f2.getSecond());
-        service.acceptFriendship(f2);
+        service.acceptFriendship(f2.getFirst(), f2.getSecond());
+
         Assert.assertEquals(2, service.friendshipsSize());
         Friendship f = service.getFriendship(us1.getEmail(), us2.getEmail());
         Assert.assertNotNull(f);
@@ -125,30 +128,38 @@ public class testServiceDb {
         Assert.assertTrue(friendships.contains(f1));
         Assert.assertTrue(friendships.contains(f2));
         Assert.assertFalse(friendships.contains(f3));
-        service.removeFriendship(us1.getEmail(), us3.getEmail());
+
+        service.removeFriendship(f1.getFirst(), f1.getSecond());
         Assert.assertEquals(1, service.friendshipsSize());
     }
 
     @Test
     public void testFriendRequest() throws Exception {
         service.addFriendship(us1.getEmail(), us2.getEmail());
-        Friendship f = service.getFriendship(us1.getEmail(), us2.getEmail());
-        Assert.assertEquals(f.getState(), FRIENDSHIPSTATE.PENDING);
         Assert.assertEquals(1, service.getUserFriendRequests(us2.getEmail()).size());
-        service.acceptFriendship(f);
-        Assert.assertEquals(f.getState(), FRIENDSHIPSTATE.APPROVED);
-        Assert.assertNotNull(f.getDate());
-        service.removeFriendship(f.getFirst(), f.getSecond());
+
+        service.rejectFriendship(us1.getEmail(), us2.getEmail());
+        try{
+            service.addFriendship(us1.getEmail(), us2.getEmail());
+            Assert.fail();
+        }
+        catch (RepoException e){
+            Assert.assertEquals("There is already a request send by user", e.getMessage());
+        }
+
+        service.addFriendship(us2.getEmail(), us1.getEmail());
+        service.acceptFriendship(us2.getEmail(), us1.getEmail());
+        Assert.assertEquals(service.getUserFriends(us2.getEmail()).get(0).getEmail(), us1.getEmail());
     }
 
     @Test
     public void testNetwork() {
         service.addFriendship(f1.getFirst(), f1.getSecond());
-        service.acceptFriendship(f1);
+        service.acceptFriendship(f1.getFirst(),f1.getSecond() );
         service.addFriendship(f2.getFirst(), f2.getSecond());
-        service.acceptFriendship(f2);
+        service.acceptFriendship(f2.getFirst(), f2.getSecond());
         service.addFriendship(f3.getFirst(), f3.getSecond());
-        service.acceptFriendship(f3);
+        service.acceptFriendship(f3.getFirst(), f3.getSecond());
         Assert.assertEquals(1, service.getCommunities().size());
         Assert.assertEquals(1, service.nrCommunities());
         Assert.assertEquals(4, service.getUsersMostFrCom().size());
@@ -157,6 +168,9 @@ public class testServiceDb {
     @Test
     public void testMessages() {
         service.addFriendship(us1.getEmail(), us2.getEmail());
+        service.acceptFriendship(us1.getEmail(), us2.getEmail());
+
+
         Message m1 = new Message(us1.getEmail(),"mesaj1");
         Message m2 = new Message(us2.getEmail(),"mesaj2");
         m1 = service.save(m1.getSender(), List.of(us2.getEmail(), us3.getEmail()), m1.getMessage());

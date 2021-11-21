@@ -2,6 +2,7 @@ package service;
 
 import Utils.UserFriendDTO;
 import domain.Friendship;
+import domain.FriendshipRequest;
 import domain.Message;
 import domain.User;
 import domain.network.Network;
@@ -167,8 +168,8 @@ public class Service {
      * Accepts the friendship setting its status to approved and setting the date
      * @param f - friendship
      */
-    public void acceptFriendship(Friendship f)  {
-        friendshipService.acceptFriendship(f);
+    public void acceptFriendship(String email1, String email2)  {
+        friendshipService.acceptFriendship(email1, email2);
     }
     /**
      * @param email - String the email of the user
@@ -219,11 +220,14 @@ public class Service {
     public List<User> getNotFriends(String email) {
         List<String> friends = friendshipService.getUserFriendsAll(email);
         List<User> notFriends = new ArrayList<>();
-
         for (User u : userService.getUsers())
             if (!friends.contains(u.getEmail()) && u.getEmail().compareTo(email) != 0)
                 notFriends.add(u);
-
+        // TODO
+        //  - add rejected friend requests to not friends
+        //    frienshipService.getUsersRejected(email)
+        //    requestRepo.getUserRejected()
+        //    SELECT * FROM table WHERE email1 = email AND state = 'REJECTED'
         return notFriends;
     }
 
@@ -317,5 +321,14 @@ public class Service {
      */
     public Message getMessage(int id) {
         return messageService.getMessage(id);
+    }
+
+    /**
+     * Rejects the friendship between email1 si email2
+     * @param email1
+     * @param email2
+     */
+    public void rejectFriendship(String email1, String email2) {
+        friendshipService.rejectFriendship(email1, email2);
     }
 }

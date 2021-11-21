@@ -12,6 +12,7 @@ import repository.db.UserDbRepo;
 import validator.FriendshipValidator;
 import validator.UserValidator;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class testFriendshipRepoDb {
@@ -24,9 +25,9 @@ public class testFriendshipRepoDb {
     private final User us3 = new User("maria", "lazar", "l.maria@gmail.com");
     private final User us4 = new User("gabriel", "andrei", "a.gabi@gmail.com");
     private final FriendshipDbRepo fRepo = new FriendshipDbRepo(url, username, password, new FriendshipValidator(), "friendships");
-    private final Friendship f1 = new Friendship(us1, us2);
-    private final Friendship f2 = new Friendship(us1, us3);
-    private final Friendship f3 = new Friendship(us2, us4);
+    private final Friendship f1 = new Friendship(us1, us2, LocalDate.now());
+    private final Friendship f2 = new Friendship(us1, us3, LocalDate.now());
+    private final Friendship f3 = new Friendship(us2, us4, LocalDate.now());
 
     @Before
     public void setUp() throws Exception {
@@ -35,11 +36,9 @@ public class testFriendshipRepoDb {
         uRepo.save(us3);
         uRepo.save(us4);
         fRepo.addFriendship(f1);
-        fRepo.acceptFriendship(f1);
         fRepo.addFriendship(f2);
-        fRepo.acceptFriendship(f2);
         fRepo.addFriendship(f3);
-        fRepo.acceptFriendship(f3);
+
     }
 
     @After
@@ -51,7 +50,7 @@ public class testFriendshipRepoDb {
     @Test
     public void TestConstructorDb() {
         Assert.assertEquals(3, fRepo.size());
-        List<Friendship> fships = fRepo.getAllApproved();
+        List<Friendship> fships = fRepo.getAll();
         Assert.assertTrue(fships.contains(f1));
         Assert.assertTrue(fships.contains(f2));
         Assert.assertTrue(fships.contains(f3));
