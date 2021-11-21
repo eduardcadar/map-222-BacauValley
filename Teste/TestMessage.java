@@ -1,6 +1,5 @@
 import domain.Message;
 import domain.MessageReceiver;
-import domain.ReplyMessage;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -8,10 +7,10 @@ import java.util.Arrays;
 
 public class TestMessage {
     private final Message m1 = new Message("eu","mesaj1");
-    private final Message m2 = new Message("tu","mesaj2", Arrays.asList("eu", "el"));
-    private final ReplyMessage r1 = new ReplyMessage("eu", "reply", 2);
+    private final Message m2 = new Message("tu","mesaj2") {{
+        setReceivers(Arrays.asList("eu", "el"));
+    }};
     private final MessageReceiver mr1 = new MessageReceiver(1, "tu");
-
     @Test
     public void testGetters() {
         Assert.assertEquals("eu", m1.getSender());

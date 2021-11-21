@@ -17,7 +17,6 @@ import validator.MessageReceiverValidator;
 import validator.MessageValidator;
 import validator.UserValidator;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class testServiceDb {
@@ -162,13 +161,17 @@ public class testServiceDb {
         Message m2 = new Message(us2.getEmail(),"mesaj2");
         m1 = service.save(m1.getSender(), List.of(us2.getEmail(), us3.getEmail()), m1.getMessage());
         m2 = service.save(m2.getSender(), List.of(us3.getEmail()), m2.getMessage());
-        ReplyMessage r1 = new ReplyMessage(us2.getEmail(), "reply", m1.getID());
+        Message r1 = new Message(us2.getEmail(), "reply", m1.getID());
         r1 = service.save(r1.getSender(), List.of(us1.getEmail()), r1.getMessage(), r1.getIdMsgRepliedTo());
+        Assert.assertEquals(m1.getID(), service.getMessage(r1.getID()).getIdMsgRepliedTo());
         List<Message> conv = service.getConversation(us1.getEmail(), us2.getEmail());
         Assert.assertEquals(2, conv.size());
         Assert.assertEquals(conv.get(0).getSender(), m1.getSender());
         Assert.assertEquals(conv.get(1).getSender(), r1.getSender());
         conv = service.getConversation(us2.getEmail(), us3.getEmail());
+        Assert.assertEquals(0, conv.size());
+        service.removeUser(us1.getEmail());
+        conv = service.getConversation(us1.getEmail(), us2.getEmail());
         Assert.assertEquals(0, conv.size());
     }
 }

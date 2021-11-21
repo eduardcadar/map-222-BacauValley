@@ -18,11 +18,11 @@ public class MessageReceiverDbRepo {
         this.receiversTable = receiversTable;
         this.validator = validator;
         String sql = "CREATE TABLE IF NOT EXISTS " + receiversTable +
-                "(idMessage int NOT NULL," +
+                "(idmessage int NOT NULL," +
                 " receiver varchar NOT NULL," +
-                " PRIMARY KEY (idMessage, receiver)," +
-                " FOREIGN KEY (idMessage) REFERENCES messages (id)," +
-                " FOREIGN KEY (receiver) REFERENCES users (email)" +
+                " PRIMARY KEY (idmessage, receiver)," +
+                " FOREIGN KEY (idmessage) REFERENCES messages (id) ON DELETE CASCADE," +
+                " FOREIGN KEY (receiver) REFERENCES users (email) ON DELETE CASCADE" +
                 ");";
 
         try (Connection connection = DriverManager.getConnection(url, username, password);
@@ -39,7 +39,7 @@ public class MessageReceiverDbRepo {
      */
     public void save(MessageReceiver messageReceiver) {
         validator.validate(messageReceiver);
-        String sql = "INSERT INTO " + receiversTable + " (idMessage, receiver) VALUES (?, ?)";
+        String sql = "INSERT INTO " + receiversTable + " (idmessage, receiver) VALUES (?, ?)";
         try (Connection connection = DriverManager.getConnection(url, username, password);
         PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, messageReceiver.getIdMessage());
@@ -87,7 +87,7 @@ public class MessageReceiverDbRepo {
      */
     public List<Integer> getMessageIdsReceivedBy(String email) {
         List<Integer> messages = new ArrayList<>();
-        String sql = "SELECT idMessage FROM " + receiversTable +
+        String sql = "SELECT idmessage FROM " + receiversTable +
                 " WHERE receiver = ?";
         try (Connection connection = DriverManager.getConnection(url, username, password);
         PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -99,5 +99,21 @@ public class MessageReceiverDbRepo {
             throw new DbException(throwables.getMessage());
         }
         return messages;
+    }
+
+    public List<String> getMessageReceivers(int idMessage) {
+        List<String> receivers = new ArrayList<>();
+        String sql = "SELECT receiver FROM " + receiversTable +
+                " WHERE idmessage = ?";
+        try (Connection connection = DriverManager.getConnection(url, username, password);
+        PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, idMessage);
+            ResultSet res = ps.executeQuery();
+            while (res.next())
+                receivers.add(res.getString("receiver"));
+        } catch (SQLException throwables) {
+            throw new DbException(throwables.getMessage());
+        }
+        return receivers;
     }
 }

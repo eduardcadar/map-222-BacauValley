@@ -1,7 +1,6 @@
 package service;
 
 import domain.Message;
-import domain.ReplyMessage;
 import repository.db.MessageDbRepo;
 
 public class MessageService {
@@ -27,8 +26,8 @@ public class MessageService {
      * @param idMsgRepliedTo id of the message replied to
      * @return
      */
-    public ReplyMessage save(String sender, String message, int idMsgRepliedTo) {
-        return repo.save(new ReplyMessage(sender, message, idMsgRepliedTo));
+    public Message save(String sender, String message, int idMsgRepliedTo) {
+        return repo.save(new Message(sender, message, idMsgRepliedTo));
     }
 
     /**

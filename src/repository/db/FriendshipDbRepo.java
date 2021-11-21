@@ -28,18 +28,15 @@ public class FriendshipDbRepo implements FriendshipRepository {
         String sql = "CREATE TABLE IF NOT EXISTS " + fshipsTable +
                 "(email1 varchar," +
                 " email2 varchar, " +
-                "PRIMARY KEY (email1,email2), " +
-                "FOREIGN KEY (email1) references users(email), " + //ON DELETE CASCADE
-                "FOREIGN KEY (email2) references users(email)" +
+                " state varchar DEFAULT 'PENDING'," +
+                " date varchar DEFAULT NULL," +
+                " PRIMARY KEY (email1,email2)," +
+                " FOREIGN KEY (email1) references users(email) ON DELETE CASCADE," +
+                " FOREIGN KEY (email2) references users(email) ON DELETE CASCADE" +
                 ")";
-        String updateTable = "ALTER TABLE " + fshipsTable +
-                " ADD COLUMN IF NOT EXISTS state varchar DEFAULT 'PENDING'," +
-                " ADD COLUMN IF NOT EXISTS date varchar DEFAULT NULL; " ;
 
         try (Connection connection = DriverManager.getConnection(url, username, password)) {
             PreparedStatement ps = connection.prepareStatement(sql);
-            ps.executeUpdate();
-            ps = connection.prepareStatement(updateTable);
             ps.executeUpdate();
         } catch (SQLException throwables) {
             throw new DbException(throwables.getMessage());
@@ -129,7 +126,6 @@ public class FriendshipDbRepo implements FriendshipRepository {
         String sql = "UPDATE " + fshipsTable +
                 " SET state = ?, " +
                 " date = ?"
-
                 + " WHERE (email1 = ? AND email2 = ?) AND state = ?";
         try (Connection connection = DriverManager.getConnection(url, username, password);
              PreparedStatement ps = connection.prepareStatement(sql)) {

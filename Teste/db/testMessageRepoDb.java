@@ -2,7 +2,6 @@ package db;
 
 import domain.Message;
 import domain.MessageReceiver;
-import domain.ReplyMessage;
 import domain.User;
 import org.junit.After;
 import org.junit.Assert;
@@ -28,7 +27,6 @@ public class testMessageRepoDb {
     private final MessageReceiverDbRepo mrRepo = new MessageReceiverDbRepo(url, username, password, new MessageReceiverValidator(), "receivers");
     private final Message m1 = new Message("adi.popa@yahoo.com","mesaj1");
     private final Message m2 = new Message("popescu.alex@gmail.com","mesaj2");
-    private final ReplyMessage r1 = new ReplyMessage("adi.popa@yahoo.com", "reply", 2);
     private final MessageReceiver mr1 = new MessageReceiver(1, "popescu.alex@gmail.com");
 
     @Before
