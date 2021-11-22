@@ -24,8 +24,8 @@ public class FriendshipRequestDbRepo implements FriendshipRequestRepository {
         this.tableName = tableName;
         String sql = "CREATE TABLE IF NOT EXISTS " + tableName +
                 "(email1 varchar," +
-                " email2 varchar, " +
-                " state varchar DEFAULT 'PENDING'," +
+                " email2 varchar," +
+                " requeststate varchar DEFAULT 'PENDING'," +
                 " PRIMARY KEY (email1,email2)," +
                 " FOREIGN KEY (email1) references users(email) ON DELETE CASCADE," +
                 " FOREIGN KEY (email2) references users(email) ON DELETE CASCADE" +
@@ -43,7 +43,7 @@ public class FriendshipRequestDbRepo implements FriendshipRequestRepository {
         if(getRequest(request.getFirst(), request.getSecond()) != null){
             throw new RepoException("There is already a request send by user");
         }
-        String sql = "INSERT INTO " + tableName + " (email1, email2, state) values (?, ?, ?) ";
+        String sql = "INSERT INTO " + tableName + " (email1, email2, requeststate) values (?, ?, ?) ";
         try(Connection connection = DriverManager.getConnection(url, username, password)){
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setString(1, request.getFirst());
@@ -79,7 +79,7 @@ public class FriendshipRequestDbRepo implements FriendshipRequestRepository {
             while(resultSet.next()){
                 String requestEmail1 = resultSet.getString("email1");
                 String requestEmail2 = resultSet.getString("email2");
-                REQUESTSTATE requestState = REQUESTSTATE.valueOf(resultSet.getString("state"));
+                REQUESTSTATE requestState = REQUESTSTATE.valueOf(resultSet.getString("requeststate"));
                 friendshipRequests.add(new FriendshipRequest(requestEmail1,requestEmail2,requestState));
             }
         } catch (SQLException throwables) {
@@ -98,7 +98,7 @@ public class FriendshipRequestDbRepo implements FriendshipRequestRepository {
             if(resultSet.next()){
                 String requestEmail1 = resultSet.getString("email1");
                 String requestEmail2 = resultSet.getString("email2");
-                REQUESTSTATE requestState = REQUESTSTATE.valueOf(resultSet.getString("state"));
+                REQUESTSTATE requestState = REQUESTSTATE.valueOf(resultSet.getString("requeststate"));
                 return new FriendshipRequest(requestEmail1,requestEmail2,requestState);
             }
             else
@@ -120,7 +120,6 @@ public class FriendshipRequestDbRepo implements FriendshipRequestRepository {
             ps.setString(1, friendshipRequest.getFirst());
             ps.setString(2, friendshipRequest.getSecond());
             ps.executeUpdate();
-
         } catch (SQLException throwables) {
             throw new DbException(throwables.getMessage());
         }
@@ -134,13 +133,14 @@ public class FriendshipRequestDbRepo implements FriendshipRequestRepository {
     @Override
     public void update(FriendshipRequest request) {
         String sql = "UPDATE " + tableName +
-                " SET state = ?, " +
+                " SET requeststate = ?" +
                 " WHERE (email1 = ? AND email2 = ?)";
         try(Connection connection = DriverManager.getConnection(url,username,password)){
             PreparedStatement ps = connection.prepareStatement(sql);
-            ps.setString(1,request.getState().toString());
+            ps.setString(1, request.getState().toString());
             ps.setString(2, request.getFirst());
-            ps.setString(2,request.getSecond());
+            ps.setString(3, request.getSecond());
+            ps.executeUpdate();
         } catch (SQLException throwables) {
             throw new DbException(throwables.getMessage());
         }
@@ -154,7 +154,7 @@ public class FriendshipRequestDbRepo implements FriendshipRequestRepository {
     @Override
     public List<String> getUserFriendRequests(String email) {
         ArrayList<String> friends = new ArrayList<>();
-        String sql = "SELECT * FROM " + tableName + " WHERE email2 = ? AND state = ?";
+        String sql = "SELECT * FROM " + tableName + " WHERE email2 = ? AND requeststate = ?";
         try (Connection connection = DriverManager.getConnection(url, username, password);
              PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, email);

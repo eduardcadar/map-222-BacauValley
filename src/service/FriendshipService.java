@@ -45,6 +45,8 @@ public class FriendshipService {
      */
     public void removeFriendship(String email1, String email2) {
         requestRepository.removeRequest(new FriendshipRequest(email1, email2));
+        if (requestRepository.getRequest(email2, email1) != null)
+            requestRepository.removeRequest(new FriendshipRequest(email2, email1));
         friendshipRepository.removeFriendship(new Friendship(email1, email2));
     }
 
@@ -114,7 +116,6 @@ public class FriendshipService {
             throw new RepoException("There is no pending request between theses 2 users");
         }
         else {
-
             if (request.getState() == REQUESTSTATE.REJECTED) {
                 throw new RepoException("Friend request already rejected");
                 // i will never reach this

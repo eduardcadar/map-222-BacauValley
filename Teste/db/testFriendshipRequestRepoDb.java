@@ -1,6 +1,7 @@
 package db;
 
 import domain.FriendshipRequest;
+import domain.REQUESTSTATE;
 import domain.User;
 import org.junit.After;
 import org.junit.Assert;
@@ -52,6 +53,13 @@ public class testFriendshipRequestRepoDb {
         Assert.assertTrue(requests.contains(f1));
         Assert.assertTrue(requests.contains(f2));
         Assert.assertTrue(requests.contains(f3));
+    }
+
+    @Test
+    public void testRejectRequest() {
+        f1.setState(REQUESTSTATE.REJECTED);
+        friendshipRequestDbRepo.update(f1);
+        Assert.assertEquals(REQUESTSTATE.REJECTED, friendshipRequestDbRepo.getRequest(f1.getFirst(), f1.getSecond()).getState());
     }
 
     @Test
