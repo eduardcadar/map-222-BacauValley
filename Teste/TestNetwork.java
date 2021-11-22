@@ -38,11 +38,9 @@ public class TestNetwork {
         uRepo.save(us4);
         uRepo.save(us5);
         fRepo.addFriendship(f1);
-        fRepo.acceptFriendship(f1);
         fRepo.addFriendship(f2);
-        fRepo.acceptFriendship(f2);
         fRepo.addFriendship(f3);
-        fRepo.acceptFriendship(f3);
+
     }
 
     @After

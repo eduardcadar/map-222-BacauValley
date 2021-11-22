@@ -3,10 +3,7 @@ package ui;
 import domain.Friendship;
 import domain.User;
 import domain.network.Network;
-import repository.db.FriendshipDbRepo;
-import repository.db.MessageDbRepo;
-import repository.db.MessageReceiverDbRepo;
-import repository.db.UserDbRepo;
+import repository.db.*;
 import service.*;
 import validator.*;
 
@@ -34,7 +31,8 @@ public class MainInterface implements UserInterface {
         UserService uSrv = new UserService(uRepo);
         Validator<Friendship> fVal = new FriendshipValidator();
         FriendshipDbRepo fRepo = new FriendshipDbRepo(url, username, password, fVal, "friendships");
-        FriendshipService fSrv = new FriendshipService(fRepo);
+        FriendshipRequestDbRepo friendshipRequestRepo = new FriendshipRequestDbRepo(url, username, password,"requests");
+        FriendshipService fSrv = new FriendshipService(fRepo, friendshipRequestRepo);
         MessageDbRepo mRepo = new MessageDbRepo(url, username, password, new MessageValidator(), "messages");
         MessageService mSrv = new MessageService(mRepo);
         MessageReceiverDbRepo mrRepo = new MessageReceiverDbRepo(url, username, password, new MessageReceiverValidator(), "receivers");
