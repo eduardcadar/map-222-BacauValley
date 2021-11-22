@@ -1,25 +1,35 @@
 package domain;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class Friendship {
     //a friendship contains as attributes the emails of the users
     private String email1, email2;
-    private FRIENDSHIPSTATE state;
+
     private LocalDate date;
     public Friendship(String e1, String e2) {
         this.email1 = e1;
         this.email2 = e2;
-        state = FRIENDSHIPSTATE.PENDING;
-        date = null;
+        date = LocalDate.now();
     }
 
     public Friendship(User u1, User u2) {
         this.email1 = u1.getEmail();
         this.email2 = u2.getEmail();
-        state = FRIENDSHIPSTATE.PENDING;
-        date = null;
+        date = LocalDate.now();
+    }
+    public Friendship(String e1, String e2, LocalDate date) {
+        this.email1 = e1;
+        this.email2 = e2;
+        this.date = date;
+    }
+
+    public Friendship(User u1, User u2, LocalDate date) {
+        this.email1 = u1.getEmail();
+        this.email2 = u2.getEmail();
+        this.date = date;
     }
 
     @Override
@@ -50,21 +60,7 @@ public class Friendship {
         return (Objects.equals(email1, that.email1) && Objects.equals(email2, that.email2));
     }
 
-    /**
-     * Gets the state of the friendship object
-     * @return - ENUM type FRIENDSHIPSTATE
-     */
-    public FRIENDSHIPSTATE getState() {
-        return state;
-    }
 
-    /**
-     * Sets the state of the friendship object
-     * @param state - enum type FRIENDSHIPSTATE
-     */
-    public void setState(FRIENDSHIPSTATE state){
-        this.state = state;
-    }
 
     /**
      * @return - return the date when the friend request was accepted

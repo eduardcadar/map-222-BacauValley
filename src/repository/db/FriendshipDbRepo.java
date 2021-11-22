@@ -1,13 +1,15 @@
 package repository.db;
 
-import domain.FRIENDSHIPSTATE;
 import domain.Friendship;
 import repository.FriendshipRepository;
 import repository.RepoException;
 import validator.Validator;
 
+import javax.swing.text.DateFormatter;
 import java.sql.*;
+import java.text.DateFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,12 +30,12 @@ public class FriendshipDbRepo implements FriendshipRepository {
         String sql = "CREATE TABLE IF NOT EXISTS " + fshipsTable +
                 "(email1 varchar," +
                 " email2 varchar, " +
-                " state varchar DEFAULT 'PENDING'," +
                 " date varchar DEFAULT NULL," +
                 " PRIMARY KEY (email1,email2)," +
                 " FOREIGN KEY (email1) references users(email) ON DELETE CASCADE," +
                 " FOREIGN KEY (email2) references users(email) ON DELETE CASCADE" +
                 ")";
+
 
         try (Connection connection = DriverManager.getConnection(url, username, password)) {
             PreparedStatement ps = connection.prepareStatement(sql);
@@ -51,12 +53,13 @@ public class FriendshipDbRepo implements FriendshipRepository {
     public void addFriendship(Friendship f) {
         val.validate(f);
         if (getFriendship(f.getFirst(), f.getSecond()) != null)
-            throw new RepoException("Cei doi utilizatori sunt deja prieteni");
-        String sql = "INSERT INTO " + fshipsTable + " (email1, email2) VALUES (?, ?)";
+            throw new RepoException("These two users are already friends");
+        String sql = "INSERT INTO " + fshipsTable + " (email1, email2, date) VALUES (?, ?, ?)";
         try (Connection connection = DriverManager.getConnection(url, username, password);
              PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, f.getFirst());
             ps.setString(2, f.getSecond());
+            ps.setString(3, f.getDate().toString());
             ps.executeUpdate();
         } catch (SQLException throwables) {
             throw new DbException(throwables.getMessage());
@@ -81,12 +84,11 @@ public class FriendshipDbRepo implements FriendshipRepository {
             if (!res.next())
                 return null;
             Friendship friendship =  new Friendship(res.getString("email1"), res.getString("email2"));
-            String date = res.getString("date");
+            String date =  res.getString("date");
             if (date != null)
                 friendship.setDate(LocalDate.parse(date));
             else
-                friendship.setDate(null);
-            friendship.setState(FRIENDSHIPSTATE.valueOf(res.getString("state")));
+             friendship.setDate(null);
             return friendship;
 
         } catch (SQLException throwables) {
@@ -94,53 +96,8 @@ public class FriendshipDbRepo implements FriendshipRepository {
         }
     }
 
-    @Override
-    public List<String> getUserFriendRequests(String email) {
-        ArrayList<String> friends = new ArrayList<>();
-        String sql = "SELECT * FROM " + fshipsTable + " WHERE email2 = ? AND state = ?";
-        try (Connection connection = DriverManager.getConnection(url, username, password);
-             PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setString(1, email);
-            ps.setString(2, "PENDING");
-            ResultSet res = ps.executeQuery();
-            while(res.next()) {
-                String emailRequest = res.getString("email1");
-                friends.add(emailRequest);
-            }
-        } catch (SQLException throwables) {
-            throw new DbException(throwables.getMessage());
-        }
-        return friends;
-    }
 
-    /**
-     * Updates the database setting the status of the friendship as APPROVED
-     * and the date of the friendship as LocalDate.now()
-     * @param f - Friendship between two users
-     */
-    @Override
-    public void acceptFriendship(Friendship f) {
-        String email1 = f.getFirst();
-        String email2 = f.getSecond();
 
-        String sql = "UPDATE " + fshipsTable +
-                " SET state = ?, " +
-                " date = ?"
-                + " WHERE (email1 = ? AND email2 = ?) AND state = ?";
-        try (Connection connection = DriverManager.getConnection(url, username, password);
-             PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setString(1, "APPROVED");
-            ps.setString(2, String.valueOf(LocalDate.now()));
-            ps.setString(3, email1);
-            ps.setString(4, email2);
-            ps.setString(5, "PENDING");
-            ps.executeUpdate();
-        } catch (SQLException throwables) {
-            throw new DbException(throwables.getMessage());
-        }
-        f.setState(FRIENDSHIPSTATE.APPROVED);
-        f.setDate(LocalDate.now());
-    }
 
     /**
      * Removes a friendship from the database
@@ -149,7 +106,7 @@ public class FriendshipDbRepo implements FriendshipRepository {
     @Override
     public void removeFriendship(Friendship f) {
         if (getFriendship(f.getFirst(), f.getSecond()) == null)
-            throw new RepoException("Cei doi utilizatori nu sunt prieteni");
+            throw new RepoException("These two users aren't friends");
         String sql = "DELETE FROM " + fshipsTable + " WHERE (email1 = ? AND email2 = ?) OR (email2 = ? AND email1 = ?)";
         try (Connection connection = DriverManager.getConnection(url, username, password);
              PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -203,27 +160,6 @@ public class FriendshipDbRepo implements FriendshipRepository {
         return size() == 0;
     }
 
-    /**Returns all the friendships approved saved in the database
-     * @return List<Friendship>
-     */
-    @Override
-    public List<Friendship> getAllApproved() {
-        List<Friendship> fships = new ArrayList<>();
-        String sql = "SELECT * FROM " + fshipsTable + " WHERE state = ?";
-        try (Connection connection = DriverManager.getConnection(url, username, password);
-             PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setString(1, "APPROVED");
-            ResultSet res = ps.executeQuery();
-            while (res.next()) {
-                String email1 = res.getString("email1");
-                String email2 = res.getString("email2");
-                fships.add(new Friendship(email1, email2));
-            }
-            return fships;
-        } catch (SQLException e) {
-            throw new DbException(e.getMessage());
-        }
-    }
 
     /** Returns all the friendships saved in the database
      *  @return List<Friendship>
@@ -252,7 +188,7 @@ public class FriendshipDbRepo implements FriendshipRepository {
     @Override
     public List<String> getUserFriends(String email) {
         List<String> friends = new ArrayList<>();
-        for (Friendship f : getAllApproved()) {
+        for (Friendship f : getAll()) {
             if (f.getFirst().equals(email))
                 friends.add(f.getSecond());
             else if (f.getSecond().equals(email))

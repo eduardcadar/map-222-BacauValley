@@ -45,9 +45,10 @@ public class LoggedInterface implements UserInterface {
         System.out.println("3. Remove friend");
         System.out.println("4. Show friends");
         System.out.println("5. Accept friend request");
-        System.out.println("6. Show friends by month");
-        System.out.println("7. Send message");
-        System.out.println("10. Show conversation with friend");
+        System.out.println("6. Reject friend request");
+        System.out.println("7. Show friends by month");
+        System.out.println("8. Send message");
+        System.out.println("9. Show conversation with friend");
         System.out.println("0. Exit");
         System.out.print("Write command: ");
         return console.nextLine().strip();
@@ -69,9 +70,10 @@ public class LoggedInterface implements UserInterface {
                 case "3" -> removeFriend();
                 case "4" -> showFriendsFormatted(loggedUser.getEmail());
                 case "5" -> acceptFriendRequest();
-                case "6" -> showFriendsByMonth(loggedUser.getEmail());
-                case "7" -> sendMessage();
-                case "10" -> showConversationWithUser();
+                case "6" -> rejectFriendRequest();
+                case "7" -> showFriendsByMonth(loggedUser.getEmail());
+                case "8" -> sendMessage();
+                case "9" -> showConversationWithUser();
                 default -> System.out.println("Wrong command");
             }
         }
@@ -202,13 +204,12 @@ public class LoggedInterface implements UserInterface {
         Map<Integer, User> usersMap = showFriendRequests();
         if (usersMap.size() == 0)
             return;
-        Integer friendRequested = askNumberOfFriendRequests();
+        Integer friendRequested = askNumberOfFriendRequests("accept");
         if(friendRequested != null && friendRequested == 0) {
             return;
         }
         try {
-            Friendship f = srv.getFriendship(loggedUser.getEmail(), usersMap.get(friendRequested).getEmail());
-            srv.acceptFriendship(f);
+            srv.acceptFriendship(usersMap.get(friendRequested).getEmail(), loggedUser.getEmail());
             System.out.println("Accepted friend request");
         } catch (NullPointerException e) {
             System.out.println("Invalid number");
@@ -217,6 +218,24 @@ public class LoggedInterface implements UserInterface {
         }
     }
 
+    private void rejectFriendRequest(){
+        Map<Integer, User> usersMap = showFriendRequests();
+        if (usersMap.size() == 0)
+            return;
+        Integer friendRequested = askNumberOfFriendRequests("reject");
+        if(friendRequested != null && friendRequested == 0) {
+            return;
+        }
+        try {
+            srv.rejectFriendship(usersMap.get(friendRequested).getEmail(), loggedUser.getEmail());
+            System.out.println("Rejected friend request");
+        } catch (NullPointerException e) {
+            System.out.println("Invalid number");
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+
+    }
     /**
      * Updates the logged user
      */
@@ -321,7 +340,6 @@ public class LoggedInterface implements UserInterface {
         if (friendsMap.size() == 0)
             return;
         System.out.print("Write the number of the friend you wish to remove: ");
-        int i = 0;
         int numberOfUser = askForNumberInput(friendsMap.size());
         if (numberOfUser == 0)
             return;
@@ -437,8 +455,6 @@ public class LoggedInterface implements UserInterface {
             return ;
         }
         System.out.println("----FRIENDS----");
-        // if the stream is empty should print ("You dont have any friends from that month")
-        // to be consistent with the :( prints
         dtos.stream()
                 .filter(x -> x.getDate().getMonth().getValue() == month)
                 .forEach( System.out::println);
@@ -472,8 +488,8 @@ public class LoggedInterface implements UserInterface {
      * Asks user to input a number of a friendship request and returns that number.
      * @return - Integer
      */
-    private Integer askNumberOfFriendRequests(){
-        System.out.print("Write the number of the request you wish to accept, or 0 to go back: ");
+    private Integer askNumberOfFriendRequests(String actionType){
+        System.out.print("Write the number of the request you wish to " + actionType + " or 0 to go back: ");
         Integer friendRequested = 0;
         try {
             friendRequested = console.nextInt();
