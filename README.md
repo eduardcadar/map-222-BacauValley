@@ -7,5 +7,7 @@ Functionalities:
   - Add PostreSQL database
   - Most sociable community
   - Add friend request system ( pending, approved, reject) 
-### TODO 
   - Add message system
+
+### TODO 
+  - Add GUI
