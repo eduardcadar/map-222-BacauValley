@@ -10,6 +10,7 @@ import repository.db.DbException;
 import service.Service;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 public class LoggedInterface implements UserInterface {
     private final Scanner console;
@@ -445,19 +446,17 @@ public class LoggedInterface implements UserInterface {
 
     /**
      * Prints the friendships for user with email that started in the specified month
-     * @param email
-     * @param month
+     * @param email - String
+     * @param month - int
      */
     private void printFriendsByMonth(String email, int month) {
-        List<UserFriendDTO> dtos = srv.getFriendshipsDTO(email);
-        if (dtos.size() == 0) {
+        Stream<UserFriendDTO> dtos = srv.getFriendshsByMonth(email, month);
+        if (dtos.findAny().isEmpty()) {
             System.out.println("You don't have any friends :(");
             return ;
         }
         System.out.println("----FRIENDS----");
-        dtos.stream()
-                .filter(x -> x.getDate().getMonth().getValue() == month)
-                .forEach( System.out::println);
+        dtos.forEach( System.out::println);
     }
 
 

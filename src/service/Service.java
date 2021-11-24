@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 public class Service {
     private final UserService userService;
@@ -166,7 +167,9 @@ public class Service {
 
     /**
      * Accepts the friendship setting its status to approved and setting the date
-     * @param f - friendship
+     * @param email1 - String
+     * @param email2 - String
+     *
      */
     public void acceptFriendship(String email1, String email2)  {
         friendshipService.acceptFriendship(email1, email2);
@@ -183,10 +186,6 @@ public class Service {
         }
         return friends;
     }
-
-    // instead of public List<User>  getUserFriends
-    // TODO
-    // - return a list of DOTS where you have User and FriendsShipObject
 
     /**
      * Returns a list of DTOs with a user's friends
@@ -213,6 +212,22 @@ public class Service {
         return userFriendDTOS;
     }
 
+
+    /**
+     *
+     *
+     * @param email - String
+     * @param month - int
+     * @return - Stream of USerFriend DTOS
+     */
+    public Stream<UserFriendDTO> getFriendshsByMonth(String email, int month){
+        List<UserFriendDTO> dtos = getFriendshipsDTO(email);
+        System.out.println("----FRIENDS----");
+        return
+            dtos.stream()
+                .filter(x -> x.getDate().getMonth().getValue() == month);
+   }
+
     /**
      * @param email - String the email of the user
      * @return the users that are not friends with the given user
@@ -223,11 +238,6 @@ public class Service {
         for (User u : userService.getUsers())
             if (!friends.contains(u.getEmail()) && u.getEmail().compareTo(email) != 0)
                 notFriends.add(u);
-        // TODO
-        //  - add rejected friend requests to not friends
-        //    frienshipService.getUsersRejected(email)
-        //    requestRepo.getUserRejected()
-        //    SELECT * FROM table WHERE email1 = email AND state = 'REJECTED'
         return notFriends;
     }
 
