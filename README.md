@@ -4,8 +4,8 @@ Toy Social Newtork - University Project
 
 Functionalities:
   - Add users and friendships
-  - Add PostreSQL database
+  - PostgreSQL database
   - Most sociable community
+  - Send messages
 ### TODO:
-  - Add friend request system ( pending, approved, reject) 
-  - Add message system
+  - GUI
