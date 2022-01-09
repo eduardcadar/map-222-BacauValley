@@ -4,10 +4,11 @@ Toy Social Newtork - University Project in collaboration with [Butacu Stefan](ht
 
 Functionalities:
   - Add users and friendships
-  - Add PostreSQL database
+  - PostgreSQL database
   - Most sociable community
-  - Add friend request system ( pending, approved, reject) 
-  - Add message system
+  - Friend request system ( pending, approved, reject) 
+  - Message system
+  ### TODO:
+  - GUI [In progress](https://github.com/eduardcadar/ToySocialNetworkGUI) 
+ 
 
-### TODO 
-  - Add GUI

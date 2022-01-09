@@ -1,12 +1,15 @@
 package repository.db;
 
 import domain.Friendship;
-import domain.User;
 import repository.FriendshipRepository;
 import repository.RepoException;
 import validator.Validator;
 
+import javax.swing.text.DateFormatter;
 import java.sql.*;
+import java.text.DateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,17 +30,20 @@ public class FriendshipDbRepo implements FriendshipRepository {
         String sql = "CREATE TABLE IF NOT EXISTS " + fshipsTable +
                 "(email1 varchar," +
                 " email2 varchar, " +
-                "PRIMARY KEY (email1,email2), " +
-                "FOREIGN KEY (email1) references users(email), " + //ON DELETE CASCADE
-                "FOREIGN KEY (email2) references users(email))";
+                " date varchar DEFAULT NULL," +
+                " PRIMARY KEY (email1,email2)," +
+                " FOREIGN KEY (email1) references users(email) ON DELETE CASCADE," +
+                " FOREIGN KEY (email2) references users(email) ON DELETE CASCADE" +
+                ")";
+
 
         try (Connection connection = DriverManager.getConnection(url, username, password)) {
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.executeUpdate();
-         } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
+        } catch (SQLException throwables) {
+            throw new DbException(throwables.getMessage());
         }
+    }
 
     /**
      * Validates and adds a friendship to the database
@@ -47,12 +53,13 @@ public class FriendshipDbRepo implements FriendshipRepository {
     public void addFriendship(Friendship f) {
         val.validate(f);
         if (getFriendship(f.getFirst(), f.getSecond()) != null)
-            throw new RepoException("Cei doi utilizatori sunt deja prieteni");
-        String sql = "INSERT INTO " + fshipsTable + " (email1, email2) VALUES (?, ?)";
+            throw new RepoException("These two users are already friends");
+        String sql = "INSERT INTO " + fshipsTable + " (email1, email2, date) VALUES (?, ?, ?)";
         try (Connection connection = DriverManager.getConnection(url, username, password);
              PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, f.getFirst());
             ps.setString(2, f.getSecond());
+            ps.setString(3, f.getDate().toString());
             ps.executeUpdate();
         } catch (SQLException throwables) {
             throw new DbException(throwables.getMessage());
@@ -66,20 +73,31 @@ public class FriendshipDbRepo implements FriendshipRepository {
      * null otherwise
      */
     public Friendship getFriendship(String email1, String email2) {
-        Friendship f = new Friendship(email1, email2);
-        String sql = "SELECT FROM " + fshipsTable + " WHERE email1 = ? AND email2 = ?";
+        String sql = "SELECT * FROM " + fshipsTable + " WHERE (email1 = ? AND email2 = ?) OR (email2 = ? AND email1 = ?)";
         try (Connection connection = DriverManager.getConnection(url, username, password);
         PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setString(1, f.getFirst());
-            ps.setString(2, f.getSecond());
+            ps.setString(1, email1);
+            ps.setString(2, email2);
+            ps.setString(3, email1);
+            ps.setString(4, email2);
             ResultSet res = ps.executeQuery();
             if (!res.next())
                 return null;
-            return f;
+            Friendship friendship =  new Friendship(res.getString("email1"), res.getString("email2"));
+            String date =  res.getString("date");
+            if (date != null)
+                friendship.setDate(LocalDate.parse(date));
+            else
+             friendship.setDate(null);
+            return friendship;
+
         } catch (SQLException throwables) {
             throw new DbException(throwables.getMessage());
         }
     }
+
+
+
 
     /**
      * Removes a friendship from the database
@@ -88,12 +106,14 @@ public class FriendshipDbRepo implements FriendshipRepository {
     @Override
     public void removeFriendship(Friendship f) {
         if (getFriendship(f.getFirst(), f.getSecond()) == null)
-            throw new RepoException("Cei doi utilizatori nu sunt prieteni");
-        String sql = "DELETE FROM " + fshipsTable + " WHERE email1 = ? AND email2 = ?";
+            throw new RepoException("These two users aren't friends");
+        String sql = "DELETE FROM " + fshipsTable + " WHERE (email1 = ? AND email2 = ?) OR (email2 = ? AND email1 = ?)";
         try (Connection connection = DriverManager.getConnection(url, username, password);
              PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, f.getFirst());
             ps.setString(2, f.getSecond());
+            ps.setString(3, f.getFirst());
+            ps.setString(4, f.getSecond());
             ps.executeUpdate();
         } catch (SQLException e) {
             throw new DbException(e.getMessage());
@@ -140,10 +160,10 @@ public class FriendshipDbRepo implements FriendshipRepository {
         return size() == 0;
     }
 
-    /**
-     * @return all the friendships saved in the database
+
+    /** Returns all the friendships saved in the database
+     *  @return List<Friendship>
      */
-    @Override
     public List<Friendship> getAll() {
         List<Friendship> fships = new ArrayList<>();
         String sql = "SELECT * FROM " + fshipsTable;
@@ -178,6 +198,22 @@ public class FriendshipDbRepo implements FriendshipRepository {
     }
 
     /**
+     * @param email - String the email of the user
+     * @return a list with the emails of a user's friends + friends requested
+     */
+    @Override
+    public List<String> getUserFriendsAll(String email) {
+        List<String> friends = new ArrayList<>();
+        for (Friendship f : getAll()) {
+            if (f.getFirst().equals(email))
+                friends.add(f.getSecond());
+            else if (f.getSecond().equals(email))
+                friends.add(f.getFirst());
+        }
+        return friends;
+    }
+
+    /**
      * Removes the friendships of a user
      * @param email - String the email of the user
      */
@@ -192,13 +228,5 @@ public class FriendshipDbRepo implements FriendshipRepository {
         } catch (SQLException throwables) {
             throw new DbException(throwables.getMessage());
         }
-    }
-
-    /**
-     * Removes the friendships of a user
-     * @param us - the user
-     */
-    public void removeUserFships(User us) {
-        removeUserFships(us.getEmail());
     }
 }

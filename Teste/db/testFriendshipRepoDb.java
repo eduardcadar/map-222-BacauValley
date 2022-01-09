@@ -7,12 +7,12 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import repository.RepoException;
-import repository.db.DbException;
 import repository.db.FriendshipDbRepo;
 import repository.db.UserDbRepo;
 import validator.FriendshipValidator;
 import validator.UserValidator;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class testFriendshipRepoDb {
@@ -24,10 +24,10 @@ public class testFriendshipRepoDb {
     private final User us2 = new User("alex", "popescu", "popescu.alex@gmail.com");
     private final User us3 = new User("maria", "lazar", "l.maria@gmail.com");
     private final User us4 = new User("gabriel", "andrei", "a.gabi@gmail.com");
-    private final FriendshipDbRepo fRepo = new FriendshipDbRepo(url, username, password, new FriendshipValidator(), "testfriendships");
-    private final Friendship f1 = new Friendship(us1, us2);
-    private final Friendship f2 = new Friendship(us1, us3);
-    private final Friendship f3 = new Friendship(us2, us4);
+    private final FriendshipDbRepo fRepo = new FriendshipDbRepo(url, username, password, new FriendshipValidator(), "friendships");
+    private final Friendship f1 = new Friendship(us1, us2, LocalDate.now());
+    private final Friendship f2 = new Friendship(us1, us3, LocalDate.now());
+    private final Friendship f3 = new Friendship(us2, us4, LocalDate.now());
 
     @Before
     public void setUp() throws Exception {
@@ -38,6 +38,7 @@ public class testFriendshipRepoDb {
         fRepo.addFriendship(f1);
         fRepo.addFriendship(f2);
         fRepo.addFriendship(f3);
+
     }
 
     @After
@@ -61,7 +62,7 @@ public class testFriendshipRepoDb {
         Assert.assertEquals(4, fRepo.size());
         Assert.assertNotNull(fRepo.getFriendship(us1.getEmail(), us4.getEmail()));
         try {
-            fRepo.addFriendship(new Friendship(us4, us1));
+            fRepo.addFriendship(new Friendship(us1, us4));
             Assert.fail();
         } catch (RepoException e) {
             Assert.assertTrue(true);
@@ -75,9 +76,6 @@ public class testFriendshipRepoDb {
     public void testClearFriendshipsDb() {
         fRepo.clear();
         Assert.assertTrue(fRepo.isEmpty());
-        fRepo.addFriendship(f1);
-        fRepo.addFriendship(f2);
-        fRepo.addFriendship(f3);
     }
 
     @Test
@@ -90,9 +88,9 @@ public class testFriendshipRepoDb {
 
     @Test
     public void testRemoveUserFriendshipsDb() {
-        fRepo.removeUserFships(us1);
+        fRepo.removeUserFships(us1.getEmail());
         Assert.assertEquals(1, fRepo.size());
-        fRepo.removeUserFships(us1);
+        fRepo.removeUserFships(us1.getEmail());
         Assert.assertEquals(1, fRepo.size());
         fRepo.addFriendship(f1);
         fRepo.addFriendship(f2);

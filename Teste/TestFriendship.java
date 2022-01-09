@@ -1,3 +1,4 @@
+import domain.REQUESTSTATE;
 import domain.Friendship;
 import domain.User;
 import org.junit.Assert;
@@ -20,9 +21,4 @@ public class TestFriendship {
         Assert.assertEquals(0, f1.toString().compareTo(us1.getEmail() + " --- " + us2.getEmail()));
     }
 
-    @Test
-    public void testEquals() {
-        Assert.assertEquals(f1, f2);
-        Assert.assertEquals(f2, f1);
-    }
 }

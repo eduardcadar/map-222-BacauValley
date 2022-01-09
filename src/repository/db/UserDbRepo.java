@@ -10,17 +10,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserDbRepo implements UserRepository {
-    private final String url;
-    private final String username;
-    private  String password;
-    private final String usersTable;
-    private final Validator<User> val;
+    private final String url, username, password, usersTable;
+    private final Validator<User> validator;
 
-    public UserDbRepo(String url, String username, String password, Validator<User> val, String usersTable) {
+    public UserDbRepo(String url, String username, String password, Validator<User> validator, String usersTable) {
         this.url = url;
         this.username = username;
         this.password = password;
-        this.val = val;
+        this.validator = validator;
         this.usersTable = usersTable;
         String sql = "CREATE TABLE IF NOT EXISTS " + usersTable +
                 "(firstname varchar NOT NULL," +
@@ -28,20 +25,17 @@ public class UserDbRepo implements UserRepository {
                 " email varchar NOT NULL, " +
                 " PRIMARY KEY (email) " +
                 ")";
+
+        String updateTable = "ALTER TABLE " + usersTable +
+                " ADD COLUMN IF NOT EXISTS password varchar DEFAULT '000000'";
+
         try (Connection connection = DriverManager.getConnection(this.url, this.username, this.password);
              PreparedStatement ps = connection.prepareStatement(sql)) {
-             ps.executeUpdate();
-        }
-
-        catch (SQLException e) {
-            // daca facem o singura conexiune si in functie de cum se arunca exceptie pun la password - postgres
-            this.password = "postgres";
-            try (Connection connection = DriverManager.getConnection(this.url, this.username, this.password);
-                 PreparedStatement ps = connection.prepareStatement(sql)) {
-                ps.executeUpdate();
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
+            ps.executeUpdate();
+            PreparedStatement updateStatement = connection.prepareStatement(updateTable);
+            updateStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new DbException(e.getMessage());
         }
 
     }
@@ -52,15 +46,16 @@ public class UserDbRepo implements UserRepository {
      */
     @Override
     public void save(User u) {
-        val.validate(u);
+        validator.validate(u);
         if (getUser(u.getEmail()) != null)
             throw new RepoException("Exista deja un utilizator cu acest email");
-        String sql = "INSERT INTO " + usersTable + " (firstname, lastname, email) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO " + usersTable + " (firstname, lastname, email, password) VALUES (?, ?, ?, ?)";
         try (Connection connection = DriverManager.getConnection(url, username, password);
              PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, u.getFirstName());
             ps.setString(2, u.getLastName());
             ps.setString(3, u.getEmail());
+            ps.setString(4, u.getPassword());
             ps.executeUpdate();
         } catch (SQLException e) {
             throw new DbException(e.getMessage());
@@ -82,7 +77,7 @@ public class UserDbRepo implements UserRepository {
             ResultSet res = ps.executeQuery();
             if (!res.next())
                 return null;
-            us = new User(res.getString("firstname"), res.getString("lastname"), res.getString("email"));
+            us = new User(res.getString("firstname"), res.getString("lastname"), res.getString("email"), res.getString("password"));
             return us;
         }
         catch (SQLException e) {
@@ -171,23 +166,23 @@ public class UserDbRepo implements UserRepository {
     }
 
     /**
-     * Updates a user in the database
-     * @param u - the user with the same email as the user given as parameter
-     *          will have their firstname and lastname updated
+     * Updates a user's first name, last name and password in the database
+     * @param user - the user with the new attributes
      */
     @Override
-    public void update(User u) {
-        if (getUser(u.getEmail()) == null)
+    public void update(User user) {
+        if (getUser(user.getEmail()) == null)
             throw new RepoException("Utilizatorul nu este salvat");
-        String sql = "UPDATE " + usersTable + " SET firstname = ?, lastname = ? WHERE email = ?";
+        String sql = "UPDATE " + usersTable + " SET firstname = ?, lastname = ?, password = ? WHERE email = ?";
         try (Connection connection = DriverManager.getConnection(url, username, password);
         PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setString(1, u.getFirstName());
-            ps.setString(2, u.getLastName());
-            ps.setString(3, u.getEmail());
+            ps.setString(1, user.getFirstName());
+            ps.setString(2, user.getLastName());
+            ps.setString(3, user.getPassword());
+            ps.setString(4, user.getEmail());
             ps.executeUpdate();
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            throw new DbException(throwables.getMessage());
         }
     }
 }
